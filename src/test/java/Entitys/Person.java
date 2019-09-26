@@ -35,7 +35,7 @@ public class Person {
         this.id = id;
     }
 
-    public String getFirst_name() {
+    public String getFirstName() {
         return firstName;
     }
 
@@ -55,7 +55,7 @@ public class Person {
         return regDate;
     }
 
-    public void setReg_date(Date regDate) {
+    public void setRegDate(Date regDate) {
         this.regDate = regDate;
     }
 
@@ -63,7 +63,7 @@ public class Person {
         return birthDate;
     }
 
-    public void setBirth_date(Date birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
