@@ -10,11 +10,11 @@ public class Person {
     @Id
     @GeneratedValue
     private Integer id;
-    private String first_name; // имя
-    private String last_name; // фамилия
-    private Date reg_date; // дата и время регистрации
-    private Date birth_date; // дата рождения
-    private String e_mail; //Привязанная электронная почта
+    private String firstName; // имя
+    private String lastName; // фамилия
+    private Date regDate; // дата и время регистрации
+    private Date birthDate; // дата рождения
+    private String eMail; //Привязанная электронная почта
     private String phone; //Привязанный номер телефона
     private String password; //Пароль
     private String photo; //Ссылка на изображение
@@ -36,43 +36,43 @@ public class Person {
     }
 
     public String getFirst_name() {
-        return first_name;
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public Date getReg_date() {
-        return reg_date;
+    public Date getRegDate() {
+        return regDate;
     }
 
-    public void setReg_date(Date reg_date) {
-        this.reg_date = reg_date;
+    public void setReg_date(Date regDate) {
+        this.regDate = regDate;
     }
 
-    public Date getBirth_date() {
-        return birth_date;
+    public Date getBirthDate() {
+        return birthDate;
     }
 
-    public void setBirth_date(Date birth_date) {
-        this.birth_date = birth_date;
+    public void setBirth_date(Date birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public String getE_mail() {
-        return e_mail;
+    public String getEMail() {
+        return eMail;
     }
 
-    public void setE_mail(String e_mail) {
-        this.e_mail = e_mail;
+    public void setEMail(String eMail) {
+        this.eMail = eMail;
     }
 
     public String getPhone() {
