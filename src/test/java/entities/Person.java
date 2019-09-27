@@ -1,31 +1,70 @@
 package entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name="person")
 public class Person {
     @Id
     @GeneratedValue
+    @Column(name="ID")
     private Integer id;
+
+    @Column(name="FRIST_NAME", length = 30)
     private String firstName; // имя
+
+    @Column(name="LAST_NAME", length = 30)
     private String lastName; // фамилия
+
+    @Column(name="REG_DATE")
     private Date regDate; // дата и время регистрации
+
+    @Column(name = "BIRTH_DATE")
     private Date birthDate; // дата рождения
+
+    @Column(name = "E_MAIL", length = 50)
     private String eMail; //Привязанная электронная почта
+
+    @Column(name = "PHONE", length = 50, nullable = false)
     private String phone; //Привязанный номер телефона
+
+    @Column(name = "PASSWORD", length = 50)
     private String password; //Пароль
+
+    @Column (name = "PHOTO", length = 50)
     private String photo; //Ссылка на изображение
+
+    @Column (name = "ABOUT", length = 50)
     private String about; //Текст о себе
+
+    @Column (name = "CITY", length = 50)
     private String city; //Город проживания
+
+    @Column (name = "COUNTRY", length = 50)
     private String country; //Страна проживания
+
+    @Column (name = "CONFIRMATION_CODE", length = 20)
     private String confirmationCode; //код восстановления пароля / подтверждения регистрации
+
+    @Column (name = "IS_BLOCKED")
     private Boolean isApproved; //Подтверждена ли регистрация
+
+    @Column (name = "MESSAGE_PERMISSION")
     private Boolean messagesPermission; //Разрешение на получение сообщений: ALL(false) - от всех пользователей (кроме заблокированных), FRIENDS(true) - только от друзей
+
+    @Column (name = "LAST_ONLINE_TIME")
     private Date lastOnlineTime; //Время последнего пребывания онлайн
+
+    @Column (name = "IS_BLOCKED")
     private Boolean isBlocked; //Блокировка пользователя модератором / администратором
+
+    @Column (name = "IS_ONLINE")
+    private Boolean isOnline; //Статус он-лайн
+
+    @Column (name = "IS_DELETED")
+    private Boolean isDeleted; //Удален ли аккаунт
+
 
     public Integer getId() {
         return id;
@@ -161,5 +200,21 @@ public class Person {
 
     public void setBlocked(Boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public Boolean getOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(Boolean online) {
+        isOnline = online;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }
