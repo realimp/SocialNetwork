@@ -22,9 +22,9 @@ public class Post {
     @Size(max = 500)
     private String text;
     @Column(name = "is_blocked")
-    private Integer isBlocked;
+    private Boolean isBlocked;
     @Column(name = "is_deleted")
-    private Integer isDeleted;
+    private Boolean isDeleted;
 
     public Post() {}
 
@@ -68,19 +68,19 @@ public class Post {
         this.text = text;
     }
 
-    public Integer isBlocked() {
+    public Boolean isBlocked() {
         return isBlocked;
     }
 
-    public void setBlocked(Integer isBlocked) {
+    public void setBlocked(Boolean isBlocked) {
         this.isBlocked = isBlocked;
     }
 
-    public Integer isDeleted() {
+    public Boolean isDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(Integer isDeleted) {
+    public void setDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
 
