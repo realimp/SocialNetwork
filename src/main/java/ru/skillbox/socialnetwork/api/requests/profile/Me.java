@@ -1,8 +1,8 @@
-package ru.skillbox.socialnetwork.api.requests;
+package ru.skillbox.socialnetwork.api.requests.profile;
 
 import java.util.Date;
 
-public class ProfilPutModel {
+public class Me {
 
   private String firstName;
   private String lastName;
@@ -14,10 +14,10 @@ public class ProfilPutModel {
   private Integer country;
   private String messagesPermission;
 
-  public ProfilPutModel() {
+  public Me() {
   }
 
-  public ProfilPutModel(String firstName, String lastName, Date birthDate, String phone,
+  public Me(String firstName, String lastName, Date birthDate, String phone,
       String photo, String about, Integer city, Integer country, String messagesPermission) {
     this.firstName = firstName;
     this.lastName = lastName;

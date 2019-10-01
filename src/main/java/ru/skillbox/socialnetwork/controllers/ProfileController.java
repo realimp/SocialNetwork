@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skillbox.socialnetwork.api.requests.ProfilPutModel;
-import ru.skillbox.socialnetwork.api.requests.WallPostModel;
+import ru.skillbox.socialnetwork.api.requests.profile.Me;
+import ru.skillbox.socialnetwork.api.requests.profile.Wall;
 
 @RestController
 @RequestMapping("/users")
@@ -22,7 +22,7 @@ public class ProfileController {
   }
 
   @PutMapping("/me")
-  public String putMe(@RequestBody ProfilPutModel profilPutModel) {
+  public String putMe(@RequestBody Me me) {
     return "put Me";
   }
 
@@ -45,7 +45,7 @@ public class ProfileController {
 
   //adding a post to a user's wall
   @PostMapping("/{id}/wall")
-  public String postUserWall(@PathVariable int id, @RequestBody WallPostModel wallPostModel) {
+  public String postUserWall(@PathVariable int id, @RequestBody Wall wall) {
     return "User id = " + id + " -> post wall";
   }
 

@@ -1,19 +1,19 @@
-package ru.skillbox.socialnetwork.api.requests;
+package ru.skillbox.socialnetwork.api.requests.profile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WallPostModel {
+public class Wall {
 
   private String titel;
   private String postText;
   private List<String> tags;
 
-  public WallPostModel() {
+  public Wall() {
     tags = new ArrayList<>();
   }
 
-  public WallPostModel(String titel, String postText, List<String> tags) {
+  public Wall(String titel, String postText, List<String> tags) {
     this.titel = titel;
     this.postText = postText;
     this.tags = tags;
