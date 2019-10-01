@@ -1,4 +1,4 @@
-package entities;
+package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -6,63 +6,63 @@ import java.util.Date;
 @Entity
 @Table(name="person")
 public class Person {
+
     @Id
-    @GeneratedValue
-    @Column(name="ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="FRIST_NAME", length = 30)
-    private String firstName; // имя
+    @Column(name="first_name")
+    private String firstName;
 
-    @Column(name="LAST_NAME", length = 30)
-    private String lastName; // фамилия
+    @Column(name="last_name")
+    private String lastName;
 
-    @Column(name="REG_DATE")
-    private Date regDate; // дата и время регистрации
+    @Column(name="reg_date")
+    private Date regDate;
 
-    @Column(name = "BIRTH_DATE")
-    private Date birthDate; // дата рождения
+    @Column(name = "birth_date")
+    private Date birthDate;
 
-    @Column(name = "E_MAIL", length = 50)
-    private String eMail; //Привязанная электронная почта
+    @Column(name = "e_mail")
+    private String eMail;
 
-    @Column(name = "PHONE", length = 50, nullable = false)
-    private String phone; //Привязанный номер телефона
+    @Column(name = "phone")
+    private String phone;
 
-    @Column(name = "PASSWORD", length = 50)
-    private String password; //Пароль
+    @Column(name = "password")
+    private String password;
 
-    @Column (name = "PHOTO", length = 50)
-    private String photo; //Ссылка на изображение
+    @Column (name = "photo")
+    private String photo;
 
-    @Column (name = "ABOUT", length = 50)
-    private String about; //Текст о себе
+    @Column (name = "about")
+    private String about;
 
-    @Column (name = "CITY", length = 50)
-    private String city; //Город проживания
+    @Column (name = "city")
+    private String city;
 
-    @Column (name = "COUNTRY", length = 50)
-    private String country; //Страна проживания
+    @Column (name = "country")
+    private String country;
 
-    @Column (name = "CONFIRMATION_CODE", length = 20)
-    private String confirmationCode; //код восстановления пароля / подтверждения регистрации
+    @Column (name = "confirmation_code")
+    private String confirmationCode;
 
-    @Column (name = "IS_BLOCKED")
+    @Column (name = "is_approved")
     private Boolean isApproved; //Подтверждена ли регистрация
 
-    @Column (name = "MESSAGE_PERMISSION")
-    private Boolean messagesPermission; //Разрешение на получение сообщений: ALL(false) - от всех пользователей (кроме заблокированных), FRIENDS(true) - только от друзей
+    @Column (name = "messages_permission")
+    private String messagesPermission; //Разрешение на получение сообщений: ALL(false) - от всех пользователей (кроме заблокированных), FRIENDS(true) - только от друзей
 
-    @Column (name = "LAST_ONLINE_TIME")
-    private Date lastOnlineTime; //Время последнего пребывания онлайн
+    @Column (name = "last_online_time")
+    private Date lastOnlineTime;
 
-    @Column (name = "IS_BLOCKED")
+    @Column (name = "is_blocked")
     private Boolean isBlocked; //Блокировка пользователя модератором / администратором
 
-    @Column (name = "IS_ONLINE")
-    private Boolean isOnline; //Статус он-лайн
+    @Column (name = "is_online")
+    private Boolean isOnline;
 
-    @Column (name = "IS_DELETED")
+    @Column (name = "is_deleted")
     private Boolean isDeleted; //Удален ли аккаунт
 
 
@@ -178,11 +178,11 @@ public class Person {
         isApproved = approved;
     }
 
-    public Boolean getMessagesPermission() {
+    public String getMessagesPermission() {
         return messagesPermission;
     }
 
-    public void setMessagesPermission(Boolean messagesPermission) {
+    public void setMessagesPermission(String messagesPermission) {
         this.messagesPermission = messagesPermission;
     }
 
