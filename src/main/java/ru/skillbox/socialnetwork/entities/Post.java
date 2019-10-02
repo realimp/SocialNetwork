@@ -14,8 +14,6 @@ public class Post {
     private Integer id;
     @Column(name = "time")
     private Date date;
-    @Column(name = "author_id", nullable = false)
-    private Integer authorId;
     @Size(max = 50)
     private String title;
     @Column(name = "post_text")
@@ -25,6 +23,10 @@ public class Post {
     private Boolean isBlocked;
     @Column(name = "is_deleted")
     private Boolean isDeleted;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private Person author;
 
     public Post() {}
 
@@ -44,12 +46,12 @@ public class Post {
         this.date = date;
     }
 
-    public Integer getAuthorId() {
-        return authorId;
+    public Person getAuthor() {
+        return author;
     }
 
-    public void setAuthorId(Integer authorId) {
-        this.authorId = authorId;
+    public void setAuthor(Person author) {
+        this.author = author;
     }
 
     public String getTitle() {
@@ -94,7 +96,7 @@ public class Post {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id,authorId);
+        return Objects.hash(id, author.getId());
     }
 
     @Override
@@ -102,7 +104,7 @@ public class Post {
         return "Post{" +
                 "id=" + id +
                 ", date=" + date +
-                ", authorId=" + authorId +
+                ", authorId=" + author.getId() +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", isBlocked=" + isBlocked +
