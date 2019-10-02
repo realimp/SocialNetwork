@@ -1,4 +1,4 @@
-package ru.skillbox.socialnetwork.models;
+package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,7 +23,7 @@ public class Message {
     @Column(name = "dialog_id")
     private int dialogId;
     @Column(name = "is_deleted")
-    private int isDeleted;
+    private Boolean isDeleted;
 
     public int getId() {
         return id;
@@ -81,11 +81,11 @@ public class Message {
         this.dialogId = dialogId;
     }
 
-    public int isDeleted() {
+    public Boolean isDeleted() {
         return isDeleted;
     }
 
-    public void setDeleted(int deleted) {
+    public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
     }
 }
