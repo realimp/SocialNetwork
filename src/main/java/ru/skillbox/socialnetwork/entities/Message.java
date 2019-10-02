@@ -1,4 +1,4 @@
-package ru.skillbox.socialnetwork.models;
+package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
 import java.util.Date;
