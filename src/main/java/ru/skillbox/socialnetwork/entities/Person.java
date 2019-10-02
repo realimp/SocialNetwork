@@ -1,9 +1,7 @@
 package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name="person")
@@ -66,9 +64,6 @@ public class Person {
 
     @Column (name = "is_deleted")
     private Boolean isDeleted; //Удален ли аккаунт
-
-    @OneToMany(mappedBy = "author", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Post> posts = new ArrayList<>();
 
 
     public Integer getId() {
@@ -221,13 +216,5 @@ public class Person {
 
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
-    }
-
-    public List<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
     }
 }
