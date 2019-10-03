@@ -65,6 +65,8 @@ public class Person {
     @Column (name = "is_deleted")
     private Boolean isDeleted; //Удален ли аккаунт
 
+    public Person() {
+    }
 
     public Integer getId() {
         return id;

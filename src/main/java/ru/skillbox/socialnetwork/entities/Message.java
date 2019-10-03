@@ -25,6 +25,9 @@ public class Message {
     @Column(name = "is_deleted")
     private Boolean isDeleted;
 
+    public Message() {
+    }
+
     public int getId() {
         return id;
     }
