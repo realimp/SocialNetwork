@@ -20,7 +20,8 @@ public class EMailService {
     @Value("${email.password}")
     private String password;
 
-    public void sendEMail(String from, String to, String subject, String body) {
+    public boolean sendEMail(String from, String to, String subject, String body) {
+        boolean result = true;
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
@@ -46,7 +47,9 @@ public class EMailService {
             Transport.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
+            result = false;
 
         }
+        return result;
     }
 }
