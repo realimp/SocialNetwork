@@ -41,10 +41,7 @@ public class ProfileController {
   //get user by id
   @GetMapping("/{id}")
   public Response<ResponseUser> getUser(@PathVariable int id) {
-    ResponseUser responseUser = new ResponseUser()
-            .setId(1)
-            .setFirstName("1")
-            .setLastName("2");
+    ResponseUser responseUser = new ResponseUser();
     return new Response<>(responseUser);
   }
 
