@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.socialnetwork.api.requests.profile.Me;
 import ru.skillbox.socialnetwork.api.requests.profile.Wall;
+import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.api.responses.ResponseMessage;
+import ru.skillbox.socialnetwork.api.responses.profile.ResponseUser;
+import ru.skillbox.socialnetwork.entities.Person;
 
 @RestController
 @RequestMapping("/users")
@@ -17,24 +21,28 @@ public class ProfileController {
 
   //mapping for a current user
   @GetMapping("/me")
-  public String getMe() {
-    return "get Me";
+  public Response<Person> getMe() {
+    Person person = new Person();
+    return new Response<>(person);
   }
 
   @PutMapping("/me")
-  public String putMe(@RequestBody Me me) {
-    return "put Me";
+  public Response<Person> putMe(@RequestBody Me me) {
+    Person person = new Person();
+    return new Response<>(person);
   }
 
   @DeleteMapping("/me")
-  public String deleteMe() {
-    return "delete Me";
+  public Response<ResponseMessage> deleteMe() {
+    ResponseMessage responseMessage = new ResponseMessage();
+    return new Response<>(responseMessage);
   }
 
   //get user by id
   @GetMapping("/{id}")
-  public String getUser(@PathVariable int id) {
-    return "get User id = " + id;
+  public Response<ResponseUser> getUser(@PathVariable int id) {
+    ResponseUser responseUser = new ResponseUser();
+    return new Response<>(responseUser);
   }
 
   //getting posts on the user's wall
@@ -61,13 +69,15 @@ public class ProfileController {
 
   //block user by id
   @PutMapping("/block/{id}")
-  public String blockUser(@PathVariable int id) {
-    return "block User id = " + id;
+  public Response<ResponseMessage>  blockUser(@PathVariable int id) {
+    ResponseMessage responseMessage = new ResponseMessage();
+    return new Response<>(responseMessage);
   }
 
   //unblock user by id
   @DeleteMapping("/block/{id}")
-  public String unblockUser(@PathVariable int id) {
-    return "unblock User id = " + id;
+  public Response<ResponseMessage>  unblockUser(@PathVariable int id) {
+    ResponseMessage responseMessage = new ResponseMessage();
+    return new Response<>(responseMessage);
   }
 }
