@@ -4,20 +4,19 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="person")
+@Table(name = "person")
 public class Person {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name="first_name")
+    @Column(name = "first_name")
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
 
-    @Column(name="reg_date")
+    @Column(name = "reg_date")
     private Date regDate;
 
     @Column(name = "birth_date")
@@ -32,37 +31,37 @@ public class Person {
     @Column(name = "password")
     private String password;
 
-    @Column (name = "photo")
+    @Column(name = "photo")
     private String photo;
 
-    @Column (name = "about")
+    @Column(name = "about")
     private String about;
 
-    @Column (name = "city")
+    @Column(name = "city")
     private String city;
 
-    @Column (name = "country")
+    @Column(name = "country")
     private String country;
 
-    @Column (name = "confirmation_code")
+    @Column(name = "confirmation_code")
     private String confirmationCode;
 
-    @Column (name = "is_approved")
+    @Column(name = "is_approved")
     private Boolean isApproved; //Подтверждена ли регистрация
 
-    @Column (name = "messages_permission")
+    @Column(name = "messages_permission")
     private String messagesPermission; //Разрешение на получение сообщений: ALL(false) - от всех пользователей (кроме заблокированных), FRIENDS(true) - только от друзей
 
-    @Column (name = "last_online_time")
+    @Column(name = "last_online_time")
     private Date lastOnlineTime;
 
-    @Column (name = "is_blocked")
+    @Column(name = "is_blocked")
     private Boolean isBlocked; //Блокировка пользователя модератором / администратором
 
-    @Column (name = "is_online")
+    @Column(name = "is_online")
     private Boolean isOnline;
 
-    @Column (name = "is_deleted")
+    @Column(name = "is_deleted")
     private Boolean isDeleted; //Удален ли аккаунт
 
     public Person() {

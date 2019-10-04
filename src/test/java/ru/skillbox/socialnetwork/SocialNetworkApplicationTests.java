@@ -5,6 +5,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.EMailService;
 
 @RunWith(SpringRunner.class)
@@ -12,6 +14,7 @@ import ru.skillbox.socialnetwork.services.EMailService;
 
 public class SocialNetworkApplicationTests {
 
+<<<<<<< HEAD
   @Test
   public void contextLoads() {
   }
@@ -23,4 +26,17 @@ public class SocialNetworkApplicationTests {
   public void sendEmail() {
     eMailService.sendEMail("test@gmail.com", "test@gmail.com", "Test", "Test mail");
   }
+=======
+    @Test
+    public void contextLoads() {
+    }
+
+    @Autowired
+    private EMailService eMailService;
+
+    @Test
+    public void sendEmail() {
+        eMailService.sendEMail("test@gmail.com", "test@gmail.com", "Test", "Test mail");
+    }
+>>>>>>> 6d3b140e933d8acabcff47475030dd4a72e26db4
 }
