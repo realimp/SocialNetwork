@@ -1,4 +1,4 @@
-package ru.skillbox.socialnetwork;
+package ru.skillbox.socialnetwork.repositories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.skillbox.socialnetwork.entities.Message;
 import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.repositories.MessageRepository;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class MessageRepositoryIntegrationTest {
+public class MessageRepositoryTest {
 
   @Autowired
   private MessageRepository messageRepository;
