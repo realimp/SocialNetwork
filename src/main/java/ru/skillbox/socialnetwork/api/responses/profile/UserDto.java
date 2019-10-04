@@ -1,23 +1,38 @@
 package ru.skillbox.socialnetwork.api.responses.profile;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import ru.skillbox.socialnetwork.entities.MessagePermission;
 
-public class ResponseUser {
-    private Integer id;
-    private String firstName;
-    private String lastName;
-    private Date regDate;
-    private Date birthDate;
-    private String eMail;
-    private String phone;
-    private String photo;
-    private String about;
-    private String city;
-    private String country;
-    private String messagesPermission;
-    private Date lastOnlineTime;
-    private Boolean isBlocked;
-    private Boolean isFriend;
+@JsonPropertyOrder({"id", "first_name", "last_name", "reg_date", "birth_date", "email", "phone", "photo", "about",
+        "city", "country", "messages_permission", "last_online_time", "is_blocked", "is_friend"})
+public class UserDto {
+    @JsonProperty private Integer id;
+    @JsonProperty("first_name") private String firstName;
+    @JsonProperty("last_name") private String lastName;
+    @JsonProperty("reg_date") private Long regDate;
+    @JsonProperty("birth_date") private Long birthDate;
+    @JsonProperty("email") private String eMail;
+    @JsonProperty private String phone;
+    @JsonProperty private String photo;
+    @JsonProperty private String about;
+    @JsonProperty private String city;
+    @JsonProperty private String country;
+    @JsonProperty("messages_permission") private MessagePermission messagesPermission;
+    @JsonProperty("last_online_time") private Long lastOnlineTime;
+    @JsonProperty("is_blocked") private Boolean isBlocked;
+    @JsonProperty("is_friend") private Boolean isFriend;
+
+
+    @JsonProperty(value="is_blocked")
+    public Boolean isBlocked() {
+        return isBlocked;
+    }
+
+    @JsonProperty(value="is_friend")
+    public Boolean isFriend() {
+        return isFriend;
+    }
 
     public Integer getId() {
         return id;
@@ -43,19 +58,19 @@ public class ResponseUser {
         this.lastName = lastName;
     }
 
-    public Date getRegDate() {
+    public Long getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(Date regDate) {
+    public void setRegDate(Long regDate) {
         this.regDate = regDate;
     }
 
-    public Date getBirthDate() {
+    public Long getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Long birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -107,19 +122,19 @@ public class ResponseUser {
         this.country = country;
     }
 
-    public String getMessagesPermission() {
+    public MessagePermission getMessagesPermission() {
         return messagesPermission;
     }
 
-    public void setMessagesPermission(String messagesPermission) {
+    public void setMessagesPermission(MessagePermission messagesPermission) {
         this.messagesPermission = messagesPermission;
     }
 
-    public Date getLastOnlineTime() {
+    public Long getLastOnlineTime() {
         return lastOnlineTime;
     }
 
-    public void setLastOnlineTime(Date lastOnlineTime) {
+    public void setLastOnlineTime(Long lastOnlineTime) {
         this.lastOnlineTime = lastOnlineTime;
     }
 

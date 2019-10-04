@@ -10,9 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.socialnetwork.api.requests.profile.Me;
 import ru.skillbox.socialnetwork.api.requests.profile.Wall;
+import ru.skillbox.socialnetwork.api.responses.PersonDto;
 import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.api.responses.ResponseMessage;
-import ru.skillbox.socialnetwork.api.responses.profile.ResponseUser;
+import ru.skillbox.socialnetwork.api.responses.MessageDto;
+import ru.skillbox.socialnetwork.api.responses.profile.UserDto;
 import ru.skillbox.socialnetwork.entities.Person;
 
 @RestController
@@ -21,28 +22,24 @@ public class ProfileController {
 
   //mapping for a current user
   @GetMapping("/me")
-  public Response<Person> getMe() {
-    Person person = new Person();
-    return new Response<>(person);
+  public Response<PersonDto> getMe() {
+    return new Response<>(new PersonDto());
   }
 
   @PutMapping("/me")
-  public Response<Person> putMe(@RequestBody Me me) {
-    Person person = new Person();
-    return new Response<>(person);
+  public Response<PersonDto> putMe(@RequestBody Me me) {
+    return new Response<>(new PersonDto());
   }
 
   @DeleteMapping("/me")
-  public Response<ResponseMessage> deleteMe() {
-    ResponseMessage responseMessage = new ResponseMessage();
-    return new Response<>(responseMessage);
+  public Response<MessageDto> deleteMe() {
+    return new Response<>(new MessageDto());
   }
 
   //get user by id
   @GetMapping("/{id}")
-  public Response<ResponseUser> getUser(@PathVariable int id) {
-    ResponseUser responseUser = new ResponseUser();
-    return new Response<>(responseUser);
+  public Response<UserDto> getUser(@PathVariable int id) {
+    return new Response<>(new UserDto());
   }
 
   //getting posts on the user's wall
@@ -69,15 +66,15 @@ public class ProfileController {
 
   //block user by id
   @PutMapping("/block/{id}")
-  public Response<ResponseMessage>  blockUser(@PathVariable int id) {
-    ResponseMessage responseMessage = new ResponseMessage();
-    return new Response<>(responseMessage);
+  public Response<MessageDto>  blockUser(@PathVariable int id) {
+    MessageDto messageDto = new MessageDto();
+    return new Response<>(messageDto);
   }
 
   //unblock user by id
   @DeleteMapping("/block/{id}")
-  public Response<ResponseMessage>  unblockUser(@PathVariable int id) {
-    ResponseMessage responseMessage = new ResponseMessage();
-    return new Response<>(responseMessage);
+  public Response<MessageDto>  unblockUser(@PathVariable int id) {
+    MessageDto messageDto = new MessageDto();
+    return new Response<>(messageDto);
   }
 }

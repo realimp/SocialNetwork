@@ -1,7 +1,9 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-public class ResponseMessage {
-    private String message;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class MessageDto {
+    @JsonProperty private String message;
 
     public String getMessage() {
         return message;
