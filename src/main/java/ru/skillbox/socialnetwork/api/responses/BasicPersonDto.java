@@ -2,7 +2,6 @@ package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import ru.skillbox.socialnetwork.entities.MessagePermission;
 
 @JsonPropertyOrder({"id", "first_name", "last_name", "photo", "last_online_time"})
 public class BasicPersonDto {
