@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.socialnetwork.api.requests.profile.Me;
 import ru.skillbox.socialnetwork.api.requests.profile.Wall;
-import ru.skillbox.socialnetwork.api.responses.PersonDto;
-import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.api.responses.MessageDto;
+import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.api.responses.profile.UserDto;
 import ru.skillbox.socialnetwork.entities.Person;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -44,14 +45,16 @@ public class ProfileController {
 
   //getting posts on the user's wall
   @GetMapping("/{id}/wall")
-  public String getUserWall(@PathVariable int id) {
-    return "User id = " + id + " -> get wall";
+  public ResponseList<List<PersonsWallPostDto>> getUserWall(@PathVariable int id) {
+    List<PersonsWallPostDto> personsWallPostDtoList = new ArrayList<>();
+    personsWallPostDtoList.add(new PersonsWallPostDto());
+    return new ResponseList<>(personsWallPostDtoList);
   }
 
   //adding a post to a user's wall
   @PostMapping("/{id}/wall")
-  public String postUserWall(@PathVariable int id, @RequestBody Wall wall) {
-    return "User id = " + id + " -> post wall";
+  public Response<PostDto>  postUserWall(@PathVariable int id, @RequestBody Wall wall) {
+    return new Response<>(new PostDto());
   }
 
   //user Search

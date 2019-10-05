@@ -4,22 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.skillbox.socialnetwork.entities.MessagePermission;
 
-@JsonPropertyOrder({"description", "id", "first_name", "last_name", "photo", "last_online_time"})
+@JsonPropertyOrder({"id", "first_name", "last_name", "photo", "last_online_time"})
 public class BasicPersonDto {
-    @JsonProperty private String description;
     @JsonProperty private Integer id;
     @JsonProperty("first_name") private String firstName;
     @JsonProperty("last_name") private String lastName;
     @JsonProperty private String photo;
     @JsonProperty("last_online_time") private Long lastOnlineTime;
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public Integer getId() {
         return id;

@@ -5,9 +5,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.List;
 
-@JsonPropertyOrder({"description", "parent_id", "comment_text", "id", "time", "author", "is_blocked"})
+@JsonPropertyOrder({"parent_id", "comment_text", "id", "time", "author", "is_blocked"})
 public class CommentModelDto {
-    @JsonProperty private String description;
     @JsonProperty("parent_id") private Integer parentId;
     @JsonProperty("comment_text") private String commentText;
     @JsonProperty private Integer id;
@@ -19,14 +18,6 @@ public class CommentModelDto {
     @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Integer getParentId() {
