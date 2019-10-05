@@ -1,7 +1,9 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+@JsonPropertyOrder({"error", "timestamp", "total", "offset", "perPage", "data"})
 public class ResponseList<T> extends Response<T>{
     @JsonProperty private long total;
     @JsonProperty private long offset;
