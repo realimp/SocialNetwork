@@ -54,7 +54,7 @@ public class ResponsesTest {
         personsWallPostDtoList.add(personWallPostDto);
         ResponseList<List<PersonsWallPostDto>> personsWallPostDto = new ResponseList<>(personsWallPostDtoList);
         personsWallPostDto.setTimestamp(0);
-        assertEquals("response list with PersonsWallPostDto", new ObjectMapper().writeValueAsString(personsWallPostDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}],\"type\":null}]}");
+        assertEquals("response list with PersonsWallPostDto list", new ObjectMapper().writeValueAsString(personsWallPostDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}],\"type\":null}]}");
     }
 
     @Test
@@ -77,5 +77,15 @@ public class ResponsesTest {
         Response<PostDto> postDto = new Response<>(post);
         postDto.setTimestamp(0);
         assertEquals("response with PostDto", new ObjectMapper().writeValueAsString(postDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}]}}");
+    }
+
+    @Test
+    public void responseListPersonsDtoTest() throws JsonProcessingException {
+        List<PersonDto> personDtoList = new ArrayList<>();
+        PersonDto personDto = new PersonDto();
+        personDtoList.add(personDto);
+        ResponseList<List<PersonDto>> personsDto = new ResponseList<>(personDtoList);
+        personsDto.setTimestamp(0);
+        assertEquals("response list with PersonDto list", new ObjectMapper().writeValueAsString(personsDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}");
     }
 }
