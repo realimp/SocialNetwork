@@ -2,8 +2,8 @@ package ru.skillbox.socialnetwork.api.responses.profile;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import ru.skillbox.socialnetwork.api.responses.City;
-import ru.skillbox.socialnetwork.api.responses.Country;
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.entities.MessagePermission;
 
 @JsonPropertyOrder({
