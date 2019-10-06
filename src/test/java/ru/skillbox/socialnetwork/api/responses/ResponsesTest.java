@@ -14,9 +14,12 @@ public class ResponsesTest {
 
     @Test
     public void responsePersonDtoTest() throws JsonProcessingException {
-        Response<PersonDto> personDto = new Response<>(new PersonDto());
-        personDto.setTimestamp(0);
-        assertEquals("response with PersonDto", new ObjectMapper().writeValueAsString(personDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}");
+        PersonDto personDto = new PersonDto();
+        personDto.setCity(new City());
+        personDto.setCountry(new Country());
+        Response<PersonDto> response = new Response<>(personDto);
+        response.setTimestamp(0);
+        assertEquals("response with PersonDto", new ObjectMapper().writeValueAsString(response), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}");
     }
 
     @Test
@@ -28,9 +31,12 @@ public class ResponsesTest {
 
     @Test
     public void responseUserDtoTest() throws JsonProcessingException {
-        Response<UserDto> userDto = new Response<>(new UserDto());
-        userDto.setTimestamp(0);
-        assertEquals("response with UserDto", new ObjectMapper().writeValueAsString(userDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null,\"is_friend\":null}}");
+        UserDto userDto = new UserDto();
+        userDto.setCity(new City());
+        userDto.setCountry(new Country());
+        Response<UserDto> response = new Response<>(userDto);
+        response.setTimestamp(0);
+        assertEquals("response with UserDto", new ObjectMapper().writeValueAsString(response), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null,\"is_friend\":null}}");
     }
 
     @Test
@@ -83,6 +89,8 @@ public class ResponsesTest {
     public void responseListPersonsDtoTest() throws JsonProcessingException {
         List<PersonDto> personDtoList = new ArrayList<>();
         PersonDto personDto = new PersonDto();
+        personDto.setCity(new City());
+        personDto.setCountry(new Country());
         personDtoList.add(personDto);
         ResponseList<List<PersonDto>> personsDto = new ResponseList<>(personDtoList);
         personsDto.setTimestamp(0);

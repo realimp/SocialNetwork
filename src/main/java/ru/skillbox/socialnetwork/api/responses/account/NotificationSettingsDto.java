@@ -2,13 +2,13 @@ package ru.skillbox.socialnetwork.api.responses.account;
 
 import java.util.List;
 
-public class NotificationSettings {
+public class NotificationSettingsDto {
 
     private List<NotificationParameter> notificationSettings;
 
-    public NotificationSettings() {}
+    public NotificationSettingsDto() {}
 
-    public NotificationSettings(List<NotificationParameter> notificationSettings) {
+    public NotificationSettingsDto(List<NotificationParameter> notificationSettings) {
         this.notificationSettings = notificationSettings;
     }
 
