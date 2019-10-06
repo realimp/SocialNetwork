@@ -1,5 +1,8 @@
 package ru.skillbox.socialnetwork.api.requests.profile;
 
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
+
 import java.util.Date;
 
 public class Me {
@@ -10,15 +13,15 @@ public class Me {
   private String phone;
   private String photo;
   private String about;
-  private Integer city;
-  private Integer country;
+  private City city;
+  private Country country;
   private String messagesPermission;
 
   public Me() {
   }
 
   public Me(String firstName, String lastName, Date birthDate, String phone,
-      String photo, String about, Integer city, Integer country, String messagesPermission) {
+            String photo, String about, City city, Country country, String messagesPermission) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.birthDate = birthDate;
@@ -78,19 +81,19 @@ public class Me {
     this.about = about;
   }
 
-  public Integer getCity() {
+  public City getCity() {
     return city;
   }
 
-  public void setCity(Integer city) {
+  public void setCity(City city) {
     this.city = city;
   }
 
-  public Integer getCountry() {
+  public Country getCountry() {
     return country;
   }
 
-  public void setCountry(Integer country) {
+  public void setCountry(Country country) {
     this.country = country;
   }
 

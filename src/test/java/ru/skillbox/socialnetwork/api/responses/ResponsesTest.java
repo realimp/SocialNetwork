@@ -3,6 +3,8 @@ package ru.skillbox.socialnetwork.api.responses;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.responses.profile.UserDto;
 
 import java.util.ArrayList;
