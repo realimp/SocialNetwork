@@ -1,8 +1,13 @@
 package ru.skillbox.socialnetwork.api.responses.account;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class NotificationParameter {
 
+    @JsonProperty("enable")
     private Boolean enable;
+
+    @JsonProperty("type")
     private NotificationType type;
 
     public NotificationParameter() {}

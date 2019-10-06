@@ -7,20 +7,31 @@ import ru.skillbox.socialnetwork.entities.MessagePermission;
 @JsonPropertyOrder({"id", "first_name", "last_name", "reg_date", "birth_date", "email", "phone", "photo", "about",
         "city", "country", "messages_permission", "last_online_time", "is_blocked"})
 public class PersonDto {
-    @JsonProperty private Integer id;
-    @JsonProperty("first_name") private String firstName;
-    @JsonProperty("last_name") private String lastName;
-    @JsonProperty("reg_date") private Long regDate;
-    @JsonProperty("birth_date") private Long birthDate;
-    @JsonProperty("email") private String eMail;
-    @JsonProperty private String phone;
-    @JsonProperty private String photo;
-    @JsonProperty private String about;
-    @JsonProperty private String city;
-    @JsonProperty private String country;
-    @JsonProperty("messages_permission") private MessagePermission messagesPermission;
-    @JsonProperty("last_online_time") private Long lastOnlineTime;
-    @JsonProperty("is_blocked") private Boolean isBlocked;
+
+    private Integer id;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
+    @JsonProperty("reg_date")
+    private Long regDate;
+    @JsonProperty("birth_date")
+    private Long birthDate;
+    @JsonProperty("email")
+    private String eMail;
+    private String phone;
+    private String photo;
+    private String about;
+    private City city;
+    private Country country;
+    @JsonProperty("messages_permission")
+    private MessagePermission messagesPermission;
+    @JsonProperty("last_online_time")
+    private Long lastOnlineTime;
+    @JsonProperty("is_blocked")
+    private Boolean isBlocked;
+
+    public PersonDto() {}
 
     @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
@@ -99,19 +110,19 @@ public class PersonDto {
         this.about = about;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
