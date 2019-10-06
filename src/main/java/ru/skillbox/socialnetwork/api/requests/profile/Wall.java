@@ -19,12 +19,12 @@ public class Wall {
     this.tags = tags;
   }
 
-  public String getTitel() {
+  public String getTitle() {
     return title;
   }
 
-  public void setTitel(String titel) {
-    this.title = titel;
+  public void setTitle(String title) {
+    this.title = title;
   }
 
   public String getPostText() {
