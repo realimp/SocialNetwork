@@ -10,17 +10,17 @@ public class Message {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private Integer id;
 
   @Column(name = "time")
   private Date time;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "author_id", nullable = false)
+  @JoinColumn(name = "author_id")
   private Person author;
 
   @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  @JoinColumn(name = "recipient_id", nullable = false)
+  @JoinColumn(name = "recipient_id")
   private Person recipient;
 
   @Column(name = "message_text")
@@ -30,16 +30,16 @@ public class Message {
   private String readStatus;
 
   @Column(name = "dialog_id")
-  private int dialogId;
+  private Integer dialogId;
 
   @Column(name = "is_deleted")
   private Boolean isDeleted;
 
-  public int getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(int id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -83,11 +83,11 @@ public class Message {
     this.readStatus = readStatus;
   }
 
-  public int getDialogId() {
+  public Integer getDialogId() {
     return dialogId;
   }
 
-  public void setDialogId(int dialogId) {
+  public void setDialogId(Integer dialogId) {
     this.dialogId = dialogId;
   }
 
