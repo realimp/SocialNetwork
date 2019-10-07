@@ -1,13 +1,20 @@
 /** @Author Savva */
 package ru.skillbox.socialnetwork.services;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProfileService {
