@@ -1,8 +1,10 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
+@JsonPropertyOrder({"parent_id", "comment_text", "id", "time", "author", "is_blocked", "post_id", "sub_comments"})
 public class Comment {
 
     @JsonProperty("parent_id")
