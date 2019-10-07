@@ -1,15 +1,17 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"id", "first_name", "last_name", "photo", "last_online_time"})
-public class BasicPersonDto {
-    @JsonProperty private Integer id;
-    @JsonProperty("first_name") private String firstName;
-    @JsonProperty("last_name") private String lastName;
-    @JsonProperty private String photo;
-    @JsonProperty("last_online_time") private Long lastOnlineTime;
+public class BasicPerson {
+
+    private Integer id;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
+    private String photo;
+    @JsonProperty("last_online_time")
+    private Long lastOnlineTime;
 
 
     public Integer getId() {
@@ -51,4 +53,5 @@ public class BasicPersonDto {
     public void setLastOnlineTime(Long lastOnlineTime) {
         this.lastOnlineTime = lastOnlineTime;
     }
+
 }

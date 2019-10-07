@@ -1,13 +1,12 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Date;
 
 public class Response<T> {
-    @JsonProperty private String error;
-    @JsonProperty private long timestamp;
-    @JsonProperty private T data;
+
+    private String error;
+    private long timestamp;
+    private T data;
 
     public Response(T data) {
         this.data = data;
@@ -43,4 +42,5 @@ public class Response<T> {
     public void setData(T data) {
         this.data = data;
     }
+
 }
