@@ -23,6 +23,7 @@ public class Comment {
 
     public Comment() {}
 
+    @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
     }
