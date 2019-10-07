@@ -1,9 +1,10 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+public class Message {
 
-public class MessageDto {
-    @JsonProperty private String message;
+    private String message;
+
+    public Message() {}
 
     public String getMessage() {
         return message;
@@ -12,4 +13,5 @@ public class MessageDto {
     public void setMessage(String message) {
         this.message = message;
     }
+
 }

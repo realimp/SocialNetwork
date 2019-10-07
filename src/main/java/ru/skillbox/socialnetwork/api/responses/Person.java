@@ -1,30 +1,11 @@
-package ru.skillbox.socialnetwork.api.responses.profile;
+package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.skillbox.socialnetwork.api.City;
 import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.entities.MessagePermission;
 
-@JsonPropertyOrder({
-        "id",
-        "first_name",
-        "last_name",
-        "reg_date",
-        "birth_date",
-        "email",
-        "phone",
-        "photo",
-        "about",
-        "city",
-        "country",
-        "messages_permission",
-        "last_online_time",
-        "is_blocked",
-        "is_friend"
-})
-
-public class UserDto {
+public class Person {
 
     private Integer id;
     @JsonProperty("first_name")
@@ -48,19 +29,11 @@ public class UserDto {
     private Long lastOnlineTime;
     @JsonProperty("is_blocked")
     private Boolean isBlocked;
-    @JsonProperty("is_friend")
-    private Boolean isFriend;
 
-    public UserDto() {}
+    public Person() {}
 
-    @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
-    }
-
-    @JsonProperty(value="is_friend")
-    public Boolean isFriend() {
-        return isFriend;
     }
 
     public Integer getId() {
@@ -173,14 +146,6 @@ public class UserDto {
 
     public void setBlocked(Boolean blocked) {
         isBlocked = blocked;
-    }
-
-    public Boolean getFriend() {
-        return isFriend;
-    }
-
-    public void setFriend(Boolean friend) {
-        isFriend = friend;
     }
 
 }

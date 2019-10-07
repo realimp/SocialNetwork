@@ -1,26 +1,28 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.skillbox.socialnetwork.entities.PostType;
 
 import java.util.List;
 
-@JsonPropertyOrder({"id", "time", "author", "title", "post_text", "is_blocked", "likes","tags", "my_like", "comments", "type"})
-public class PersonsWallPostDto {
-    @JsonProperty private Integer id;
-    @JsonProperty private Long time;
-    @JsonProperty private BasicPersonDto author;
-    @JsonProperty private String title;
-    @JsonProperty("post_text") private String postText;
-    @JsonProperty("is_blocked") private Boolean isBlocked;
-    @JsonProperty private Integer likes;
-    @JsonProperty private List<String> tags;
-    @JsonProperty("my_like") private Boolean myLike;
-    @JsonProperty private List<CommentDto> comments;
-    @JsonProperty private PostType type;
+public class PersonsWallPost {
 
-    @JsonProperty(value="is_blocked")
+    private Integer id;
+    private Long time;
+    private BasicPerson author;
+    private String title;
+    @JsonProperty("post_text")
+    private String postText;
+    @JsonProperty("is_blocked")
+    private Boolean isBlocked;
+    private Integer likes;
+    private List<String> tags;
+    @JsonProperty("my_like") private Boolean myLike;
+    private List<Comment> comments;
+    private PostType type;
+
+    public PersonsWallPost() {}
+
     public Boolean isBlocked() {
         return isBlocked;
     }
@@ -49,11 +51,11 @@ public class PersonsWallPostDto {
         this.time = time;
     }
 
-    public BasicPersonDto getAuthor() {
+    public BasicPerson getAuthor() {
         return author;
     }
 
-    public void setAuthor(BasicPersonDto author) {
+    public void setAuthor(BasicPerson author) {
         this.author = author;
     }
 
@@ -105,11 +107,12 @@ public class PersonsWallPostDto {
         this.myLike = myLike;
     }
 
-    public List<CommentDto> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<CommentDto> comments) {
+    public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
 }

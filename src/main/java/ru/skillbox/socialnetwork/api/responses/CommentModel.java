@@ -1,19 +1,21 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"parent_id", "comment_text", "id", "time", "author", "is_blocked"})
-public class CommentModelDto {
-    @JsonProperty("parent_id") private Integer parentId;
-    @JsonProperty("comment_text") private String commentText;
-    @JsonProperty private Integer id;
-    @JsonProperty private Long time;
-    @JsonProperty private BasicPersonDto author;
-    @JsonProperty("is_blocked") private Boolean isBlocked;
+public class CommentModel {
 
+    @JsonProperty("parent_id")
+    private Integer parentId;
+    @JsonProperty("comment_text")
+    private String commentText;
+    private Integer id;
+    private Long time;
+    private BasicPerson author;
+    @JsonProperty("is_blocked")
+    private Boolean isBlocked;
 
-    @JsonProperty(value="is_blocked")
+    public CommentModel() {}
+
     public Boolean isBlocked() {
         return isBlocked;
     }
@@ -50,11 +52,11 @@ public class CommentModelDto {
         this.time = time;
     }
 
-    public BasicPersonDto getAuthor() {
+    public BasicPerson getAuthor() {
         return author;
     }
 
-    public void setAuthor(BasicPersonDto author) {
+    public void setAuthor(BasicPerson author) {
         this.author = author;
     }
 

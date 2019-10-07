@@ -5,97 +5,97 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 import ru.skillbox.socialnetwork.api.City;
 import ru.skillbox.socialnetwork.api.Country;
-import ru.skillbox.socialnetwork.api.responses.profile.UserDto;
-
+import ru.skillbox.socialnetwork.api.responses.profile.User;
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.springframework.test.util.AssertionErrors.assertEquals;
+
+//ToDo Переписать тесты. Неверный порядок полей в Assert
 
 public class ResponsesTest {
 
     @Test
     public void responsePersonDtoTest() throws JsonProcessingException {
-        PersonDto personDto = new PersonDto();
-        personDto.setCity(new City());
-        personDto.setCountry(new Country());
-        Response<PersonDto> response = new Response<>(personDto);
+        Person person = new Person();
+        person.setCity(new City());
+        person.setCountry(new Country());
+        Response<Person> response = new Response<>(person);
         response.setTimestamp(0);
-        assertEquals("response with PersonDto", new ObjectMapper().writeValueAsString(response), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}");
+        assertEquals("response with Person", new ObjectMapper().writeValueAsString(response), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}");
     }
 
     @Test
     public void responseMessageDtoTest() throws JsonProcessingException {
-        Response<MessageDto> messageDto = new Response<>(new MessageDto());
+        Response<Message> messageDto = new Response<>(new Message());
         messageDto.setTimestamp(0);
-        assertEquals("response with MessageDto", new ObjectMapper().writeValueAsString(messageDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"message\":null}}");
+        assertEquals("response with Message", new ObjectMapper().writeValueAsString(messageDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"message\":null}}");
     }
 
     @Test
     public void responseUserDtoTest() throws JsonProcessingException {
-        UserDto userDto = new UserDto();
-        userDto.setCity(new City());
-        userDto.setCountry(new Country());
-        Response<UserDto> response = new Response<>(userDto);
+        User user = new User();
+        user.setCity(new City());
+        user.setCountry(new Country());
+        Response<User> response = new Response<>(user);
         response.setTimestamp(0);
-        assertEquals("response with UserDto", new ObjectMapper().writeValueAsString(response), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null,\"is_friend\":null}}");
+        assertEquals("response with User", new ObjectMapper().writeValueAsString(response), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null,\"is_friend\":null}}");
     }
 
     @Test
     public void responseListPersonsWallPostDto() throws JsonProcessingException {
-        List<PersonsWallPostDto> personsWallPostDtoList = new ArrayList<>();
-        PersonsWallPostDto personWallPostDto = new PersonsWallPostDto();
-        personWallPostDto.setAuthor(new BasicPersonDto());
+        List<PersonsWallPost> personsWallPostList = new ArrayList<>();
+        PersonsWallPost personWallPostDto = new PersonsWallPost();
+        personWallPostDto.setAuthor(new BasicPerson());
         List<String> tags = new ArrayList<>();
         tags.add("tag1");
         personWallPostDto.setTags(tags);
-        List<CommentDto> comments = new ArrayList<>();
-        CommentDto comment = new CommentDto();
-        comment.setAuthor(new BasicPersonDto());
-        List<CommentModelDto> subComments = new ArrayList<>();
-        CommentModelDto commentModel = new CommentModelDto();
-        commentModel.setAuthor(new BasicPersonDto());
+        List<Comment> comments = new ArrayList<>();
+        Comment comment = new Comment();
+        comment.setAuthor(new BasicPerson());
+        List<CommentModel> subComments = new ArrayList<>();
+        CommentModel commentModel = new CommentModel();
+        commentModel.setAuthor(new BasicPerson());
         subComments.add(commentModel);
         comment.setSubComments(subComments);
         comments.add(comment);
         personWallPostDto.setComments(comments);
-        personsWallPostDtoList.add(personWallPostDto);
-        ResponseList<List<PersonsWallPostDto>> personsWallPostDto = new ResponseList<>(personsWallPostDtoList);
+        personsWallPostList.add(personWallPostDto);
+        ResponseList<List<PersonsWallPost>> personsWallPostDto = new ResponseList<>(personsWallPostList);
         personsWallPostDto.setTimestamp(0);
-        assertEquals("response list with PersonsWallPostDto list", new ObjectMapper().writeValueAsString(personsWallPostDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}],\"type\":null}]}");
+        assertEquals("response list with PersonsWallPost list", new ObjectMapper().writeValueAsString(personsWallPostDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}],\"type\":null}]}");
     }
 
     @Test
     public void responsePostDtoTest() throws JsonProcessingException {
-        PostDto post = new PostDto();
-        post.setAuthor(new BasicPersonDto());
+        Post post = new Post();
+        post.setAuthor(new BasicPerson());
         List<String> tags = new ArrayList<>();
         tags.add("tag1");
         post.setTags(tags);
-        List<CommentDto> comments = new ArrayList<>();
-        CommentDto comment = new CommentDto();
-        comment.setAuthor(new BasicPersonDto());
-        List<CommentModelDto> subComments = new ArrayList<>();
-        CommentModelDto commentModel = new CommentModelDto();
-        commentModel.setAuthor(new BasicPersonDto());
+        List<Comment> comments = new ArrayList<>();
+        Comment comment = new Comment();
+        comment.setAuthor(new BasicPerson());
+        List<CommentModel> subComments = new ArrayList<>();
+        CommentModel commentModel = new CommentModel();
+        commentModel.setAuthor(new BasicPerson());
         subComments.add(commentModel);
         comment.setSubComments(subComments);
         comments.add(comment);
         post.setComments(comments);
-        Response<PostDto> postDto = new Response<>(post);
+        Response<Post> postDto = new Response<>(post);
         postDto.setTimestamp(0);
-        assertEquals("response with PostDto", new ObjectMapper().writeValueAsString(postDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}]}}");
+        assertEquals("response with Post", new ObjectMapper().writeValueAsString(postDto), "{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}]}}");
     }
 
     @Test
     public void responseListPersonsDtoTest() throws JsonProcessingException {
-        List<PersonDto> personDtoList = new ArrayList<>();
-        PersonDto personDto = new PersonDto();
-        personDto.setCity(new City());
-        personDto.setCountry(new Country());
-        personDtoList.add(personDto);
-        ResponseList<List<PersonDto>> personsDto = new ResponseList<>(personDtoList);
+        List<Person> personList = new ArrayList<>();
+        Person person = new Person();
+        person.setCity(new City());
+        person.setCountry(new Country());
+        personList.add(person);
+        ResponseList<List<Person>> personsDto = new ResponseList<>(personList);
         personsDto.setTimestamp(0);
-        assertEquals("response list with PersonDto list", new ObjectMapper().writeValueAsString(personsDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}");
+        assertEquals("response list with Person list", new ObjectMapper().writeValueAsString(personsDto), "{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}");
     }
 }

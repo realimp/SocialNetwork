@@ -1,13 +1,10 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+public class ResponseList<T> extends Response<T> {
 
-@JsonPropertyOrder({"error", "timestamp", "total", "offset", "perPage", "data"})
-public class ResponseList<T> extends Response<T>{
-    @JsonProperty private long total;
-    @JsonProperty private long offset;
-    @JsonProperty private long perPage;
+    private long total;
+    private long offset;
+    private long perPage;
 
     public ResponseList(T data) {
         super(data);
@@ -36,4 +33,5 @@ public class ResponseList<T> extends Response<T>{
     public void setPerPage(long perPage) {
         this.perPage = perPage;
     }
+
 }
