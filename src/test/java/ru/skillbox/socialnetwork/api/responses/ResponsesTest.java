@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
-//ToDo Переписать тесты. Неверный порядок полей в Assert
-
 public class ResponsesTest {
 
     @Test

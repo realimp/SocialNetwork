@@ -32,6 +32,7 @@ public class Person {
 
     public Person() {}
 
+    @JsonProperty(value = "")
     public Boolean isBlocked() {
         return isBlocked;
     }
