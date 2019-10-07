@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.skillbox.socialnetwork.entities.PostType;
 import java.util.List;
 
-@JsonPropertyOrder({"id", "time", "author", "title", "post_text", "is_blocked", "likes", "tags", "my_like", "comments", "type"})
 public class PersonsWallPost {
 
     private Integer id;
