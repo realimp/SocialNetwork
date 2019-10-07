@@ -5,15 +5,21 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"parent_id", "comment_text", "id", "time", "author", "is_blocked"})
 public class CommentModelDto {
-    @JsonProperty("parent_id") private Integer parentId;
-    @JsonProperty("comment_text") private String commentText;
-    @JsonProperty private Integer id;
-    @JsonProperty private Long time;
-    @JsonProperty private BasicPersonDto author;
-    @JsonProperty("is_blocked") private Boolean isBlocked;
+    @JsonProperty("parent_id")
+    private Integer parentId;
+    @JsonProperty("comment_text")
+    private String commentText;
+    @JsonProperty
+    private Integer id;
+    @JsonProperty
+    private Long time;
+    @JsonProperty
+    private BasicPersonDto author;
+    @JsonProperty("is_blocked")
+    private Boolean isBlocked;
 
 
-    @JsonProperty(value="is_blocked")
+    @JsonProperty(value = "is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
     }

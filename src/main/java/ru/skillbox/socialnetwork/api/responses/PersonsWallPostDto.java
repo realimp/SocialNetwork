@@ -6,21 +6,32 @@ import ru.skillbox.socialnetwork.entities.PostType;
 
 import java.util.List;
 
-@JsonPropertyOrder({"id", "time", "author", "title", "post_text", "is_blocked", "likes","tags", "my_like", "comments", "type"})
+@JsonPropertyOrder({"id", "time", "author", "title", "post_text", "is_blocked", "likes", "tags", "my_like", "comments", "type"})
 public class PersonsWallPostDto {
-    @JsonProperty private Integer id;
-    @JsonProperty private Long time;
-    @JsonProperty private BasicPersonDto author;
-    @JsonProperty private String title;
-    @JsonProperty("post_text") private String postText;
-    @JsonProperty("is_blocked") private Boolean isBlocked;
-    @JsonProperty private Integer likes;
-    @JsonProperty private List<String> tags;
-    @JsonProperty("my_like") private Boolean myLike;
-    @JsonProperty private List<CommentDto> comments;
-    @JsonProperty private PostType type;
+    @JsonProperty
+    private Integer id;
+    @JsonProperty
+    private Long time;
+    @JsonProperty
+    private BasicPersonDto author;
+    @JsonProperty
+    private String title;
+    @JsonProperty("post_text")
+    private String postText;
+    @JsonProperty("is_blocked")
+    private Boolean isBlocked;
+    @JsonProperty
+    private Integer likes;
+    @JsonProperty
+    private List<String> tags;
+    @JsonProperty("my_like")
+    private Boolean myLike;
+    @JsonProperty
+    private List<CommentDto> comments;
+    @JsonProperty
+    private PostType type;
 
-    @JsonProperty(value="is_blocked")
+    @JsonProperty(value = "is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
     }

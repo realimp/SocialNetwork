@@ -5,9 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 
 public class Response<T> {
-    @JsonProperty private String error;
-    @JsonProperty private long timestamp;
-    @JsonProperty private T data;
+    @JsonProperty
+    private String error;
+    @JsonProperty
+    private long timestamp;
+    @JsonProperty
+    private T data;
 
     public Response(T data) {
         this.data = data;

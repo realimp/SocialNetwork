@@ -33,9 +33,10 @@ public class PersonDto {
     @JsonProperty("is_blocked")
     private Boolean isBlocked;
 
-    public PersonDto() {}
+    public PersonDto() {
+    }
 
-    @JsonProperty(value="is_blocked")
+    @JsonProperty(value = "is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
     }

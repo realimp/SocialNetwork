@@ -5,11 +5,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({"id", "first_name", "last_name", "photo", "last_online_time"})
 public class BasicPersonDto {
-    @JsonProperty private Integer id;
-    @JsonProperty("first_name") private String firstName;
-    @JsonProperty("last_name") private String lastName;
-    @JsonProperty private String photo;
-    @JsonProperty("last_online_time") private Long lastOnlineTime;
+    @JsonProperty
+    private Integer id;
+    @JsonProperty("first_name")
+    private String firstName;
+    @JsonProperty("last_name")
+    private String lastName;
+    @JsonProperty
+    private String photo;
+    @JsonProperty("last_online_time")
+    private Long lastOnlineTime;
 
 
     public Integer getId() {
