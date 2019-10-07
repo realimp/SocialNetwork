@@ -18,6 +18,7 @@ public class CommentModel {
 
     public CommentModel() {}
 
+    @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
     }

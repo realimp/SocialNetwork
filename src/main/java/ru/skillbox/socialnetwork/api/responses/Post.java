@@ -23,6 +23,7 @@ public class Post {
 
     public Post() {}
 
+    @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
     }
