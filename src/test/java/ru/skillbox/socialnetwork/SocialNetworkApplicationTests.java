@@ -14,7 +14,6 @@ import ru.skillbox.socialnetwork.services.EMailService;
 
 public class SocialNetworkApplicationTests {
 
-<<<<<<< HEAD
   @Test
   public void contextLoads() {
   }
@@ -26,17 +25,4 @@ public class SocialNetworkApplicationTests {
   public void sendEmail() {
     eMailService.sendEMail("test@gmail.com", "test@gmail.com", "Test", "Test mail");
   }
-=======
-    @Test
-    public void contextLoads() {
-    }
-
-    @Autowired
-    private EMailService eMailService;
-
-    @Test
-    public void sendEmail() {
-        eMailService.sendEMail("test@gmail.com", "test@gmail.com", "Test", "Test mail");
-    }
->>>>>>> 6d3b140e933d8acabcff47475030dd4a72e26db4
 }

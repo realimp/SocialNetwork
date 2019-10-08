@@ -6,26 +6,27 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.skillbox.socialnetwork.entities.Message;
 import ru.skillbox.socialnetwork.entities.Person;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@DataJpaTest
 public class MessageRepositoryTest {
 
+  @Autowired
+  private TestEntityManager entityManager;
   @Autowired
   private MessageRepository messageRepository;
   @Autowired
   private PersonRepository personRepository;
 
   private Person person1 = new Person();
-  private Person person2 = new Person();
-  private Person person3 = new Person();
   private Message message1 = new Message();
-  private Message message2 = new Message();
-  private Message message3 = new Message();
+
   private List<Message> messageList = new ArrayList<>();
 
   @Test
@@ -39,60 +40,26 @@ public class MessageRepositoryTest {
     person1.setDeleted(false);
     person1.setOnline(false);
 
-    person2.setFirstName("pers2 FirstName");
-    person2.setLastName("pers2 LastName");
-    person2.setPhone("22222");
-    person2.setPassword("2");
-    person2.setApproved(true);
-    person2.setBlocked(false);
-    person2.setDeleted(false);
-    person2.setOnline(false);
-
-    person3.setFirstName("pers3 FirstName");
-    person3.setLastName("pers3 LastName");
-    person3.setPhone("33333");
-    person3.setPassword("3");
-    person3.setApproved(true);
-    person3.setBlocked(false);
-    person3.setDeleted(false);
-    person3.setOnline(false);
-
     message1.setAuthorId(1);
-    message1.setRecipientId(2);
+    message1.setRecipientId(1);
     message1.setMessageText("messageText1");
     message1.setDialogId(1);
     message1.setDeleted(false);
 
-    message2.setAuthorId(1);
-    message2.setRecipientId(2);
-    message2.setMessageText("messageText2");
-    message2.setDialogId(2);
-    message2.setDeleted(false);
-
-    message3.setAuthorId(1);
-    message3.setRecipientId(3);
-    message3.setMessageText("messageText3");
-    message3.setDialogId(3);
-    message3.setDeleted(false);
-
-    personRepository.save(person1);
-    personRepository.save(person2);
-    personRepository.save(person3);
-
-    messageRepository.save(message1);
-    messageRepository.save(message2);
-    messageRepository.save(message3);
+    entityManager.persist(person1);
+    entityManager.persist(message1);
+    entityManager.flush();
 
     messageList = messageRepository.findAll();
-    Assert.assertEquals(3, messageList.size());
+    Assert.assertEquals(1, messageList.size());
+
+    message1.setMessageText("change Text3");
+    messageRepository.save(message1);
+
+    Assert.assertEquals("change Text3", messageRepository.getOne(1).getMessageText());
 
     messageRepository.delete(message1);
     messageList = messageRepository.findAll();
-    Assert.assertEquals(2, messageList.size());
-
-    message3.setMessageText("change Text3");
-    messageRepository.save(message3);
-
-    //Assert.assertEquals("messageText2", messageRepository.getOne(2).getMessageText());
+    Assert.assertEquals(0, messageList.size());
   }
 }
