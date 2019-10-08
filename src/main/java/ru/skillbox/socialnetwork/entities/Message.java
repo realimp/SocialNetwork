@@ -1,5 +1,6 @@
 package ru.skillbox.socialnetwork.entities;
 
+import java.util.Objects;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -7,88 +8,126 @@ import java.util.Date;
 @Table(name = "message")
 public class Message {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "time")
-    private Date time;
-    @Column(name = "author_id")
-    private int authorId;
-    @Column(name = "recipient_id")
-    private int recipientId;
-    @Column(name = "message_text")
-    private String messageText;
-    @Column(name = "read_status")
-    private String readStatus;
-    @Column(name = "dialog_id")
-    private int dialogId;
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
 
-    public Message() {
-    }
+  @Column(name = "time")
+  private Date time;
 
-    public int getId() {
-        return id;
-    }
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "author_id")
+  private Person author;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "recipient_id")
+  private Person recipient;
 
-    public Date getTime() {
-        return time;
-    }
+  @Column(name = "message_text")
+  private String messageText;
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
+  @Column(name = "read_status")
+  private String readStatus;
 
-    public int getAuthorId() {
-        return authorId;
-    }
+  @Column(name = "dialog_id")
+  private Integer dialogId;
 
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
+  @Column(name = "is_deleted")
+  private Boolean isDeleted;
 
-    public int getRecipientId() {
-        return recipientId;
-    }
+  public Integer getId() {
+    return id;
+  }
 
-    public void setRecipientId(int recipientId) {
-        this.recipientId = recipientId;
-    }
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-    public String getMessageText() {
-        return messageText;
-    }
+  public Person getAuthor() {
+    return author;
+  }
 
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
+  public void setAuthor(Person author) {
+    this.author = author;
+  }
 
-    public String isReadStatus() {
-        return readStatus;
-    }
+  public Person getRecipient() {
+    return recipient;
+  }
 
-    public void setReadStatus(String readStatus) {
-        this.readStatus = readStatus;
-    }
+  public void setRecipient(Person recipient) {
+    this.recipient = recipient;
+  }
 
-    public int getDialogId() {
-        return dialogId;
-    }
+  public Date getTime() {
+    return time;
+  }
 
-    public void setDialogId(int dialogId) {
-        this.dialogId = dialogId;
-    }
+  public void setTime(Date time) {
+    this.time = time;
+  }
 
-    public Boolean isDeleted() {
-        return isDeleted;
-    }
+  public String getMessageText() {
+    return messageText;
+  }
 
-    public void setDeleted(Boolean deleted) {
-        isDeleted = deleted;
+  public void setMessageText(String messageText) {
+    this.messageText = messageText;
+  }
+
+  public String isReadStatus() {
+    return readStatus;
+  }
+
+  public void setReadStatus(String readStatus) {
+    this.readStatus = readStatus;
+  }
+
+  public Integer getDialogId() {
+    return dialogId;
+  }
+
+  public void setDialogId(Integer dialogId) {
+    this.dialogId = dialogId;
+  }
+
+  public Boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(Boolean deleted) {
+    isDeleted = deleted;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Message message = (Message) o;
+    return Objects.equals(id, message.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects
+        .hash(id, author.getId(), recipient.getId());
+  }
+
+  @Override
+  public String toString() {
+    return "Message{" +
+        "id=" + id +
+        ", time=" + time +
+        ", author=" + author.getId() +
+        ", recipient=" + recipient.getId() +
+        ", messageText='" + messageText + '\'' +
+        ", readStatus='" + readStatus + '\'' +
+        ", dialogId=" + dialogId +
+        ", isDeleted=" + isDeleted +
+        '}';
+  }
 }

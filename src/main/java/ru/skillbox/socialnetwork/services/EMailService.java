@@ -20,12 +20,16 @@ public class EMailService {
     @Value("${email.password}")
     private String password;
 
-    public void sendEMail(String from, String to, String subject, String body) {
+    @Value("${email.port}")
+    private String port;
+
+    public boolean sendEMail(String from, String to, String subject, String body) {
+        boolean result = true;
         Properties prop = new Properties();
         prop.put("mail.smtp.auth", true);
         prop.put("mail.smtp.starttls.enable", "true");
         prop.put("mail.smtp.host", host);
-        prop.put("mail.smtp.port", "2525");
+        prop.put("mail.smtp.port", port);
         prop.put("mail.smtp.ssl.trust", host);
 
         Session session = Session.getInstance(prop
@@ -46,7 +50,9 @@ public class EMailService {
             Transport.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
+            result = false;
 
         }
+        return result;
     }
 }
