@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skillbox.socialnetwork.api.requests.profile.Me;
-import ru.skillbox.socialnetwork.api.requests.profile.Wall;
 import ru.skillbox.socialnetwork.api.responses.*;
-import ru.skillbox.socialnetwork.api.responses.profile.User;
+import ru.skillbox.socialnetwork.api.responses.User;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,18 +19,18 @@ public class ProfileController {
 
     //mapping for a current user
     @GetMapping("/me")
-    public Response<Person> getMe() {
-        return new Response<>(new Person());
+    public Response<PersonResponse> getMe() {
+        return new Response<>(new PersonResponse());
     }
 
     @PutMapping("/me")
-    public Response<Person> putMe(@RequestBody Me me) {
-        return new Response<>(new Person());
+    public Response<PersonResponse> putMe(@RequestBody PersonResponse personResponse) {
+        return new Response<>(new PersonResponse());
     }
 
     @DeleteMapping("/me")
-    public Response<Message> deleteMe() {
-        return new Response<>(new Message());
+    public Response<MessageResponse> deleteMe() {
+        return new Response<>(new MessageResponse());
     }
 
     //get user by id
@@ -51,33 +49,33 @@ public class ProfileController {
 
     //adding a post to a user's wall
     @PostMapping("/{id}/wall")
-    public Response<Post> postUserWall(@PathVariable int id, @RequestBody Wall wall) {
-        return new Response<>(new Post());
+    public Response<PostResponse> postUserWall(@PathVariable int id, @RequestBody PersonsWallPost personsWallPost) {
+        return new Response<>(new PostResponse());
     }
 
     //user Search
     @GetMapping("/search")
-    public ResponseList<List<Person>> getUserSearch(String firstName, String lastName,
-                                                    int ageFrom, int ageTo,
-                                                    Integer countryId, Integer cityId,
-                                                    int offset, int itemPerPage) {
+    public ResponseList<List<PersonResponse>> getUserSearch(String firstName, String lastName,
+                                                            int ageFrom, int ageTo,
+                                                            Integer countryId, Integer cityId,
+                                                            int offset, int itemPerPage) {
 
-        List<Person> personsDtoList = new ArrayList<>();
-        personsDtoList.add(new Person());
+        List<PersonResponse> personsDtoList = new ArrayList<>();
+        personsDtoList.add(new PersonResponse());
         return new ResponseList<>(personsDtoList);
     }
 
     //block user by id
     @PutMapping("/block/{id}")
-    public Response<Message> blockUser(@PathVariable int id) {
-        Message message = new Message();
-        return new Response<>(message);
+    public Response<MessageResponse> blockUser(@PathVariable int id) {
+        MessageResponse messageResponse = new MessageResponse();
+        return new Response<>(messageResponse);
     }
 
     //unblock user by id
     @DeleteMapping("/block/{id}")
-    public Response<Message> unblockUser(@PathVariable int id) {
-        Message message = new Message();
-        return new Response<>(message);
+    public Response<MessageResponse> unblockUser(@PathVariable int id) {
+        MessageResponse messageResponse = new MessageResponse();
+        return new Response<>(messageResponse);
     }
 }
