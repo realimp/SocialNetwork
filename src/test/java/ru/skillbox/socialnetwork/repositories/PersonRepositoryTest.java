@@ -52,7 +52,10 @@ public class PersonRepositoryTest {
         Person personToUpdate = personRepository.findAll().get(0);
         personToUpdate.setFirstName("TestPersonFirstName");
         personRepository.save(personToUpdate);
-        assertEquals("TestPersonFirstName", personRepository.findById(personToUpdate.getId()).get().getFirstName());
+        Optional<Person> expectedPerson = personRepository.findById(personToUpdate.getId());
+        String actual = null;
+        if (expectedPerson.isPresent()) actual = expectedPerson.get().getFirstName();
+        assertEquals("TestPersonFirstName", actual);
         personRepository.delete(personToUpdate);
     }
     @Test
