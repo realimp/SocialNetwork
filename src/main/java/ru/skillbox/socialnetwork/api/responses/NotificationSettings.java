@@ -1,4 +1,6 @@
-package ru.skillbox.socialnetwork.api.responses.account;
+package ru.skillbox.socialnetwork.api.responses;
+
+import ru.skillbox.socialnetwork.api.responses.NotificationParameter;
 
 import java.util.List;
 

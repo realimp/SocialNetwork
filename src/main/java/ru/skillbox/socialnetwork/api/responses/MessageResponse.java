@@ -1,10 +1,10 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-public class Message {
+public class MessageResponse {
 
     private String message;
 
-    public Message() {}
+    public MessageResponse() {}
 
     public String getMessage() {
         return message;

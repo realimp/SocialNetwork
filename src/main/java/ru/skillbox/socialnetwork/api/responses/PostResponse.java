@@ -3,7 +3,7 @@ package ru.skillbox.socialnetwork.api.responses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-public class Post {
+public class PostResponse {
 
     private Integer id;
     private Long time;
@@ -19,7 +19,7 @@ public class Post {
     private Boolean myLike;
     private List<Comment> comments;
 
-    public Post() {}
+    public PostResponse() {}
 
     @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {

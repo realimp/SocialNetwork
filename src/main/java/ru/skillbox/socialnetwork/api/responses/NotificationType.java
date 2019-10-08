@@ -1,4 +1,4 @@
-package ru.skillbox.socialnetwork.api.responses.account;
+package ru.skillbox.socialnetwork.api.responses;
 
 public enum NotificationType {
     POST,

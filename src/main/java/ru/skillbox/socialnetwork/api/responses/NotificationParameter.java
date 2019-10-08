@@ -1,6 +1,4 @@
-package ru.skillbox.socialnetwork.api.responses.account;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
+package ru.skillbox.socialnetwork.api.responses;
 
 public class NotificationParameter {
 
