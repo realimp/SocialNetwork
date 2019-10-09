@@ -18,8 +18,6 @@ import ru.skillbox.socialnetwork.entities.Person;
 public class MessageRepositoryTest {
 
   @Autowired
-  private TestEntityManager entityManager;
-  @Autowired
   private MessageRepository messageRepository;
   @Autowired
   private PersonRepository personRepository;
@@ -40,15 +38,15 @@ public class MessageRepositoryTest {
     person1.setDeleted(false);
     person1.setOnline(false);
 
-    message1.setAuthorId(1);
-    message1.setRecipientId(1);
+    message1.setRecipient(person1);
+    message1.setAuthor(person1);
     message1.setMessageText("messageText1");
     message1.setDialogId(1);
     message1.setDeleted(false);
 
-    entityManager.persist(person1);
-    entityManager.persist(message1);
-    entityManager.flush();
+    personRepository.save(person1);
+    messageRepository.save(message1);
+    messageRepository.flush();
 
     messageList = messageRepository.findAll();
     Assert.assertEquals(1, messageList.size());
