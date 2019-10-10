@@ -13,23 +13,19 @@ import java.util.*;
 @Service
 public class ProfileService {
 
-    private Person person;
-
     @Autowired
     private PersonRepository personRepository;
 
-    public ProfileService(Person person) {
-        this.person = person;
-    }
-
-
     public Person getPerson() {
+        //TODO: Взять текущего пользователя без id
+        Person person = new Person();
         return person;
     }
 
     public void editPerson(String first_name, String last_name, Date birth_date, String phone, String photo_id,
                            String about, String town, String country, String messages_permission) {
-        //TODO: добавить setPhoto.  photo_id ??
+        //TODO: Взять текущего пользователя без id & photo_id
+        Person person = new Person();
         person.setFirstName(first_name);
         person.setLastName(last_name);
         person.setBirthDate(birth_date);
@@ -39,14 +35,18 @@ public class ProfileService {
         person.setCity(town);
         person.setCountry(country);
         person.setMessagesPermission(messages_permission);
+        personRepository.saveAndFlush(person);
     }
 
     public void deletePerson() {
+        //TODO: Взять текущего пользователя без id
+        Person person = new Person();
         person.setDeleted(true);
+        personRepository.saveAndFlush(person);
     }
 
-    public Optional<Person> getPersonById(Integer id) {
-        Optional<Person> person = personRepository.findById(id);
+    public Person getPersonById(Integer id) {
+        Person person = personRepository.getOne(id);
         return person;
     }
 
@@ -59,7 +59,7 @@ public class ProfileService {
         //TODO: Сделать после появления PostRepository
     }
 
-    public Page<Person> searchPerson(String first_name, String last_name, Integer age_from, Integer age_to,
+    public List<Person> searchPerson(String first_name, String last_name, Integer age_from, Integer age_to,
                                           String country, String city, Integer offset, Integer itemPerPage) {
 
         Calendar calendar = Calendar.getInstance();
@@ -68,21 +68,23 @@ public class ProfileService {
         calendar.add(Calendar.YEAR, age_to - age_from);
         Date birthDateTo = calendar.getTime();
 
-        Pageable firstPageWithTenElements = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(offset, itemPerPage);
 
         Page<Person> personList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
-                first_name, last_name, country, city, birthDateFrom, birthDateTo, firstPageWithTenElements);
-        return  personList;
+                first_name, last_name, country, city, birthDateFrom, birthDateTo, pageable);
+        return personList.getContent();
     }
 
     public void blockPersonById(Integer id) {
-        Optional<Person> person = personRepository.findById(id);
-        person.get().setBlocked(true);
+        Person person = personRepository.getOne(id);
+        person.setBlocked(true);
+        personRepository.saveAndFlush(person);
     }
 
     public void unblockPersonById(Integer id) {
-        Optional<Person> person = personRepository.findById(id);
-        person.get().setBlocked(false);
+        Person person = personRepository.getOne(id);
+        person.setBlocked(false);
+        personRepository.saveAndFlush(person);
     }
 
 }
