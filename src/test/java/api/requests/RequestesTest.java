@@ -17,8 +17,6 @@ public class RequestesTest {
         register.setPasswd2("123456");
         register.setFirstName("Аркадий");
         register.setLastName("Паровозов");
-        JSONAssert.assertNotEquals("{\"email\":\"arkady@example.com\",\"passwd1\":\"123456\",\"passwd2\":\"123456\",\"firstName\":\"Аркадий\",\"lastName\":\"Паровозов\",\"code\":\"3675\"}",
-                new ObjectMapper().writeValueAsString(register), true);
         register.setCode("3675");
         JSONAssert.assertEquals("{\"email\":\"arkady@example.com\",\"passwd1\":\"123456\",\"passwd2\":\"123456\",\"firstName\":\"Аркадий\",\"lastName\":\"Паровозов\",\"code\":\"3675\"}",
                 new ObjectMapper().writeValueAsString(register), true);
