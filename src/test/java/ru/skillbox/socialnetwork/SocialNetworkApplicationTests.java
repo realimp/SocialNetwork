@@ -7,6 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.skillbox.socialnetwork.services.EMailService;
 
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class SocialNetworkApplicationTests {
@@ -19,7 +22,7 @@ public class SocialNetworkApplicationTests {
 	private EMailService eMailService;
 
 	@Test
-	public void sendEmail(){
-		eMailService.sendEMail("test@gmail.com", "test@gmail.com", "Test", "Test mail");
+	public void sendEmail() throws UnsupportedEncodingException, MessagingException {
+		eMailService.sendEmail("JavaPro2.SkillBox@mail.ru","Тестовое письмо","Письмо успешно отправлено","Отправка письма выполнена успешна");
 	}
 }
