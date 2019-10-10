@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Wall {
 
-  private String titel;
+  private String title;
   private String postText;
   private List<String> tags;
 
@@ -13,18 +13,18 @@ public class Wall {
     tags = new ArrayList<>();
   }
 
-  public Wall(String titel, String postText, List<String> tags) {
-    this.titel = titel;
+  public Wall(String title, String postText, List<String> tags) {
+    this.title = title;
     this.postText = postText;
     this.tags = tags;
   }
 
   public String getTitel() {
-    return titel;
+    return title;
   }
 
   public void setTitel(String titel) {
-    this.titel = titel;
+    this.title = titel;
   }
 
   public String getPostText() {
