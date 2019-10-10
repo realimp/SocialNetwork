@@ -9,24 +9,24 @@ public class DialogHistory {
     private int pts;
     @JsonProperty("preview_length")
     private int previewLength;
-    private int onlines;
+    private int onLines;
     @JsonProperty("events_limit")
     private int eventsLimit;
     @JsonProperty("msgs_limit")
-    private int msgsLimit;
+    private int mSgsLimit;
     @JsonProperty("max_msg_id")
     private int maxMsgId;
 
     public DialogHistory() {}
 
-    public DialogHistory(long ts, int pts, int preview_length, int onlines, int events_limit, int msgs_limit, int max_msg_id) {
+    public DialogHistory(long ts, int pts, int previewLength, int onLines, int eventsLimit, int mSgsLimit, int maxMsgId) {
         this.ts = ts;
         this.pts = pts;
-        this.preview_length = preview_length;
-        this.onlines = onlines;
-        this.events_limit = events_limit;
-        this.msgs_limit = msgs_limit;
-        this.max_msg_id = max_msg_id;
+        this.previewLength = previewLength;
+        this.onLines = onLines;
+        this.eventsLimit = eventsLimit;
+        this.mSgsLimit = mSgsLimit;
+        this.maxMsgId = maxMsgId;
     }
 
     public long getTs() {
@@ -37,24 +37,24 @@ public class DialogHistory {
         return pts;
     }
 
-    public int getPreview_length() {
-        return preview_length;
+    public int getPreviewLength() {
+        return previewLength;
     }
 
-    public int getOnlines() {
-        return onlines;
+    public int getOnLines() {
+        return onLines;
     }
 
-    public int getEvents_limit() {
-        return events_limit;
+    public int getEventsLimit() {
+        return eventsLimit;
     }
 
-    public int getMsgs_limit() {
-        return msgs_limit;
+    public int getMSgsLimit() {
+        return mSgsLimit;
     }
 
-    public int getMax_msg_id() {
-        return max_msg_id;
+    public int getMaxMsgId() {
+        return maxMsgId;
     }
 
     public void setTs(long ts) {
@@ -65,23 +65,23 @@ public class DialogHistory {
         this.pts = pts;
     }
 
-    public void setPreview_length(int preview_length) {
-        this.preview_length = preview_length;
+    public void setPreviewLength(int previewLength) {
+        this.previewLength = previewLength;
     }
 
-    public void setOnlines(int onlines) {
-        this.onlines = onlines;
+    public void setOnLines(int onLines) {
+        this.onLines = onLines;
     }
 
-    public void setEvents_limit(int events_limit) {
-        this.events_limit = events_limit;
+    public void setEventsLimit(int eventsLimit) {
+        this.eventsLimit = eventsLimit;
     }
 
-    public void setMsgs_limit(int msgs_limit) {
-        this.msgs_limit = msgs_limit;
+    public void setMSgsLimit(int mSgsLimit) {
+        this.mSgsLimit = mSgsLimit;
     }
 
-    public void setMax_msg_id(int max_msg_id) {
-        this.max_msg_id = max_msg_id;
+    public void setMaxMsgId(int maxMsgId) {
+        this.maxMsgId = maxMsgId;
     }
 }
