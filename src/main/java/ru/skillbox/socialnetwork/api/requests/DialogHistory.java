@@ -1,15 +1,21 @@
 package ru.skillbox.socialnetwork.api.requests;
 //created by Fatykhov Ildar
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class DialogHistory {
 
     private long ts;
     private int pts;
-    private int preview_length;
+    @JsonProperty("preview_length")
+    private int previewLength;
     private int onlines;
-    private int events_limit;
-    private int msgs_limit;
-    private int max_msg_id;
+    @JsonProperty("events_limit")
+    private int eventsLimit;
+    @JsonProperty("msgs_limit")
+    private int msgsLimit;
+    @JsonProperty("max_msg_id")
+    private int maxMsgId;
 
     public DialogHistory() {}
 
