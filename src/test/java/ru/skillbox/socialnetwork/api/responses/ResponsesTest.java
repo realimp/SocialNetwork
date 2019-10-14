@@ -35,18 +35,6 @@ public class ResponsesTest {
     }
 
     @Test
-    public void responseUserDtoTest() throws JsonProcessingException, JSONException {
-        User user = new User();
-        user.setCity(new City());
-        user.setCountry(new Country());
-        Response<User> response = new Response<>(user);
-        response.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null,\"is_friend\":null}}",
-                new ObjectMapper().writeValueAsString(response), true);
-
-    }
-
-    @Test
     public void responseListPersonsWallPostDto() throws JsonProcessingException, JSONException {
         List<PersonsWallPost> personsWallPostList = new ArrayList<>();
         PersonsWallPost personWallPostDto = new PersonsWallPost();
@@ -57,8 +45,8 @@ public class ResponsesTest {
         List<Comment> comments = new ArrayList<>();
         Comment comment = new Comment();
         comment.setAuthor(new BasicPerson());
-        List<CommentModel> subComments = new ArrayList<>();
-        CommentModel commentModel = new CommentModel();
+        List<Comment> subComments = new ArrayList<>();
+        Comment commentModel = new Comment();
         commentModel.setAuthor(new BasicPerson());
         subComments.add(commentModel);
         comment.setSubComments(subComments);
@@ -82,8 +70,8 @@ public class ResponsesTest {
         List<Comment> comments = new ArrayList<>();
         Comment comment = new Comment();
         comment.setAuthor(new BasicPerson());
-        List<CommentModel> subComments = new ArrayList<>();
-        CommentModel commentModel = new CommentModel();
+        List<Comment> subComments = new ArrayList<>();
+        Comment commentModel = new Comment();
         commentModel.setAuthor(new BasicPerson());
         subComments.add(commentModel);
         comment.setSubComments(subComments);

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.socialnetwork.api.responses.*;
-import ru.skillbox.socialnetwork.api.responses.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +35,8 @@ public class ProfileController {
 
     //get user by id
     @GetMapping("/{id}")
-    public Response<User> getUser(@PathVariable int id) {
-        return new Response<>(new User());
+    public Response<PersonResponse> getUser(@PathVariable int id) {
+        return new Response<>(new PersonResponse());
     }
 
     //getting posts on the user's wall

@@ -17,7 +17,7 @@ public class Comment {
     @JsonProperty("post_id")
     private String postId;
     @JsonProperty("sub_comments")
-    private List<CommentModel> subComments;
+    private List<Comment> subComments;
 
     public Comment() {}
 
@@ -82,11 +82,11 @@ public class Comment {
         this.postId = postId;
     }
 
-    public List<CommentModel> getSubComments() {
+    public List<Comment> getSubComments() {
         return subComments;
     }
 
-    public void setSubComments(List<CommentModel> subComments) {
+    public void setSubComments(List<Comment> subComments) {
         this.subComments = subComments;
     }
 

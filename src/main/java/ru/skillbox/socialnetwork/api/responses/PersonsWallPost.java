@@ -1,7 +1,6 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import ru.skillbox.socialnetwork.entities.PostType;
 import java.util.List;
 
@@ -17,7 +16,8 @@ public class PersonsWallPost {
     private Boolean isBlocked;
     private Integer likes;
     private List<String> tags;
-    @JsonProperty("my_like") private Boolean myLike;
+    @JsonProperty("my_like")
+    private Boolean myLike;
     private List<Comment> comments;
     private PostType type;
 
