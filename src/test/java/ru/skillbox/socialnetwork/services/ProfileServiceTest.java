@@ -21,7 +21,8 @@ public class ProfileServiceTest {
     @Autowired
     private PersonRepository personRepository;
 
-    ProfileService profileService = new ProfileService();
+    @Autowired
+    private ProfileService profileService;
 
     @Test
     public void getPersonByIdTest() {

@@ -22,19 +22,19 @@ public class ProfileService {
         return person;
     }
 
-    public void editPerson(String first_name, String last_name, Date birth_date, String phone, String photo_id,
-                           String about, String town, String country, String messages_permission) {
+    public void editPerson(String firstName, String lastName, Date birthDate, String phone, String photoId,
+                           String about, String town, String country, String messagesPermission) {
         //TODO: Взять текущего пользователя без id & photo_id
         Person person = new Person();
-        person.setFirstName(first_name);
-        person.setLastName(last_name);
-        person.setBirthDate(birth_date);
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
+        person.setBirthDate(birthDate);
         person.setPhone(phone);
         //person.setPhoto(photo_id);
         person.setAbout(about);
         person.setCity(town);
         person.setCountry(country);
-        person.setMessagesPermission(messages_permission);
+        person.setMessagesPermission(messagesPermission);
         personRepository.saveAndFlush(person);
     }
 
@@ -55,23 +55,23 @@ public class ProfileService {
         return new ArrayList<>();
     }
 
-    public void addWallPostById(Integer id, Date publish_date) {
+    public void addWallPostById(Integer id, Date publishDate) {
         //TODO: Сделать после появления PostRepository
     }
 
-    public List<Person> searchPerson(String first_name, String last_name, Integer age_from, Integer age_to,
+    public List<Person> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
                                           String country, String city, Integer offset, Integer itemPerPage) {
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.YEAR, -age_to);
+        calendar.add(Calendar.YEAR, -ageTo);
         Date birthDateFrom = calendar.getTime();
-        calendar.add(Calendar.YEAR, age_to - age_from);
+        calendar.add(Calendar.YEAR, ageTo - ageFrom);
         Date birthDateTo = calendar.getTime();
 
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
         Page<Person> personList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
-                first_name, last_name, country, city, birthDateFrom, birthDateTo, pageable);
+                firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
         return personList.getContent();
     }
 
