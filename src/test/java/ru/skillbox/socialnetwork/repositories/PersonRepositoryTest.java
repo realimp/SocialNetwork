@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.assertEquals;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@DataJpaTest
 public class PersonRepositoryTest {
 
     @Autowired
@@ -35,7 +35,6 @@ public class PersonRepositoryTest {
         person.setDeleted(false);
         personRepository.save(person);
         assertEquals(sizeBeforeAddingPerson + 1, personRepository.findAll().size());
-        personRepository.delete(person);
     }
     @Test
     public void testUpdatePerson() {
@@ -56,7 +55,6 @@ public class PersonRepositoryTest {
         String actual = null;
         if (expectedPerson.isPresent()) actual = expectedPerson.get().getFirstName();
         assertEquals("TestPersonFirstName", actual);
-        personRepository.delete(personToUpdate);
     }
     @Test
     public void testDeletePerson() {
@@ -89,7 +87,6 @@ public class PersonRepositoryTest {
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
         assertEquals(1, personRepository.findByFirstNameAndLastName("TestPersonFirstName", "TestPersonLastName", firstPage).getNumberOfElements());
-        personRepository.delete(person);
     }
 
     @Test
@@ -112,7 +109,6 @@ public class PersonRepositoryTest {
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
         assertEquals(1, personRepository.findByFirstNameAndLastNameAndBirthDateBetween("TestPersonFirstName", "TestPersonLastName", testSearchFrom, testSearchTo, firstPage).getNumberOfElements());
-        personRepository.delete(person);
     }
 
     @Test
@@ -130,7 +126,6 @@ public class PersonRepositoryTest {
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
         assertEquals(1, personRepository.findByFirstNameAndLastNameAndCountry("TestPersonFirstName", "TestPersonLastName", "TestCountry", firstPage).getNumberOfElements());
-        personRepository.delete(person);
     }
 
     @Test
@@ -149,7 +144,6 @@ public class PersonRepositoryTest {
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
         assertEquals(1, personRepository.findByFirstNameAndLastNameAndCountryAndCity("TestPersonFirstName", "TestPersonLastName", "TestCountry", "TestCity", firstPage).getNumberOfElements());
-        personRepository.delete(person);
     }
 
     @Test
@@ -173,7 +167,6 @@ public class PersonRepositoryTest {
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
         assertEquals(1, personRepository.findByFirstNameAndLastNameAndCountryAndBirthDateBetween("TestPersonFirstName", "TestPersonLastName", "TestCountry", testSearchFrom, testSearchTo, firstPage).getNumberOfElements());
-        personRepository.delete(person);
     }
 
     @Test
@@ -198,6 +191,5 @@ public class PersonRepositoryTest {
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
         assertEquals(1, personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween("TestPersonFirstName", "TestPersonLastName", "TestCountry", "TestCity", testSearchFrom, testSearchTo, firstPage).getNumberOfElements());
-        personRepository.delete(person);
     }
 }
