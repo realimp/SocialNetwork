@@ -1,5 +1,6 @@
 package ru.skillbox.socialnetwork.services;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
@@ -13,10 +14,23 @@ import java.util.Properties;
 
 @Service
 public class EMailService {
+    /*
     private String mailServerHostName = "smtp.mail.ru";
     private int mailServerPort = 587;
     private String mailServerUsername = "JavaPro2.SkillBox@mail.ru";
     private String mailServerPassword = "JP2_SkillBox";
+    */
+
+    @Value("${email.host}")
+    private String mailServerHostName;
+    @Value("${email.port}")
+    private int mailServerPort;
+
+    @Value("${email.username}")
+    private String mailServerUsername;
+    @Value("${email.password}")
+    private String mailServerPassword;
+
     private String senderName = mailServerUsername;
     private String senderEmail = mailServerUsername;
 
