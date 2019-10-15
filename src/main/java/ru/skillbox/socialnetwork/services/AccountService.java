@@ -1,9 +1,7 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.api.responses.ResponseMessage;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
@@ -19,13 +17,15 @@ public class AccountService {
 
 
     @Transactional
-    public Response<ResponseMessage> register(String email, String passwd1, String passwd2, String firstName, String lastName, String code) {
+    public ResponseMessage register(String email, String passwd1, String passwd2, String firstName, String lastName, String code) {
+
+        ResponseMessage message = new ResponseMessage();
+
         if (!passwd1.equals(passwd2)) {
-            ResponseMessage message = new ResponseMessage();
             message.setMessage("");
-            Response<ResponseMessage> response = new Response("invalid_request", System.currentTimeMillis(), message);
-            return response;
+            return message;
         }
+
         Person person = new Person();
         person.setConfirmationCode(code);
         person.setFirstName(firstName);
@@ -33,14 +33,13 @@ public class AccountService {
         person.setPassword(passwd1);
         person.setLastName(lastName);
         personRepository.saveAndFlush(person);
-        ResponseMessage message = new ResponseMessage();
+        message = new ResponseMessage();
         message.setMessage("ok");
-        Response<ResponseMessage> response = new Response<>(message);
-        return response;
+        return message;
     }
 
     @Transactional
-    public Response<ResponseMessage> recovery(String email) {
+    public ResponseMessage recovery(String email) {
 
         int count = (int) (Math.random() * 5) + 6;
         StringBuilder newPas = new StringBuilder();
@@ -55,60 +54,50 @@ public class AccountService {
         EMailService eMailService = new EMailService();
         String mailText = "You password has been changed to " + newPas.toString();
 
+        ResponseMessage message = new ResponseMessage();
         if (eMailService.sendEMail("JavaPro2.SkillBox@mail.ru", email, "recoveryPassword", mailText)) {
-            ResponseMessage message = new ResponseMessage();
             message.setMessage("ok");
-            Response<ResponseMessage> response = new Response<>(message);
-            return response;
         } else {
-            ResponseMessage message = new ResponseMessage();
             message.setMessage("");
-            Response<ResponseMessage> response = new Response("invalid_request", System.currentTimeMillis(), message);
-            return response;
         }
+        return message;
     }
 
     @Transactional
-    public Response<ResponseMessage> changePassword(String token, String password) {
+    public ResponseMessage changePassword(String token, String password) {
         Person person = getPersonFromSecurity();
         person.setPassword(password);
         person = personRepository.saveAndFlush(person);
+        ResponseMessage message = new ResponseMessage();
         if (person.getPassword().equals(password)) {
-            ResponseMessage message = new ResponseMessage();
             message.setMessage("ok");
-            Response<ResponseMessage> response = new Response<>(message);
-            return response;
         } else {
-            ResponseMessage message = new ResponseMessage();
             message.setMessage("");
-            Response<ResponseMessage> response = new Response("invalid_request", System.currentTimeMillis(), message);
-            return response;
         }
+        return message;
     }
 
     @Transactional
-    public Response<ResponseMessage> changeEmail(String email) {
+    public ResponseMessage changeEmail(String email) {
         Person person = getPersonFromSecurity();
         person.setEMail(email);
         person = personRepository.saveAndFlush(person);
         if (person.getEMail().equals(email)) {
             ResponseMessage message = new ResponseMessage();
             message.setMessage("ok");
-            Response<ResponseMessage> response = new Response<>(message);
-            return response;
+            return message;
         } else {
             ResponseMessage message = new ResponseMessage();
             message.setMessage("");
-            Response<ResponseMessage> response = new Response("invalid_request", System.currentTimeMillis(), message);
-            return response;
+            return message;
         }
     }
 
-    public Response<ResponseMessage> getNotification() {
+    public ResponseMessage getNotification() {
         return null;
     }
 
-    public Response<ResponseMessage> setNotification() {
+    public ResponseMessage setNotification() {
         return null;
     }
 
