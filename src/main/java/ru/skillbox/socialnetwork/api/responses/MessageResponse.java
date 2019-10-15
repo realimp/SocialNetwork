@@ -1,7 +1,10 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-public class ResponseMessage {
+public class MessageResponse {
+
     private String message;
+
+    public MessageResponse() {}
 
     public String getMessage() {
         return message;
@@ -10,4 +13,5 @@ public class ResponseMessage {
     public void setMessage(String message) {
         this.message = message;
     }
+
 }

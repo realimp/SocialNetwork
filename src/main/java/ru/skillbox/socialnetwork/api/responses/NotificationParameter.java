@@ -1,9 +1,9 @@
-package ru.skillbox.socialnetwork.api.responses.account;
+package ru.skillbox.socialnetwork.api.responses;
 
 public class NotificationParameter {
 
-    private NotificationType type;
     private Boolean enable;
+    private NotificationType type;
 
     public NotificationParameter() {}
 

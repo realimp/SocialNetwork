@@ -1,23 +1,41 @@
-package ru.skillbox.socialnetwork.api.responses.profile;
+package ru.skillbox.socialnetwork.api.responses;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
+import ru.skillbox.socialnetwork.entities.MessagePermission;
 
-public class ResponseUser {
+public class PersonResponse {
+
     private Integer id;
+    @JsonProperty("first_name")
     private String firstName;
+    @JsonProperty("last_name")
     private String lastName;
-    private Date regDate;
-    private Date birthDate;
+    @JsonProperty("reg_date")
+    private Long regDate;
+    @JsonProperty("birth_date")
+    private Long birthDate;
+    @JsonProperty("email")
     private String eMail;
     private String phone;
     private String photo;
     private String about;
-    private String city;
-    private String country;
-    private String messagesPermission;
-    private Date lastOnlineTime;
+    private City city;
+    private Country country;
+    @JsonProperty("messages_permission")
+    private MessagePermission messagesPermission;
+    @JsonProperty("last_online_time")
+    private Long lastOnlineTime;
+    @JsonProperty("is_blocked")
     private Boolean isBlocked;
-    private Boolean isFriend;
+
+    public PersonResponse() {}
+
+    @JsonProperty(value="is_blocked")
+    public Boolean isBlocked() {
+        return isBlocked;
+    }
 
     public Integer getId() {
         return id;
@@ -43,19 +61,19 @@ public class ResponseUser {
         this.lastName = lastName;
     }
 
-    public Date getRegDate() {
+    public Long getRegDate() {
         return regDate;
     }
 
-    public void setRegDate(Date regDate) {
+    public void setRegDate(Long regDate) {
         this.regDate = regDate;
     }
 
-    public Date getBirthDate() {
+    public Long getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(Long birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -91,35 +109,35 @@ public class ResponseUser {
         this.about = about;
     }
 
-    public String getCity() {
+    public City getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(City city) {
         this.city = city;
     }
 
-    public String getCountry() {
+    public Country getCountry() {
         return country;
     }
 
-    public void setCountry(String country) {
+    public void setCountry(Country country) {
         this.country = country;
     }
 
-    public String getMessagesPermission() {
+    public MessagePermission getMessagesPermission() {
         return messagesPermission;
     }
 
-    public void setMessagesPermission(String messagesPermission) {
+    public void setMessagesPermission(MessagePermission messagesPermission) {
         this.messagesPermission = messagesPermission;
     }
 
-    public Date getLastOnlineTime() {
+    public Long getLastOnlineTime() {
         return lastOnlineTime;
     }
 
-    public void setLastOnlineTime(Date lastOnlineTime) {
+    public void setLastOnlineTime(Long lastOnlineTime) {
         this.lastOnlineTime = lastOnlineTime;
     }
 
@@ -131,11 +149,4 @@ public class ResponseUser {
         isBlocked = blocked;
     }
 
-    public Boolean getFriend() {
-        return isFriend;
-    }
-
-    public void setFriend(Boolean friend) {
-        isFriend = friend;
-    }
 }

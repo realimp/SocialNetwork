@@ -2,7 +2,8 @@ package ru.skillbox.socialnetwork.api.responses;
 
 import java.util.Date;
 
-public class Response<T extends Object> {
+public class Response<T> {
+
     private String error;
     private long timestamp;
     private T data;
@@ -29,4 +30,17 @@ public class Response<T extends Object> {
     public T getData() {
         return data;
     }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
 }
