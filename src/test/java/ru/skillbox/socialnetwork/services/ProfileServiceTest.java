@@ -21,7 +21,6 @@ public class ProfileServiceTest {
     @Autowired
     private PersonRepository personRepository;
 
-    @Autowired
     private ProfileService profileService;
 
     @Test
