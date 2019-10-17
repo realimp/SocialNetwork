@@ -38,6 +38,6 @@ public class AccountController {
 
   @PutMapping("/notifications")
   public String notifications(Model model) {
-    return "notifications";
+    return "putNotifications";
   }
 }
