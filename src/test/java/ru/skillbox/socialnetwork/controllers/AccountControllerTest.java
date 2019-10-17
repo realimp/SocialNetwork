@@ -20,37 +20,37 @@ public class AccountControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void postRegister() throws Exception{
+    public void registerTest() throws Exception{
         this.mockMvc.perform(post("/account/register")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("register")));
     }
 
     @Test
-    public void putPasswordRecovery() throws Exception{
+    public void passwordRecoveryTest() throws Exception{
         this.mockMvc.perform(put("/account/password/recovery")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("passwordRecovery")));
     }
 
     @Test
-    public void putpasswordSet() throws Exception{
+    public void passwordSetTest() throws Exception{
         this.mockMvc.perform(put("/account/password/set")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("passwordSet")));
     }
 
     @Test
-    public void putEmail() throws Exception{
+    public void emailTest() throws Exception{
         this.mockMvc.perform(put("/account/email")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("email")));
     }
 
     @Test
-    public void getNotifications() throws Exception {
+    public void notificationsTest() throws Exception {
         this.mockMvc.perform(get("/account/notifications")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("notifications")));
     }
 
     @Test
-    public void putNotifications() throws Exception {
+    public void putNotificationsTest() throws Exception {
         this.mockMvc.perform(put("/account/notifications")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("putNotifications")));
     }
