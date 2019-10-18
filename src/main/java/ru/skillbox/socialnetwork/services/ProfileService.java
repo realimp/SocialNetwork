@@ -4,18 +4,19 @@ package ru.skillbox.socialnetwork.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.City;
 import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.MessagePermission;
 import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.*;
 
 @Service
+@Transactional
 public class ProfileService {
 
     @Autowired
@@ -53,23 +54,7 @@ public class ProfileService {
     public PersonResponse getPersonById(Integer id) {
         //TODO: update after adding city & country dictionaries
         Person person = personRepository.getOne(id);
-
-        PersonResponse personResponse = new PersonResponse();
-        personResponse.setId(person.getId());
-        personResponse.setFirstName(person.getFirstName());
-        personResponse.setLastName(person.getLastName());
-        personResponse.setRegDate(person.getRegDate().getTime());
-        personResponse.setBirthDate(person.getBirthDate().getTime());
-        personResponse.seteMail(person.getEMail());
-        personResponse.setPhone(person.getPhone());
-        personResponse.setPhoto(person.getPhoto());
-        personResponse.setAbout(person.getAbout());
-        personResponse.setCity(new City(1,person.getCity()));
-        personResponse.setCountry(new Country(1, person.getCountry()));
-        personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission()));
-        personResponse.setLastOnlineTime(person.getLastOnlineTime().getTime());
-        personResponse.setBlocked(person.getBlocked());
-        return personResponse;
+        return convertPersonToPersonResponse(person);
     }
 
     public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
@@ -98,22 +83,7 @@ public class ProfileService {
         List<PersonResponse> personResponseList = new ArrayList<>();
 
         for (Person person : personList) {
-            PersonResponse personResponse = new PersonResponse();
-            personResponse.setId(person.getId());
-            personResponse.setFirstName(person.getFirstName());
-            personResponse.setLastName(person.getLastName());
-            personResponse.setRegDate(person.getRegDate().getTime());
-            personResponse.setBirthDate(person.getBirthDate().getTime());
-            personResponse.seteMail(person.getEMail());
-            personResponse.setPhone(person.getPhone());
-            personResponse.setPhoto(person.getPhoto());
-            personResponse.setAbout(person.getAbout());
-            personResponse.setCity(new City(1,person.getCity()));
-            personResponse.setCountry(new Country(1, person.getCountry()));
-            personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission()));
-            personResponse.setLastOnlineTime(person.getLastOnlineTime().getTime());
-            personResponse.setBlocked(person.getBlocked());
-            personResponseList.add(personResponse);
+            personResponseList.add(convertPersonToPersonResponse(person));
         }
 
         return personResponseList;
@@ -129,6 +99,26 @@ public class ProfileService {
         Person person = personRepository.getOne(id);
         person.setBlocked(false);
         personRepository.saveAndFlush(person);
+    }
+
+    public PersonResponse convertPersonToPersonResponse(Person person) {
+        PersonResponse personResponse = new PersonResponse();
+        personResponse.setId(person.getId());
+        personResponse.setFirstName(person.getFirstName());
+        personResponse.setLastName(person.getLastName());
+        personResponse.setRegDate(person.getRegDate() != null ? person.getRegDate().getTime() : null);
+        personResponse.setBirthDate(person.getBirthDate() != null ? person.getBirthDate().getTime() : null);
+        personResponse.seteMail(person.getEMail());
+        personResponse.setPhone(person.getPhone());
+        personResponse.setPhoto(person.getPhoto());
+        personResponse.setAbout(person.getAbout());
+        personResponse.setCity(new City(1,person.getCity()));
+        personResponse.setCountry(new Country(1, person.getCountry()));
+        personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission() != null ?
+                person.getMessagesPermission() : "ALL"));
+        personResponse.setLastOnlineTime(person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null);
+        personResponse.setBlocked(person.getBlocked());
+        return personResponse;
     }
 
 }
