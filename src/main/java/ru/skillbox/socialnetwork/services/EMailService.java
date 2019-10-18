@@ -31,8 +31,6 @@ public class EMailService {
     @Value("${email.password}")
     private String mailServerPassword;
 
-    private String senderName = mailServerUsername;
-    private String senderEmail = mailServerUsername;
 
     public EMailService () {
     }
@@ -67,7 +65,7 @@ public class EMailService {
             message.setSubject(subject, StandardCharsets.UTF_8.name());
             content.addBodyPart(htmlPart);
             message.setContent(content);
-            message.setFrom(new InternetAddress(senderName, senderEmail));
+            message.setFrom(new InternetAddress(mailServerUsername, mailServerUsername));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientEmail));
             //endregion
             transport = mailSession.getTransport();
