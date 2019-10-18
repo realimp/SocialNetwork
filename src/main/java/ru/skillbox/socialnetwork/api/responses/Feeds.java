@@ -20,5 +20,5 @@ public class Feeds {
     public void setFeeds(List<PostResponse> feeds) {
         this.feeds = feeds;
     }
-    
+
 }
