@@ -35,13 +35,13 @@ public class ProfileController {
 
     //get user by id
     @GetMapping("/{id}")
-    public Response<PersonResponse> getUser(@PathVariable int id) {
+    public Response<PersonResponse> getUser(@PathVariable Integer id) {
         return new Response<>(new PersonResponse());
     }
 
     //getting posts on the user's wall
     @GetMapping("/{id}/wall")
-    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable int id) {
+    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id) {
         List<PersonsWallPost> personsWallPostList = new ArrayList<>();
         personsWallPostList.add(new PersonsWallPost());
         return new ResponseList<>(personsWallPostList);
@@ -49,16 +49,16 @@ public class ProfileController {
 
     //adding a post to a user's wall
     @PostMapping("/{id}/wall")
-    public Response<PostResponse> postUserWall(@PathVariable int id, @RequestBody PersonsWallPost personsWallPost) {
+    public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestBody PersonsWallPost personsWallPost) {
         return new Response<>(new PostResponse());
     }
 
     //user Search
     @GetMapping("/search")
     public ResponseList<List<PersonResponse>> getUserSearch(String firstName, String lastName,
-                                                            int ageFrom, int ageTo,
+                                                            Integer ageFrom, Integer ageTo,
                                                             Integer countryId, Integer cityId,
-                                                            int offset, int itemPerPage) {
+                                                            Integer offset, Integer itemPerPage) {
 
         List<PersonResponse> personsDtoList = new ArrayList<>();
         personsDtoList.add(new PersonResponse());
@@ -67,14 +67,14 @@ public class ProfileController {
 
     //block user by id
     @PutMapping("/block/{id}")
-    public Response<MessageResponse> blockUser(@PathVariable int id) {
+    public Response<MessageResponse> blockUser(@PathVariable Integer id) {
         MessageResponse messageResponse = new MessageResponse();
         return new Response<>(messageResponse);
     }
 
     //unblock user by id
     @DeleteMapping("/block/{id}")
-    public Response<MessageResponse> unblockUser(@PathVariable int id) {
+    public Response<MessageResponse> unblockUser(@PathVariable Integer id) {
         MessageResponse messageResponse = new MessageResponse();
         return new Response<>(messageResponse);
     }
