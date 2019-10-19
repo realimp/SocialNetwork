@@ -9,14 +9,13 @@ import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class AccountService {
 
     @Autowired
     private PersonRepository personRepository;
     private String ABC = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
-
-    @Transactional
     public MessageResponse register(String email, String passwd1, String passwd2, String firstName, String lastName, String code) {
 
         MessageResponse message = new MessageResponse();
@@ -38,7 +37,6 @@ public class AccountService {
         return message;
     }
 
-    @Transactional
     public MessageResponse recovery(String email) {
 
         int count = (int) (Math.random() * 5) + 6;
@@ -63,7 +61,6 @@ public class AccountService {
         return message;
     }
 
-    @Transactional
     public MessageResponse changePassword(String token, String password) {
         Person person = getPersonFromSecurity();
         person.setPassword(password);
@@ -77,7 +74,6 @@ public class AccountService {
         return message;
     }
 
-    @Transactional
     public MessageResponse changeEmail(String email) {
         Person person = getPersonFromSecurity();
         person.setEMail(email);
