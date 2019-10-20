@@ -5,11 +5,11 @@ import java.util.List;
 public class UserLikeList {
 
     private Integer likes;
-    private List<PersonResponse> users;
+    private List<BasicPerson> users;
 
     public UserLikeList() {}
 
-    public UserLikeList(Integer likes, List<PersonResponse> users) {
+    public UserLikeList(Integer likes, List<BasicPerson> users) {
         this.likes = likes;
         this.users = users;
     }
@@ -22,11 +22,11 @@ public class UserLikeList {
         this.likes = likes;
     }
 
-    public List<PersonResponse> getUsers() {
+    public List<BasicPerson> getUsers() {
         return users;
     }
 
-    public void setUsers(List<PersonResponse> users) {
+    public void setUsers(List<BasicPerson> users) {
         this.users = users;
     }
 
