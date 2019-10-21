@@ -22,33 +22,33 @@ public class PostController {
   }
 
   @PostMapping("/") //Post creation
-  public ResponseList<PostResponse> postCreate(Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
+  public Response<PostResponse> postCreate(Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @GetMapping("/{id}") //Getting post by ID
-  public ResponseList<PostResponse> postGetById(@PathVariable int id) {
+  public Response<PostResponse> postGetById(@PathVariable int id) {
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @PutMapping("/{id}") //Editing a post by ID
-  public ResponseList<PostResponse> postEditById(@PathVariable int id, Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
+  public Response<PostResponse> postEditById(@PathVariable int id, Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @DeleteMapping("/{id}") //Delete post by ID
-  public ResponseList<PostResponse> postDeleteById(@PathVariable int id) {
+  public Response<PostResponse> postDeleteById(@PathVariable int id) {
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @PutMapping("/{id}/recover") //Post recovery by ID
-  public ResponseList<PostResponse> postRecoverById(@PathVariable int id) {
+  public Response<PostResponse> postRecoverById(@PathVariable int id) {
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @GetMapping("/{id}/comments") //Getting post comments
@@ -57,25 +57,25 @@ public class PostController {
   }
 
   @PostMapping("/{id}/comments") //Post comment
-  public ResponseList<PostResponse> postComments(@PathVariable int id) {//@RequestBody
+  public Response<PostResponse> postComments(@PathVariable int id) {//@RequestBody
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
-  public ResponseList<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id) {//@RequestBody
-    return new ResponseList<>(new PostResponse());
+  public Response<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id) {//@RequestBody
+    return new Response<>(new PostResponse());
   }
 
   @DeleteMapping("/{id}/comments/{comment_id}") //Removing a post comment
-  public ResponseList<PostResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
-    return new ResponseList<>(new PostResponse());
+  public Response<PostResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
+    return new Response<>(new PostResponse());
   }
 
   @PutMapping("/{id}/comments/{comment_id}/recover") //Comment recovery
-  public ResponseList<PostResponse> postCommentsRecovery(@PathVariable int id, @PathVariable int comment_id) {
+  public Response<PostResponse> postCommentsRecovery(@PathVariable int id, @PathVariable int comment_id) {
 
-    return new ResponseList<>(new PostResponse());
+    return new Response<>(new PostResponse());
   }
 
   @PostMapping("/{id}/report") //Post a complaint
