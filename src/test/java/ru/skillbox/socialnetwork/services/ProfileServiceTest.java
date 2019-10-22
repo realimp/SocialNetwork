@@ -3,9 +3,11 @@ package ru.skillbox.socialnetwork.services;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import java.text.ParseException;
@@ -19,129 +21,54 @@ import java.util.List;
 public class ProfileServiceTest {
 
     @Autowired
-    private PersonRepository personRepository;
-
-    @Autowired
     private ProfileService profileService;
+
+    /*
+    -- before running add test data to DB:
+    INSERT INTO social_network.person(id, first_name, last_name, birth_date, phone, password, city, country, is_approved, is_blocked) values (90901, "Stefan", "Radzhinskij", "1985-05-29 00:00:00", "+79163202121", "PASSWORD", "Moscow", "Russia", 1, 0);
+    INSERT INTO social_network.person(id, first_name, last_name, birth_date, phone, password, city, country, is_approved, is_blocked) values (90902, "Stefan", "Radzhinskij", "1983-12-07 00:00:00", "+79163202321", "PASSWORD", "Moscow", "Russia", 1, 1);
+    INSERT INTO social_network.person(id, first_name, last_name, birth_date, phone, password, city, country, is_approved, is_blocked) values (90903, "Stefan", "Radzhinskij", "1980-01-03 00:00:00", "+79163202111", "PASSWORD", "Moscow", "Russia", 1, 0);
+
+    -- after running delete test data from DB:
+    delete from social_network.person
+    where id in (90901, 90902, 90903);
+    */
 
     @Test
     public void getPersonByIdTest() {
-
-        Person person = new Person();
-        person.setId(9090);
-        person.setFirstName("Vasiliy");
-        person.setLastName("Galkin");
-        person.setPhone("+79163202121");
-        person.setPassword("PASSWORD");
-        person.setApproved(true);
-        person.setBlocked(false);
-        person.setOnline(false);
-        person.setDeleted(false);
-
-        personRepository.save(person);
-
-        Person actualPerson = profileService.getPersonById(9090);
-        Person expectedPerson = personRepository.getOne(9090);
-        org.junit.Assert.assertEquals(expectedPerson, actualPerson);
-
-        personRepository.delete(person);
+        PersonResponse personResponse = profileService.getPersonById(90901);
+        org.junit.Assert.assertTrue(personResponse.getId() == 90901);
+        org.junit.Assert.assertTrue(personResponse.getFirstName().equals("Stefan"));
+        org.junit.Assert.assertTrue(personResponse.getLastName().equals("Radzhinskij"));
+        org.junit.Assert.assertTrue(personResponse.getPhone().equals("+79163202121"));
     }
 
     @Test
     public void searchPersonTest() throws ParseException {
+        List<PersonResponse> list = profileService.searchPerson("Stefan", "Radzhinskij", 30,
+                40, "Russia", "Moscow", 0, 10);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        Person person1 = new Person();
-        person1.setId(9090);
-        person1.setFirstName("Vasiliy");
-        person1.setLastName("Galkin");
-        person1.setPhone("+79163202121");
-        person1.setPassword("PASSWORD");
-        person1.setBirthDate(dateFormat.parse("30.05.1985"));
-        person1.setApproved(true);
-        person1.setBlocked(false);
-        person1.setOnline(false);
-        person1.setDeleted(false);
-
-        Person person2 = new Person();
-        person2.setId(9091);
-        person2.setFirstName("Vasiliy");
-        person2.setLastName("Galkin");
-        person2.setPhone("+79163202121");
-        person2.setPassword("PASSWORD");
-        person2.setBirthDate(dateFormat.parse("18.11.1980"));
-        person2.setApproved(true);
-        person2.setBlocked(false);
-        person2.setOnline(false);
-        person2.setDeleted(false);
-
-        personRepository.save(person1);
-        personRepository.save(person2);
-
-        List<Person> expectedList = profileService.searchPerson("Vasiliy", "Galkin", 30,
-                40, "Moscow","Russia", 0, 10);
-
         System.out.println("Person list:");
-        for (Person person : expectedList) {
+        for (PersonResponse person : list) {
             System.out.println("id: "+person.getId()+" fname: "+person.getFirstName()+" lname: "+person.getLastName()+
                     " bdate: "+dateFormat.format(person.getBirthDate())+" country: "+person.getCountry()+" city: "+
                     person.getCity());
         }
 
-        List<Person> actualList = new ArrayList<>();
-        actualList.add(person1);
-        actualList.add(person2);
-
-        org.junit.Assert.assertEquals(expectedList, actualList);
-
-        personRepository.delete(person1);
-        personRepository.delete(person2);
+        org.junit.Assert.assertTrue(list.size() == 3);
     }
 
     @Test
     public void blockPersonByIdTest() {
-
-        Person person = new Person();
-        person.setId(9090);
-        person.setFirstName("Vasiliy");
-        person.setLastName("Galkin");
-        person.setPhone("+79163202121");
-        person.setPassword("PASSWORD");
-        person.setApproved(true);
-        person.setBlocked(false);
-        person.setOnline(false);
-        person.setDeleted(false);
-
-        personRepository.save(person);
-
-        profileService.blockPersonById(9090);
-        org.junit.Assert.assertTrue(personRepository.getOne(9090).getBlocked());
-
-        personRepository.delete(person);
+        profileService.blockPersonById(90901);
+        org.junit.Assert.assertTrue(profileService.getPersonById(90901).getBlocked());
     }
 
     @Test
     public void unblockPersonByIdTest() {
-
-        Person person = new Person();
-        person.setId(9090);
-        person.setFirstName("Vasiliy");
-        person.setLastName("Galkin");
-        person.setPhone("+79163202121");
-        person.setPassword("PASSWORD");
-        person.setApproved(true);
-        person.setBlocked(true);
-        person.setOnline(false);
-        person.setDeleted(false);
-
-        personRepository.save(person);
-
-        profileService.unblockPersonById(9090);
-        org.junit.Assert.assertFalse(personRepository.getOne(9090).getBlocked());
-
-        personRepository.delete(person);
+        profileService.unblockPersonById(90902);
+        org.junit.Assert.assertFalse(profileService.getPersonById(90902).getBlocked());
     }
-
-
 
 }
