@@ -3,20 +3,20 @@ package ru.skillbox.socialnetwork.api.responses;
 public class NotificationParameter {
 
     private Boolean enable;
-    private NotificationType type;
+    private NotificationTypeCode type;
 
     public NotificationParameter() {}
 
-    public NotificationParameter(NotificationType type, Boolean enable) {
+    public NotificationParameter(NotificationTypeCode type, Boolean enable) {
         this.type = type;
         this.enable = enable;
     }
 
-    public NotificationType getType() {
+    public NotificationTypeCode getType() {
         return type;
     }
 
-    public void setType(NotificationType type) {
+    public void setType(NotificationTypeCode type) {
         this.type = type;
     }
 

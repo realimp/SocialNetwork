@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
@@ -48,8 +47,8 @@ public class PostController {
   }
 
   @GetMapping("/{id}/comments") //Getting post comments
-  public ResponseList<Comment>  postGetComments(@PathVariable int id, int offset, int itemPerPage) {
-    return new ResponseList<>(new Comment());
+  public ResponseList<PostResponse>  postGetComments(@PathVariable int id, int offset, int itemPerPage) {
+    return new ResponseList<>(new PostResponse());
   }
 
   @PostMapping("/{id}/comments") //Post comment

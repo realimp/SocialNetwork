@@ -4,64 +4,70 @@ package ru.skillbox.socialnetwork.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
+import ru.skillbox.socialnetwork.api.responses.PersonResponse;
+import ru.skillbox.socialnetwork.api.responses.PostResponse;
+import ru.skillbox.socialnetwork.entities.MessagePermission;
 import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.*;
 
 @Service
+@Transactional
 public class ProfileService {
 
     @Autowired
     private PersonRepository personRepository;
 
-    public Person getPerson() {
-        //TODO: Взять текущего пользователя без id
-        Person person = new Person();
+    public PersonResponse getPerson() {
+        //TODO: Get current user w/o id (Spring Security)
+        PersonResponse person = new PersonResponse();
         return person;
     }
 
     public void editPerson(String firstName, String lastName, Date birthDate, String phone, String photoId,
-                           String about, String town, String country, String messagesPermission) {
-        //TODO: Взять текущего пользователя без id & photo_id
+                           String about, Integer cityId, Integer countryId, String messagesPermission) {
+        //TODO: Get current user w/o id  &&  update after adding city & country dictionaries
         Person person = new Person();
         person.setFirstName(firstName);
         person.setLastName(lastName);
         person.setBirthDate(birthDate);
         person.setPhone(phone);
-        //person.setPhoto(photo_id);
+        person.setPhoto(photoId);
         person.setAbout(about);
-        person.setCity(town);
-        person.setCountry(country);
+        person.setCity(new City(cityId, "test Title").getTitle());
+        person.setCountry(new Country(countryId,"test Title").getTitle());
         person.setMessagesPermission(messagesPermission);
         personRepository.saveAndFlush(person);
     }
 
     public void deletePerson() {
-        //TODO: Взять текущего пользователя без id
+        //TODO: Get current user w/o id
         Person person = new Person();
         person.setDeleted(true);
         personRepository.saveAndFlush(person);
     }
 
-    public Person getPersonById(Integer id) {
+    public PersonResponse getPersonById(Integer id) {
+        //TODO: update after adding city & country dictionaries
         Person person = personRepository.getOne(id);
-        return person;
+        return convertPersonToPersonResponse(person);
     }
 
-    public List<Post> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
-        //TODO: Сделать после появления PostRepository
+    public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
+        //TODO: update after adding PostRepository
         return new ArrayList<>();
     }
 
     public void addWallPostById(Integer id, Date publishDate) {
-        //TODO: Сделать после появления PostRepository
+        //TODO: update after adding PostRepository
     }
 
-    public List<Person> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
+    public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
                                           String country, String city, Integer offset, Integer itemPerPage) {
-
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, -ageTo);
         Date birthDateFrom = calendar.getTime();
@@ -70,9 +76,17 @@ public class ProfileService {
 
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
-        Page<Person> personList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
+        Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
                 firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
-        return personList.getContent();
+
+        List<Person> personList = personPageList.getContent();
+        List<PersonResponse> personResponseList = new ArrayList<>();
+
+        for (Person person : personList) {
+            personResponseList.add(convertPersonToPersonResponse(person));
+        }
+
+        return personResponseList;
     }
 
     public void blockPersonById(Integer id) {
@@ -85,6 +99,26 @@ public class ProfileService {
         Person person = personRepository.getOne(id);
         person.setBlocked(false);
         personRepository.saveAndFlush(person);
+    }
+
+    public PersonResponse convertPersonToPersonResponse(Person person) {
+        PersonResponse personResponse = new PersonResponse();
+        personResponse.setId(person.getId());
+        personResponse.setFirstName(person.getFirstName());
+        personResponse.setLastName(person.getLastName());
+        personResponse.setRegDate(person.getRegDate() != null ? person.getRegDate().getTime() : null);
+        personResponse.setBirthDate(person.getBirthDate() != null ? person.getBirthDate().getTime() : null);
+        personResponse.seteMail(person.getEMail());
+        personResponse.setPhone(person.getPhone());
+        personResponse.setPhoto(person.getPhoto());
+        personResponse.setAbout(person.getAbout());
+        personResponse.setCity(new City(1,person.getCity()));
+        personResponse.setCountry(new Country(1, person.getCountry()));
+        personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission() != null ?
+                person.getMessagesPermission() : "ALL"));
+        personResponse.setLastOnlineTime(person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null);
+        personResponse.setBlocked(person.getBlocked());
+        return personResponse;
     }
 
 }
