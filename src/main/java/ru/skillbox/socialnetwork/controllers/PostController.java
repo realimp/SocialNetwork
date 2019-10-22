@@ -12,6 +12,7 @@ import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
+import ru.skillbox.socialnetwork.entities.Message;
 
 @RestController
 @RequestMapping("/post")
@@ -53,8 +54,8 @@ public class PostController {
   }
 
   @PostMapping("/{id}/comments") //Post comment
-  public Response<PostResponse> postComments(@PathVariable int id) {//@RequestBody
-    return new Response<>(new PostResponse());
+  public Response<Message> postComments(@PathVariable int id) {//@RequestBody
+    return new Response<>(new Message());
   }
 
   @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
