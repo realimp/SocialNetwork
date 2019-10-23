@@ -1,6 +1,9 @@
 package ru.skillbox.socialnetwork.mappers;
 
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
+import ru.skillbox.socialnetwork.entities.MessagePermission;
 import ru.skillbox.socialnetwork.entities.Person;
 
 public class PersonMapper {
@@ -18,9 +21,9 @@ public class PersonMapper {
         personResponse.setPhone(person.getPhone());
         personResponse.setPhoto(person.getPhoto());
         personResponse.setAbout(person.getAbout());
-        personResponse.setCity(person.getCity());
-        personResponse.setCountry(person.getCountry());
-        personResponse.setMessagesPermission(person.getMessagesPermission());
+        personResponse.setCity(new City(1, person.getCity()));
+        personResponse.setCountry(new Country(1, person.getCountry()));
+        personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission()));
         personResponse.setLastOnlineTime(person.getLastOnlineTime().getTime());
         personResponse.setBlocked(person.getBlocked());
 
