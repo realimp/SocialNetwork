@@ -140,11 +140,11 @@ ALTER TABLE person2dialog ADD FOREIGN KEY (dialog_id) REFERENCES dialog(id);
 
 -- Person
 DELETE FROM person;
-INSERT INTO person values (1, "Pavel", "Dobromirov", "2010-01-01 00:00:00", "1992-12-23 00:00:00", "paveldobro92@mail.ru", "+79031119090", "NobodyKnows3", null, null, "Moscow", "Russia", null, 1, "ALL", null, 0, 0, 0);
-INSERT INTO person values (2, "Oleg", "Popov", "2011-01-01 00:00:00", "1991-01-15 00:00:00", "olegpopov232@mail.ru", "+79031119190", "NobodyTells3", null, null, "Ekaterinburg", "Russia", null, 1, "ALL", null, 0, 0, 0);
-INSERT INTO person values (3, "Petr", "Nevol'nyj", "2012-01-01 00:00:00", "1990-02-23 00:00:00", "petrsvoboda90@mail.ru", "+79031119290", "NobodyWhispers3", null, null, "St. Petersburg", "Russia", null, 1, "FRIENDS", null, 0, 0, 0);
-INSERT INTO person values (4, "Kseniya", "Mannik", "2013-01-01 00:00:00", "1989-05-22 00:00:00", "ksusha.m.353@mail.ru", "+79031119093", "NobodyLies3", null, null, "Sochi", "Russia", null, 1, "ALL", null, 0, 0, 0);
-INSERT INTO person values (5, "Vera", "Levina", "2014-01-01 00:00:00", "1988-08-08 00:00:00", "vlevina88@mail.ru", "+79031119095", "NobodyTries3", null, null, "Erevan", "Armeniya", null, 1, "FRIENDS", null, 0, 0, 0);
+INSERT INTO person values (1, "Pavel", "Dobromirov", "2010-01-01 00:00:00", "1992-12-23 00:00:00", "paveldobro92@mail.ru", "+79031119090", "$2a$10$Zm.Tk1PI9xVlbBgV9/7SneSXO7Zo18v1.3Ih5BUJEkvggiRgZxc/G", null, null, "Moscow", "Russia", null, 1, "ALL", null, 0, 0, 0);
+INSERT INTO person values (2, "Oleg", "Popov", "2011-01-01 00:00:00", "1991-01-15 00:00:00", "olegpopov232@mail.ru", "+79031119190", "$2a$10$CxmnJIhpxG6Sh0vMD.hSNuzd38lcwFzM0kzF10qO4HzM9Y7nb/KUC", null, null, "Ekaterinburg", "Russia", null, 1, "ALL", null, 0, 0, 0);
+INSERT INTO person values (3, "Petr", "Nevol'nyj", "2012-01-01 00:00:00", "1990-02-23 00:00:00", "petrsvoboda90@mail.ru", "+79031119290", "$2a$10$N7L3gebPmp.UgT.2tkBN7u0h6387o50ILyaoTlDrT36bbkR/GrWF.", null, null, "St. Petersburg", "Russia", null, 1, "FRIENDS", null, 0, 0, 0);
+INSERT INTO person values (4, "Kseniya", "Mannik", "2013-01-01 00:00:00", "1989-05-22 00:00:00", "ksusha.m.353@mail.ru", "+79031119093", "$2a$10$XET0I69Se.ZTNrRco.oyguccyurTAqCPMAFq0cCa8dooeZLHCWK5q", null, null, "Sochi", "Russia", null, 1, "ALL", null, 0, 0, 0);
+INSERT INTO person values (5, "Vera", "Levina", "2014-01-01 00:00:00", "1988-08-08 00:00:00", "vlevina88@mail.ru", "+79031119095", "$2a$10$aGSYXuxFHhMrKDmfxTnFMeBUia72ac1uPzvHmP11YRfDuidpchUo2", null, null, "Erevan", "Armeniya", null, 1, "FRIENDS", null, 0, 0, 0);
 
 -- Friendship
 DELETE FROM friendship;
@@ -236,11 +236,11 @@ INSERT INTO notification values (5, 5, "2019-10-23 12:00:00", 5, 1, "vlevina88@m
 
 -- User
 DELETE FROM user;
-INSERT INTO user values (1, "pavel", "paveldobro92@mail.ru", "test_pass322","ADMIN");
-INSERT INTO user values (2, "oleg", "olegpopov232@mail.ru", "test_pass323","MODERATOR");
-INSERT INTO user values (3, "petr", "petrsvoboda90@mail.ru", "test_pass324","MODERATOR");
-INSERT INTO user values (4, "ksusha", "ksusha.m.353@mail.ru", "test_pass325","MODERATOR");
-INSERT INTO user values (5, "vera", "vlevina88@mail.ru", "test_pass326","MODERATOR");
+INSERT INTO user values (1, "pavel", "paveldobro92@mail.ru", "$2a$10$NWMDf7emHbDYxy/082c2YOBqll.Ff2i5Om9Os16WXB3uozGhGmd1y","ADMIN");
+INSERT INTO user values (2, "oleg", "olegpopov232@mail.ru", "$2a$10$tLVqJLcRl8uYnCv7ajy6E./T7sKaHFjk0RdR3cDCBr/GqX.6FXx72","MODERATOR");
+INSERT INTO user values (3, "petr", "petrsvoboda90@mail.ru", "$2a$10$fyHrgNve.r2nc94lwDblAux24w9sv5KoH/qH1hM3xCWUkWSgP39G2","MODERATOR");
+INSERT INTO user values (4, "ksusha", "ksusha.m.353@mail.ru", "$2a$10$w34x8Puegx3pvjejLtWBIu21R3l5miH1ZkZ/gp/bHd9MHZOPFR.fm","MODERATOR");
+INSERT INTO user values (5, "vera", "vlevina88@mail.ru", "$2a$10$2zshKPzAiCl8eMkonYPsGuSGrWhr/4xZy1jjME.XA8r8GFshRjgfy","MODERATOR");
 
 -- Block_history
 DELETE FROM block_history;
