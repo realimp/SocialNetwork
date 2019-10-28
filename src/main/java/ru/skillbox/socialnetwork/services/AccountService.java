@@ -54,11 +54,11 @@ public class AccountService {
         String mailText = "You password has been changed to " + newPas.toString();
 
         MessageResponse message = new MessageResponse();
-        if (eMailService.sendEMail("JavaPro2.SkillBox@mail.ru", email, "recoveryPassword", mailText)) {
-            message.setMessage("ok");
-        } else {
-            message.setMessage("");
-        }
+//        if (eMailService.sendEMail("JavaPro2.SkillBox@mail.ru", email, "recoveryPassword", mailText)) {
+//            message.setMessage("ok");
+//        } else {
+//            message.setMessage("");
+//        }
         return message;
     }
 
