@@ -14,6 +14,12 @@ import java.util.Properties;
 
 @Service
 public class EMailService {
+    /*
+    private String mailServerHostName = "smtp.mail.ru";
+    private int mailServerPort = 587;
+    private String mailServerUsername = "JavaPro2.SkillBox@mail.ru";
+    private String mailServerPassword = "JP2_SkillBox";
+    */
 
     @Value("${email.host}")
     private String mailServerHostName;
