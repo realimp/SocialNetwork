@@ -1,6 +1,6 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-public enum NotificationType {
+public enum NotificationTypeCode {
     POST,
     POST_COMMENT,
     COMMENT_COMMENT,
