@@ -3,6 +3,7 @@ package ru.skillbox.socialnetwork.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
@@ -17,23 +18,22 @@ public class AccountService {
     private PersonRepository personRepository;
     private String ABC = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
-    public MessageResponse register(String email, String passwd1, String passwd2, String firstName, String lastName, String code) {
+    public MessageResponse register(Register register) {
 
         MessageResponse message = new MessageResponse();
 
-        if (!passwd1.equals(passwd2)) {
-            message.setMessage("");
+        if (!register.getPasswd1().equals(register.getPasswd2())) {
+            message.setMessage("Wrong password!");
             return message;
         }
 
         Person person = new Person();
-        person.setConfirmationCode(code);
-        person.setFirstName(firstName);
-        person.setEMail(email);
-        person.setPassword(passwd1);
-        person.setLastName(lastName);
+        person.setConfirmationCode(register.getCode());
+        person.setFirstName(register.getFirstName());
+        person.setEMail(register.getEmail());
+        person.setPassword(register.getPasswd1());
+        person.setLastName(register.getLastName());
         personRepository.saveAndFlush(person);
-        message = new MessageResponse();
         message.setMessage("ok");
         return message;
     }
@@ -48,8 +48,8 @@ public class AccountService {
 
         Person person = getCurrentUser();
         person.setPassword(newPas.toString());
-
         personRepository.saveAndFlush(person);
+
         EMailService eMailService = new EMailService();
         String mailText = "You password has been changed to " + newPas.toString();
 
@@ -98,10 +98,8 @@ public class AccountService {
         return null;
     }
 
-
     public Person getCurrentUser(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         return  personRepository.findByEMail(email);
     }
-
 }
