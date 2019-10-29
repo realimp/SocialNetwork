@@ -2,15 +2,13 @@ package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.Register;
-import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.services.AccountService;
+
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 
 @RestController
 @RequestMapping("/account")
@@ -20,27 +18,27 @@ public class AccountController {
   private AccountService accountService;
 
   @PostMapping("/register")
-  public MessageResponse register(Register register) {
+  public Response register(@RequestBody Register register) {
 
-    return accountService.register(register);
+    return new Response(accountService.register(register));
   }
 
   @PutMapping("/password/recovery")
-  public MessageResponse passwordRecovery(String email) {
+  public Response passwordRecovery(String email) throws UnsupportedEncodingException, MessagingException {
 
-    return accountService.recovery(email);
+    return new Response(accountService.recovery(email));
   }
 
   @PutMapping("/password/set")
-  public MessageResponse passwordSet(String token, String password) {
+  public Response passwordSet(String token, String password) {
 
-    return accountService.changePassword(token, password);
+    return new Response(accountService.changePassword(token, password));
   }
 
   @PutMapping("/email")
-  public MessageResponse email(String email) {
+  public Response email(String email) {
 
-    return accountService.changeEmail(email);
+    return new Response(accountService.changeEmail(email));
   }
 
   @GetMapping("/notifications")
