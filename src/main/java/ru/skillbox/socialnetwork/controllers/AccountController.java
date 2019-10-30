@@ -20,25 +20,25 @@ public class AccountController {
   @PostMapping("/register")
   public Response register(@RequestBody Register register) {
 
-    return new Response(accountService.register(register));
+    return accountService.register(register);
   }
 
   @PutMapping("/password/recovery")
   public Response passwordRecovery(String email) throws UnsupportedEncodingException, MessagingException {
 
-    return new Response(accountService.recovery(email));
+    return accountService.recovery(email);
   }
 
   @PutMapping("/password/set")
   public Response passwordSet(String token, String password) {
 
-    return new Response(accountService.changePassword(token, password));
+    return accountService.changePassword(token, password);
   }
 
   @PutMapping("/email")
   public Response email(String email) {
 
-    return new Response(accountService.changeEmail(email));
+    return accountService.changeEmail(email);
   }
 
   @GetMapping("/notifications")
