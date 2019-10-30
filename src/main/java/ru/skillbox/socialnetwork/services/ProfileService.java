@@ -1,6 +1,8 @@
 /** @Author Savva */
 package ru.skillbox.socialnetwork.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.*;
 @Service
 @Transactional
 public class ProfileService {
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private PersonRepository personRepository;
@@ -25,6 +28,11 @@ public class ProfileService {
     public PersonResponse getPerson() {
         //TODO: Get current user w/o id (Spring Security)
         PersonResponse person = new PersonResponse();
+        if (person != null) {
+            logger.info("current user is obtained: {}", person.getId());
+        } else {
+            logger.warn("could not obtain current user");
+        }
         return person;
     }
 
