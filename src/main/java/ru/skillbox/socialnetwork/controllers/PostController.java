@@ -54,8 +54,8 @@ public class PostController {
   }
 
   @PostMapping("/{id}/comments") //Post comment
-  public Response<Message> postComments(@PathVariable int id) {//@RequestBody
-    return new Response<>(new Message());
+  public Response<Comment> postComments(@PathVariable int id) {//@RequestBody
+    return new Response<>(new Comment());
   }
 
   @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment

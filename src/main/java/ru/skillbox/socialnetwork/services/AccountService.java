@@ -1,6 +1,7 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.entities.Person;
@@ -45,7 +46,7 @@ public class AccountService {
         for (int i = 0; i < count; i++)
             newPas.append(ABC.charAt((int) (Math.random() * ABC.length())));
 
-        Person person = getPersonFromSecurity();
+        Person person = getCurrentUser();
         person.setPassword(newPas.toString());
 
         personRepository.saveAndFlush(person);
@@ -53,16 +54,16 @@ public class AccountService {
         String mailText = "You password has been changed to " + newPas.toString();
 
         MessageResponse message = new MessageResponse();
-        if (eMailService.sendEMail("JavaPro2.SkillBox@mail.ru", email, "recoveryPassword", mailText)) {
-            message.setMessage("ok");
-        } else {
-            message.setMessage("");
-        }
+//        if (eMailService.sendEMail("JavaPro2.SkillBox@mail.ru", email, "recoveryPassword", mailText)) {
+//            message.setMessage("ok");
+//        } else {
+//            message.setMessage("");
+//        }
         return message;
     }
 
     public MessageResponse changePassword(String token, String password) {
-        Person person = getPersonFromSecurity();
+        Person person = getCurrentUser();
         person.setPassword(password);
         person = personRepository.saveAndFlush(person);
         MessageResponse message = new MessageResponse();
@@ -75,7 +76,7 @@ public class AccountService {
     }
 
     public MessageResponse changeEmail(String email) {
-        Person person = getPersonFromSecurity();
+        Person person = getCurrentUser();
         person.setEMail(email);
         person = personRepository.saveAndFlush(person);
         if (person.getEMail().equals(email)) {
@@ -98,9 +99,9 @@ public class AccountService {
     }
 
 
-    private Person getPersonFromSecurity() {
-        //TODO take person from spring security
-        return null;
+    public Person getCurrentUser(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return  personRepository.findByEMail(email);
     }
 
 }

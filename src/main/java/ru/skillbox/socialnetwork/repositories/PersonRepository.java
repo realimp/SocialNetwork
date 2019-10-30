@@ -11,7 +11,9 @@ import java.util.Date;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Integer> {
 
-    Page<Person> findByFirstNameAndLastName(String firstName, String lastName, Pageable pageable);
+    Person findByEMail(String email);
+
+    Person findByFirstNameAndLastName(String firstName, String lastName);
 
     Page<Person> findByFirstNameAndLastNameAndBirthDateBetween(String firstName, String lastName, Date birthDateFrom, Date birthDateTo, Pageable pageable);
 
