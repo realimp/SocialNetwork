@@ -3,17 +3,13 @@ package ru.skillbox.socialnetwork.services;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.security.CustomUserDetailsService;
-import ru.skillbox.socialnetwork.security.SecurityConfig;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,14 +19,10 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ContextConfiguration(classes = SecurityConfig.class)
 public class ProfileServiceTest {
 
     @Autowired
     private ProfileService profileService;
-
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
 
     /*
     -- before running add test data to DB:
@@ -45,13 +37,11 @@ public class ProfileServiceTest {
 
     @Test
     public void getPersonByIdTest() {
-        PersonResponse personResponse = profileService.getPersonById(1);
-        String email = "paveldobro92@mail.ru";
-        Person person = (Person) customUserDetailsService.loadUserByUsername(email);
-        org.junit.Assert.assertTrue(personResponse.getId() == 1);
-        org.junit.Assert.assertTrue(personResponse.getFirstName().equals("Pavel"));
-        org.junit.Assert.assertTrue(personResponse.getLastName().equals("Dobromirov"));
-        org.junit.Assert.assertTrue(personResponse.getPhone().equals("+79031119090"));
+        PersonResponse personResponse = profileService.getPersonById(90901);
+        org.junit.Assert.assertTrue(personResponse.getId() == 90901);
+        org.junit.Assert.assertTrue(personResponse.getFirstName().equals("Stefan"));
+        org.junit.Assert.assertTrue(personResponse.getLastName().equals("Radzhinskij"));
+        org.junit.Assert.assertTrue(personResponse.getPhone().equals("+79163202121"));
     }
 
     @Test
