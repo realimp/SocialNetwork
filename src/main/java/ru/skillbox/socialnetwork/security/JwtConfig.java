@@ -1,15 +1,10 @@
 package ru.skillbox.socialnetwork.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 @Component
 public class JwtConfig {
-
-    @Autowired
-    private PersonRepository personRepository;
 
     private String token;
 
@@ -29,9 +24,5 @@ public class JwtConfig {
 
     public String getLoginUrl() {
         return loginUrl;
-    }
-
-    public PersonRepository getPersonRepository() {
-        return personRepository;
     }
 }

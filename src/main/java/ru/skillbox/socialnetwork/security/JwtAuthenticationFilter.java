@@ -37,10 +37,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private AuthenticationManager authenticationManager;
 
+    private CustomUserDetailsService userDetailsService;
+
     private JwtConfig jwtConfig;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, JwtConfig jwtConfig) {
         this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
         this.jwtConfig = jwtConfig;
 
         setFilterProcessesUrl(jwtConfig.getLoginUrl());
@@ -77,7 +80,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret().getBytes())
                 .compact();
 
-        Person person = jwtConfig.getPersonRepository().findByEMail(user.getUsername());
+        Person person = userDetailsService.getThreadLocal();
+        userDetailsService.deleteThreadLocal();
 
         UserAuthorization authorization = new UserAuthorization();
         authorization.setId(person.getId());
