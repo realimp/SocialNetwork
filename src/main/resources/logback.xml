@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <logger name="ru.skillbox.socialnetwork" level="debug" />
+    <logger name="org.springframework.web.filter.CommonsRequestLoggingFilter" level="debug" />
+    <logger name="org.springframework" level="warn" />
+    <logger name="org.apache.tomcat.jdbc.pool" level="warn" />
+
+    <timestamp key="byMilliSecond" datePattern="yyyyMMddHHmmssSSS"/>
+
+    <property name="LOG_PATH" value="${LOG_PATH:-logs}" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>
+        </encoder>
+    </appender>
+
+    <appender name="server" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${LOG_PATH}/server.log</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_PATH}/server.%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg %n</Pattern>
+        </encoder>
+    </appender>
+
+    <root level="error">
+        <appender-ref ref="server" />
+    </root>
+</configuration>
