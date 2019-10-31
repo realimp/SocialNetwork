@@ -4,15 +4,17 @@ import java.util.Objects;
 
 public class UserAuthorization extends PersonResponse{
 
-    private Token token;
+    private String token;
 
-    public UserAuthorization() {}
+    public UserAuthorization() {
 
-    public Token getToken() {
+    }
+
+    public String getToken() {
         return token;
     }
 
-    public void setToken(Token token) {
+    public void setToken(String token) {
         this.token = token;
     }
 

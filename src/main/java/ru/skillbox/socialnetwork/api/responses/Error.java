@@ -13,6 +13,17 @@ public class Error {
         UNAUTHORIZED
     }
 
+    public ErrorDescription getError_description() {
+        return error_description;
+    }
+
+    public void setError_description(ErrorDescription error_description) {
+        this.error_description = error_description;
+    }
+
+    public void setError(ErrorType error) {
+        this.error = error;
+    }
 }
 
 
