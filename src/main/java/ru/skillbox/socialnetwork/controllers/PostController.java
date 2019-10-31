@@ -1,6 +1,8 @@
 package ru.skillbox.socialnetwork.controllers;
 
 import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,11 +14,15 @@ import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
-import ru.skillbox.socialnetwork.entities.Message;
+import ru.skillbox.socialnetwork.mappers.PostMapper;
+import ru.skillbox.socialnetwork.services.PostService;
 
 @RestController
 @RequestMapping("/post")
 public class PostController {
+
+  @Autowired
+  private PostService postService;
 
   @GetMapping("/") //Post search
   public ResponseList<PostResponse> postSearch(String text, Date dateFrom, Date dateTo, int offset, int itemPerPage) {
@@ -30,7 +36,8 @@ public class PostController {
 
   @GetMapping("/{id}") //Getting post by ID
   public Response<PostResponse> postGetById(@PathVariable int id) {
-    return new Response<>(new PostResponse());
+    Response<PostResponse> response = new Response<PostResponse>(PostMapper.getPostResponse(postService.getOnePostById(id)));
+    return response;
   }
 
   @PutMapping("/{id}") //Editing a post by ID
