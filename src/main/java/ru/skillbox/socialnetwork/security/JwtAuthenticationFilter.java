@@ -124,7 +124,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String jsonString = new Gson().toJson(error);
 
         PrintWriter writer = response.getWriter();
-        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json");
         writer.print(jsonString);
         writer.flush();
