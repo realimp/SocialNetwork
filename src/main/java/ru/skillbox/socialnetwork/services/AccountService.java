@@ -44,7 +44,7 @@ public class AccountService {
         person.setEMail(register.getEmail());
         person.setPassword(passwordEncoder.encode(register.getPasswd1()));
         person.setLastName(register.getLastName());
-        personRepository.saveAndFlush(person);
+        personRepository.save(person);
         message.setMessage("ok");
         return new Response(message);
     }
@@ -75,7 +75,7 @@ public class AccountService {
     public Response changePassword(String token, String password) {
         Person person = getCurrentUser();
         person.setPassword(passwordEncoder.encode(password));
-        person = personRepository.saveAndFlush(person);
+        person = personRepository.save(person);
         MessageResponse message = new MessageResponse();
         if (person.getPassword().equals(password)) {
             message.setMessage("ok");
@@ -88,7 +88,7 @@ public class AccountService {
     public Response changeEmail(String email) {
         Person person = getCurrentUser();
         person.setEMail(email);
-        person = personRepository.saveAndFlush(person);
+        person = personRepository.save(person);
         if (person.getEMail().equals(email)) {
             MessageResponse message = new MessageResponse();
             message.setMessage("ok");
