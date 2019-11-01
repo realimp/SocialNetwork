@@ -1,3 +1,7 @@
+//Автор:
+//Имя: Дмитрий Хрипков
+//Псевдоним: X64
+//Почта: HDV_1990@mail.ru
 package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.ui.Model;

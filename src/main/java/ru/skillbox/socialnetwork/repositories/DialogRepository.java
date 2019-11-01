@@ -1,3 +1,7 @@
+//Автор:
+//Имя: Дмитрий Хрипков
+//Псевдоним: X64
+//Почта: HDV_1990@mail.ru
 package ru.skillbox.socialnetwork.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +22,5 @@ public interface DialogRepository extends JpaRepository<Dialog, Integer> {
     Optional<Dialog> findByMessageText (String requiredText);
 
     Optional<Dialog> findById (Integer id);
-    
+
 }
