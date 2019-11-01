@@ -14,7 +14,7 @@ public interface NotificationRepository extends JpaRepository<Notification,Integ
 
     @Query("SELECT n FROM Notification n LEFT JOIN n.author WHERE n.author=:person_id")
     List<Notification> findByPersonId(@Param("person_id") Integer personId);
-
+    @Query("SELECT n FROM Notification n LEFT JOIN n.author WHERE n.author=:person_id and n.typeId=:type")
     List<Notification> findByTypeId(@Param("type") NotificationTypeCode code, @Param("person_id") Integer personId);
 
 }
