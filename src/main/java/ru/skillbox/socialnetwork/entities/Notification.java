@@ -24,10 +24,9 @@ public class Notification {
     @NotNull
     private Date sentDate;
 
-    @Column(name="person_id")
     @NotNull
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "person_id", nullable = false)
     private Person author;
 
     @Column(name="entity_id")
