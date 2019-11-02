@@ -33,8 +33,11 @@ public class AccountService {
 
         MessageResponse message = new MessageResponse();
 
+        // нажо так же проверять что пароли не пустые
         if (!register.getPasswd1().equals(register.getPasswd2())) {
-            message.setMessage("Passwords are not equal! Пароли не идентичны!");
+            message.setMessage("Пароли не идентичны!");
+
+            // тут надо так же заполнить поля error и timestamp у самого Response
             return new Response(message);
         }
 
@@ -44,8 +47,14 @@ public class AccountService {
         person.setEMail(register.getEmail());
         person.setPassword(passwordEncoder.encode(register.getPasswd1()));
         person.setLastName(register.getLastName());
+        person.setApproved(true);  // поле not null в базе
+        person.setBlocked(false); // аналогично
+        person.setDeleted(false); // similar
+        person.setOnline(false); //  analogue
+        person.setPhone(""); // в базе стоит not null  это неправильно, надо поправить тоже
         personRepository.save(person);
         message.setMessage("ok");
+        // тут надо заполнить timestamp у response
         return new Response(message);
     }
 
