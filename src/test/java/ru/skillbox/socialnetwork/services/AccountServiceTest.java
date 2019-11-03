@@ -1,12 +1,11 @@
 package ru.skillbox.socialnetwork.services;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,198 +13,171 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.entities.Message;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
+
+import javax.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AccountServiceTest {
 
+    private Person person;
+
     @Autowired
     private AccountService accountService;
 
-    @Autowired
+    @MockBean
     private PersonRepository personRepository;
 
-    @BeforeClass
-    public static void setup() {
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+
+    @MockBean
+    private EMailService eMailService;
+
+    @Before
+    public void setUp() {
         Authentication authentication = Mockito.mock(Authentication.class);
-
-        Mockito.when(authentication.getName()).thenReturn("Нужный тебе email");
-        // Mockito.whens() for your authorization object
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+
+        person = new Person();
+        person.setConfirmationCode("Code123");
+        person.setFirstName("firstName");
+        person.setEMail("test@email.com");
+        person.setPassword("pass1");
+        person.setLastName("lastName");
+        person.setApproved(true);
+        person.setBlocked(false);
+        person.setDeleted(false);
+        person.setOnline(false);
+        person.setPhone("");
+
+        String eMail = person.getEMail();
+
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        securityContext.setAuthentication(authentication);
+        Mockito.when(authentication.getPrincipal()).thenReturn(eMail);
         SecurityContextHolder.setContext(securityContext);
+        Mockito.when(accountService.getCurrentUser()).thenReturn(person);
+
+        Mockito.when(personRepository.save(person)).thenReturn(person);
+        Mockito.when(personRepository.findByEMail(eMail)).thenReturn(person);
+        Mockito.when(passwordEncoder.encode(person.getPassword())).thenReturn(person.getPassword());
     }
-
-
-    // не обязательно мокать все бины, только те, действие которых тебе  нужно заменить на свою,
-    // все остальные заинжектсятся сами спрингом.
-//    @MockBean
-//    private PersonRepository personRepository;
-//
-//    @MockBean
-//    private PasswordEncoder passwordEncoder;
-//
-//    @MockBean
-//    private EMailService eMailService;
-//
-//    @MockBean
-//    private SecurityContext securityContext;
-//
-//
-//    @MockBean
-//    private UserAuthorization authorization;
 
     @Test
     public void registerTest() throws JsonProcessingException {
-
+        
+        // тесты register при верных данных
         Register register = new Register();
         register.setEmail("test@email.com");
         register.setPasswd1("pass1");
-        register.setPasswd2("anotherPass");
+        register.setPasswd2("pass1");
         register.setFirstName("firstName");
         register.setLastName("lastName");
         register.setCode("code123");
+        person = personRepository.save(person);
 
-        // проверяем что при разных паролях кидаем правильную ошибку
+        //проверяем, что ответ 'ok'
         Response<MessageResponse> result = accountService.register(register);
-        String error = result.getError();
-//        Assert.assertEquals("Пароли не идентичны!", error); будет проходить если поправить в сервисе
-
-        register.setPasswd2(register.getPasswd1());
-        result = accountService.register(register);
-
-        Assert.assertEquals("ok", result.getData().getMessage()); // проверяем что все четко
-
-        // так же нужно в базе поставить ключ уникальность на поле email сейчас этого нет и это неправильно
-        Person person = personRepository.findByEMail(register.getEmail());
-        Assert.assertNotNull(person);
-
-        personRepository.delete(person);
-
-        // удаление персоны это очень костыльно. гораздо лучше убрать аннотацию спрингбуттест и добавть
-        // @DataJpaTest тогда в тестах будет подниматся временная база и из нее можно ничего не удалять т.к.
-        // после завершения теста она изчезнет, но наши файлы миграции почему то ломаются с этой аннотацией
-        // будет идеально если разберешься и починишь
-        
-
-//        Person person = new Person();
-//        person.setPassword(registerOk.getPasswd1());
-//        person.setFirstName(registerOk.getFirstName());
-//        person.setLastName(registerOk.getLastName());
-//        person.setEMail(registerOk.getEmail());
-//        person.setConfirmationCode(registerOk.getCode());
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(person));
-//
-//        Mockito.when(personRepository.save(person)).thenReturn(person);
-//        Mockito.when(passwordEncoder.encode("pass1")).thenReturn("pass1");
-//
-//        accountService.register(registerOk);
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(person));
-//
-//        Mockito.verify(personRepository, Mockito.times(1)).save(person);
-//        Assert.assertEquals("lastName", personRepository.findByEMail("test@email.com").getLastName());
-//
-//        Register register = new Register();
-//        register.setEmail("test@email.com");
-//        register.setPasswd1("pass1");
-//        register.setPasswd2("pass2");
-//
-//        accountService.register(register);
-//        Mockito.verify(personRepository, Mockito.never()).save(person);
+        Mockito.verify(personRepository, Mockito.times(1)).save(person);
+        Assert.assertEquals("ok", result.getData().getMessage());
     }
-//
-//    @Test
-//    public void recovery() throws MessagingException, JsonProcessingException, UnsupportedEncodingException {
-//        Person person = new Person();
-//        person.setPassword("123");
-//        person.setFirstName("Ivanov");
-//        person.setLastName("Petr");
-//        person.setEMail("some@mail");
-//
-//        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-//        securityContext.setAuthentication(authentication);
-//        Mockito.when(authentication.getPrincipal()).thenReturn("some@mail");
-//        SecurityContextHolder.setContext(securityContext);
-//        Mockito.when(accountService.getCurrentUser()).thenReturn(person);
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(accountService.getCurrentUser()));
-//
-//        accountService.recovery("some@mail");
-//
-//                Mockito.verify(eMailService, Mockito.times(1))
-//                .sendEmail(
-//                        ArgumentMatchers.eq("JavaPro2.SkillBox@mail.ru"),
-//                        ArgumentMatchers.eq("some@mail"),
-//                        ArgumentMatchers.anyString(),
-//                        ArgumentMatchers.anyString());
-//    }
-//
-//    @Test
-//    public void changePassword() throws JsonProcessingException {
-//        Person person = new Person();
-//        person.setPassword("123");
-//        person.setFirstName("Ivanov");
-//        person.setLastName("Petr");
-//        person.setEMail("some@mail.com");
-//        person.setPassword("somePass");
-//        String newPass = "changePass";
-//
-//
-//        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-//        securityContext.setAuthentication(authentication);
-//        Mockito.when(authentication.getPrincipal()).thenReturn("some@mail.com");
-//        SecurityContextHolder.setContext(securityContext);
-//        Mockito.when(accountService.getCurrentUser()).thenReturn(person);
-//        Mockito.when(passwordEncoder.encode(newPass)).thenReturn(newPass);
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(accountService.getCurrentUser()));
-//
-//        person.setPassword(newPass);
-//        Mockito.when(personRepository.save(person)).thenReturn(person);
-//        Mockito.when(personRepository.findByEMail("some@mail.com")).thenReturn(person);
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(accountService.getCurrentUser()));
-//
-//        accountService.changePassword("token", newPass);
-//
-//        Mockito.verify(personRepository, Mockito.times(1)).save(person);
-//        Assert.assertEquals(newPass, personRepository.findByEMail("some@mail.com").getPassword());
-//    }
-//
-//    @Test
-//    public void changeEmail() throws JsonProcessingException {
-//        Person person = new Person();
-//        person.setPassword("123");
-//        person.setFirstName("Ivanov");
-//        person.setLastName("Petr");
-//        person.setEMail("some@mail");
-//        String newMail = "change@mail.com";
-//
-//        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-//        securityContext.setAuthentication(authentication);
-//        Mockito.when(authentication.getPrincipal()).thenReturn("some@mail");
-//        SecurityContextHolder.setContext(securityContext);
-//        Mockito.when(accountService.getCurrentUser()).thenReturn(person);
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(accountService.getCurrentUser()));
-//
-//        person.setEMail(newMail);
-//        Mockito.when(personRepository.save(person)).thenReturn(person);
-//        Mockito.when(personRepository.findByEMail(newMail)).thenReturn(person);
-//
-//        System.out.println(new ObjectMapper().writeValueAsString(accountService.getCurrentUser()));
-//
-//        accountService.changeEmail(newMail);
-//        Mockito.verify(personRepository, Mockito.times(1)).save(person);
-//        Assert.assertEquals("change@mail.com", personRepository.findByEMail("change@mail.com").getEMail());
-//    }
+
+    @Test
+    public void registerFailTest() {
+        // тесты register при неверных данных
+        Register registerFail = new Register();
+        registerFail.setEmail("test@email.com");
+        registerFail.setPasswd1("pass1");
+        registerFail.setPasswd2("pass2");
+        registerFail.setFirstName("firstName");
+        registerFail.setLastName("lastName");
+        registerFail.setCode("code123");
+
+        // проверяем, что при разных паролях кидаем правильную ошибку
+        Response<MessageResponse> resultFail = accountService.register(registerFail);
+        Assert.assertEquals("Error by registry", resultFail.getError());
+
+        // проверяем, что не вызывается personRepository.save(person)
+        accountService.register(registerFail);
+        Mockito.verify(personRepository, Mockito.never()).save(person);
+    }
+
+    @Test
+    public void recoveryTest() throws MessagingException, UnsupportedEncodingException {
+
+        String mailText = "You password has been changed to ";
+        String eMail = person.getEMail();
+
+        //проверяем, что ответ 'ok', при отправке email
+        Mockito.when(eMailService.sendEmail("JavaPro2.SkillBox@mail.ru",
+                eMail, "recoveryPassword", mailText)).thenReturn(true);
+
+        Response<MessageResponse> result = accountService.recovery(eMail);
+        Assert.assertEquals("ok", result.getData().getMessage());
+
+
+        //проверяем, что есть обрашение к методу отправки почты
+        Mockito.verify(eMailService, Mockito.times(1))
+                .sendEmail(
+                        ArgumentMatchers.eq("JavaPro2.SkillBox@mail.ru"),
+                        ArgumentMatchers.eq(eMail),
+                        ArgumentMatchers.anyString(),
+                        ArgumentMatchers.anyString());
+
+        //проверяем, что ответ 'error', т.к. email не был отправлен
+        Mockito.when(eMailService.sendEmail("JavaPro2.SkillBox@mail.ru",
+                eMail, "recoveryPassword", mailText)).thenReturn(false);
+
+        Response<MessageResponse> resultFail = accountService.recovery(eMail);
+        String error = "Error by recovery";
+        Assert.assertEquals(error, resultFail.getError());
+
+    }
+
+    @Test
+    public void changePasswordTest() {
+        String newPass = "newPass";
+
+        Mockito.when(passwordEncoder.encode(newPass)).thenReturn(newPass);
+        person.setPassword(newPass);
+
+        //проверяем, что ответ 'ok', при верных паролях
+        Response<MessageResponse> result = accountService.changePassword("token", newPass);
+        Assert.assertEquals("ok", result.getData().getMessage());
+
+        // проверяем, что при ответе ok, есть обращение к personRepository.save(person)
+        Mockito.verify(personRepository, Mockito.times(1)).save(person);
+
+        //проверяем, что ответ 'error' при разных паролях
+        Response<MessageResponse> resultFail = accountService.changePassword("token", "pass");
+        String error = "Error by changing Password";
+        Assert.assertEquals(error, resultFail.getError());
+    }
+
+    @Test
+    public void changeEmailTest() {
+        String eMail = person.getEMail();
+
+        Mockito.when(personRepository.save(person)).thenReturn(person);
+        Mockito.when(personRepository.findByEMail(eMail)).thenReturn(person);
+
+        //проверяем, что ответ 'ok'
+        Response<MessageResponse> result = accountService.changeEmail(eMail);
+        Assert.assertEquals("ok", result.getData().getMessage());
+
+        // проверяем, что при ответе ok, есть обращение к personRepository.save(person)
+        Mockito.verify(personRepository, Mockito.times(1)).save(person);
+
+        //проверяем, что ответ 'error' null
+        Assert.assertNull(result.getError());
+    }
 }
