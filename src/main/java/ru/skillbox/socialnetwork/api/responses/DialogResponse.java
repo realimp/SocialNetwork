@@ -2,7 +2,7 @@ package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Dialog {
+public class DialogResponse {
 
     private Integer id;
     @JsonProperty("unread_count")
@@ -10,7 +10,9 @@ public class Dialog {
     @JsonProperty("last_message")
     private DialogMessage lastMessage;
 
-    public Dialog() {
+    private String inviteCode;
+
+    public DialogResponse() {
     }
 
     public Integer getId() {
@@ -36,5 +38,4 @@ public class Dialog {
     public void setLastMessage(DialogMessage lastMessage) {
         this.lastMessage = lastMessage;
     }
-
 }
