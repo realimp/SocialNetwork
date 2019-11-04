@@ -22,48 +22,49 @@ public class ProfileService {
     @Autowired
     private PersonRepository personRepository;
 
+    @Autowired
+    private AccountService accountService;
+
     public PersonResponse getPerson() {
-        //TODO: Get current user w/o id (Spring Security)
-        PersonResponse person = new PersonResponse();
-        return person;
+        Person person = accountService.getCurrentUser();
+        PersonResponse personResponse = convertPersonToPersonResponse(person);
+        return personResponse;
     }
 
     public void editPerson(String firstName, String lastName, Date birthDate, String phone, String photoId,
                            String about, Integer cityId, Integer countryId, String messagesPermission) {
-        //TODO: Get current user w/o id  &&  update after adding city & country dictionaries
-        Person person = new Person();
+        //TODO: City & Country
+        Person person = accountService.getCurrentUser();
         person.setFirstName(firstName);
         person.setLastName(lastName);
         person.setBirthDate(birthDate);
         person.setPhone(phone);
         person.setPhoto(photoId);
         person.setAbout(about);
-        person.setCity(new City(cityId, "test Title").getTitle());
-        person.setCountry(new Country(countryId,"test Title").getTitle());
+        person.setCity(new City(1, "Moscow").getTitle());
+        person.setCountry(new Country(1,"Russia").getTitle());
         person.setMessagesPermission(messagesPermission);
         personRepository.saveAndFlush(person);
     }
 
     public void deletePerson() {
-        //TODO: Get current user w/o id
-        Person person = new Person();
+        Person person = accountService.getCurrentUser();
         person.setDeleted(true);
         personRepository.saveAndFlush(person);
     }
 
     public PersonResponse getPersonById(Integer id) {
-        //TODO: update after adding city & country dictionaries
         Person person = personRepository.getOne(id);
         return convertPersonToPersonResponse(person);
     }
 
     public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
-        //TODO: update after adding PostRepository
+        //TODO: PostRepository
         return new ArrayList<>();
     }
 
     public void addWallPostById(Integer id, Date publishDate) {
-        //TODO: update after adding PostRepository
+        //TODO: PostRepository
     }
 
     public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
@@ -102,6 +103,7 @@ public class ProfileService {
     }
 
     public PersonResponse convertPersonToPersonResponse(Person person) {
+        //TODO: City & Country
         PersonResponse personResponse = new PersonResponse();
         personResponse.setId(person.getId());
         personResponse.setFirstName(person.getFirstName());
@@ -112,8 +114,8 @@ public class ProfileService {
         personResponse.setPhone(person.getPhone());
         personResponse.setPhoto(person.getPhoto());
         personResponse.setAbout(person.getAbout());
-        personResponse.setCity(new City(1,person.getCity()));
-        personResponse.setCountry(new Country(1, person.getCountry()));
+        personResponse.setCity(new City(1,"Moscow"));
+        personResponse.setCountry(new Country(1, "Russia"));
         personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission() != null ?
                 person.getMessagesPermission() : "ALL"));
         personResponse.setLastOnlineTime(person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null);
