@@ -46,6 +46,7 @@ public class AccountService {
         }
 
         Person person = new Person();
+        person.setRegDate(new Date());
         person.setConfirmationCode(register.getCode());
         person.setFirstName(register.getFirstName());
         person.setEMail(register.getEmail());
