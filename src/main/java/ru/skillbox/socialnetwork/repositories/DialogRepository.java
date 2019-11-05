@@ -13,14 +13,11 @@ import java.util.Optional;
 @Repository
 public interface DialogRepository extends JpaRepository<Dialog, Integer> {
 
-    void clear ();
-
-    void block ();
-
-    void mute ();
 
     Optional<Dialog> findByMessageText (String requiredText);
 
     Optional<Dialog> findById (Integer id);
+
+    void deleteById(Integer id);
 
 }
