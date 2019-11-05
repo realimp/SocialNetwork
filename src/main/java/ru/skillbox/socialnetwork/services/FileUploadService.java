@@ -33,7 +33,7 @@ public class FileUploadService {
 
     private final DateFormat formatter= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    public Response<FileUploadResponse> fileUpload(MultipartFile file) {
+    public Response<FileUploadResponse> fileUpload(MultipartFile file, Integer currentUserId) {
         logger.info("Загрузка файла {}", file.getName());
         if (file.isEmpty()) {
             logger.error("Не удалось загрузить файл, потому что файл пустой");
@@ -57,8 +57,7 @@ public class FileUploadService {
             fileUploadResponse.setBytes(Long.valueOf(response.get("bytes").toString()));
             fileUploadResponse.setFileType(FileType.IMAGE);
             fileUploadResponse.setCreatedAt(formatter.parse(response.get("created_at").toString()).getTime());
-            //TODO: установить идентификатор текущего пользователя
-            fileUploadResponse.setOwnerId(0);
+            fileUploadResponse.setOwnerId(currentUserId);
             logger.info("Файл {} успешно загружен в {}", file.getName(), fileUploadResponse.getRawFileURL());
             return new Response<>(fileUploadResponse);
         } catch (IOException | ParseException e) {

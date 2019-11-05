@@ -28,7 +28,7 @@ public class FileUploadServiceTest {
         FileInputStream input = new FileInputStream(file);
         String fileName = file.getName();
         MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, new MimetypesFileTypeMap().getContentType(fileName), input);
-        Response<FileUploadResponse> response = fileUploadService.fileUpload(multipartFile);
+        Response<FileUploadResponse> response = fileUploadService.fileUpload(multipartFile, 0);
         Assert.assertNull(response.getError());
         Assert.assertEquals("jpg", response.getData().getFileFormat());
         Assert.assertEquals(fileName, response.getData().getFileName());
@@ -38,13 +38,13 @@ public class FileUploadServiceTest {
         Assert.assertEquals((Long) file.length(), response.getData().getBytes());
         Assert.assertEquals(FileType.IMAGE, response.getData().getFileType());
         Assert.assertNotNull(response.getData().getCreatedAt());
-        //Assert.assertNotNull(response.getData().getOwnerId());
+        Assert.assertEquals((Integer) 0, response.getData().getOwnerId());
 
         file = new File("pom.xml");
         input = new FileInputStream(file);
         fileName = file.getName();
         multipartFile = new MockMultipartFile(fileName, fileName, new MimetypesFileTypeMap().getContentType(fileName), input);
-        response = fileUploadService.fileUpload(multipartFile);
+        response = fileUploadService.fileUpload(multipartFile, 0);
         Assert.assertEquals("Не удалось загрузить файл, данный тип файлов не поддерживается", response.getError());
         Assert.assertNull(response.getData());
 
@@ -52,7 +52,7 @@ public class FileUploadServiceTest {
         input = new FileInputStream(file);
         fileName = file.getName();
         multipartFile = new MockMultipartFile(fileName, fileName, new MimetypesFileTypeMap().getContentType(fileName), input);
-        response = fileUploadService.fileUpload(multipartFile);
+        response = fileUploadService.fileUpload(multipartFile, 0);
         Assert.assertEquals("Не удалось загрузить файл, потому что файл пустой", response.getError());
         Assert.assertNull(response.getData());
     }
