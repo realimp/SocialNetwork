@@ -88,15 +88,17 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         authorization.setFirstName(person.getFirstName());
         authorization.setLastName(person.getLastName());
         authorization.setRegDate(person.getRegDate().getTime());
-        authorization.setBirthDate(person.getBirthDate().getTime());
+        if (person.getBirthDate() != null) {
+            authorization.setBirthDate(person.getBirthDate().getTime());
+        }
         authorization.seteMail(user.getUsername());
         authorization.setPhone(person.getPhone());
         authorization.setPhoto(person.getPhoto());
         authorization.setAbout(person.getAbout());
-        authorization.setCity(new City(1, person.getCity())); //TODO: update after adding city & country dictionaries
-        authorization.setCountry(new Country(1, person.getCountry())); //TODO: update after adding city & country dictionaries
+        authorization.setCity(new City(1, "Moscow")); //TODO: update after adding city & country dictionaries
+        authorization.setCountry(new Country(1, "Russia")); //TODO: update after adding city & country dictionaries
         authorization.setMessagesPermission(MessagePermission.ALL);
-        authorization.setLastOnlineTime(person.getLastOnlineTime().getTime());
+        authorization.setLastOnlineTime(new Date().getTime());
         authorization.setBlocked(person.getBlocked());
         authorization.setToken(token);
 
