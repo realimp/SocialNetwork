@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.socialnetwork.api.responses.FileUploadResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.security.SecurityService;
+import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.FileUploadService;
 
 @RestController
@@ -16,11 +17,12 @@ public class FileUploadController {
     @Autowired
     private FileUploadService fileUploadService;
     @Autowired
-    private SecurityService securityService;
+    private AccountService accountService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response<FileUploadResponse> fileUpload(@RequestParam("type") String type, @RequestBody MultipartFile file) {
-        Integer currentUserId = securityService.currentUserId();
-        return fileUploadService.fileUpload(file, currentUserId);
+        Person currentUser = accountService.getCurrentUser();
+        if (currentUser == null) return new Response<>("Не удалось определить пользователя", null);
+        return fileUploadService.fileUpload(file, currentUser.getId());
     }
 }
