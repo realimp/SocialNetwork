@@ -21,72 +21,73 @@ import ru.skillbox.socialnetwork.services.PostService;
 @RequestMapping("/post")
 public class PostController {
 
-  @Autowired
-  private PostService postService;
+    @Autowired
+    private PostService postService;
 
-  @GetMapping("/") //Post search
-  public ResponseList<PostResponse> postSearch(String text, Date dateFrom, Date dateTo, int offset, int itemPerPage) {
-    return new ResponseList<>(new PostResponse());
-  }
+    @GetMapping("/") //Post search
+    public ResponseList<PostResponse> postSearch(String text, Date dateFrom, Date dateTo, int offset, int itemPerPage) {
+        return new ResponseList<>(new PostResponse());
+    }
 
-  @PostMapping("/") //Post creation
-  public Response<PostResponse> postCreate(Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
-    return new Response<>(new PostResponse());
-  }
+    @PostMapping("/") //Post creation
+    public Response<PostResponse> postCreate(Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
+        return new Response<>(new PostResponse());
+    }
 
-  @GetMapping("/{id}") //Getting post by ID
-  public Response<PostResponse> postGetById(@PathVariable int id) {
-    Response<PostResponse> response = new Response<PostResponse>(PostMapper.getPostResponse(postService.getOnePostById(id)));
-    return response;
-  }
+    @GetMapping("/{id}") //Getting post by ID
+    public Response<PostResponse> postGetById(@PathVariable int id) {
+        Response<PostResponse> response = new Response<PostResponse>(PostMapper.getPostResponse(postService.getOnePostById(id)));
+        return response;
+    }
 
-  @PutMapping("/{id}") //Editing a post by ID
-  public Response<PostResponse> postEditById(@PathVariable int id, Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
-    return new Response<>(new PostResponse());
-  }
+    @PutMapping("/{id}") //Editing a post by ID
+    public Response<PostResponse> postEditById(@PathVariable int id, Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
+        return new Response<>(new PostResponse());
+    }
 
-  @DeleteMapping("/{id}") //Delete post by ID
-  public Response<PostResponse> postDeleteById(@PathVariable int id) {
-    return new Response<>(new PostResponse());
-  }
+    @DeleteMapping("/{id}") //Delete post by ID
+    public Response<PostResponse> postDeleteById(@PathVariable int id) {
+        //Response<PostResponse> response = new Response<PostResponse>(postService.deletePostById(id));
+        return new Response<>(new PostResponse());
+    }
 
-  @PutMapping("/{id}/recover") //Post recovery by ID
-  public Response<PostResponse> postRecoverById(@PathVariable int id) {
-    return new Response<>(new PostResponse());
-  }
+    @PutMapping("/{id}/recover") //Post recovery by ID
+    public Response<PostResponse> postRecoverById(@PathVariable int id) {
+        return new Response<>(new PostResponse());
+    }
 
-  @GetMapping("/{id}/comments") //Getting post comments
-  public ResponseList<Comment>  postGetComments(@PathVariable int id, int offset, int itemPerPage) {
-    return new ResponseList<>(new Comment());
-  }
+    @GetMapping("/{id}/comments") //Getting post comments
+    public ResponseList<Comment> postGetComments(@PathVariable int id, int offset, int itemPerPage) {
+        return new ResponseList<>(new Comment());
+    }
 
-  @PostMapping("/{id}/comments") //Post comment
-  public Response<Comment> postComments(@PathVariable int id) {//@RequestBody
-    return new Response<>(new Comment());
-  }
+    @PostMapping("/{id}/comments") //Post comment
+    public Response<Comment> postComments(@PathVariable int id) {//@RequestBody
+        return new Response<>(new Comment());
+    }
 
-  @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
-  public Response<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id) {//@RequestBody
-    return new Response<>(new PostResponse());
-  }
+    @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
+    public Response<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id) {//@RequestBody
+        return new Response<>(new PostResponse());
+    }
 
-  @DeleteMapping("/{id}/comments/{comment_id}") //Removing a post comment
-  public Response<PostResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
-    return new Response<>(new PostResponse());
-  }
+    @DeleteMapping("/{id}/comments/{comment_id}") //Removing a post comment
+    public Response<PostResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
+        return new Response<>(new PostResponse());
+    }
 
-  @PutMapping("/{id}/comments/{comment_id}/recover") //Comment recovery
-  public Response<PostResponse> postCommentsRecovery(@PathVariable int id, @PathVariable int comment_id) {
-    return new Response<>(new PostResponse());
-  }
+    @PutMapping("/{id}/comments/{comment_id}/recover") //Comment recovery
+    public Response<PostResponse> postCommentsRecovery(@PathVariable int id, @PathVariable int comment_id) {
+        return new Response<>(new PostResponse());
+    }
 
-  @PostMapping("/{id}/report") //Post a complaint
-  public Response postCommentComplain(@PathVariable int id) {
-    return new Response("ok");
-  }
+    @PostMapping("/{id}/report") //Post a complaint
+    public Response postCommentComplain(@PathVariable int id) {
+        return new Response("ok");
+    }
 
-  @PostMapping("/{id}/comments/{comment_id}/report") //File a complaint about post comments
-  public Response postComplainToComment(@PathVariable int id, @PathVariable int comment_id) {
-    return new Response("ok");
-  }
+    @PostMapping("/{id}/comments/{comment_id}/report") //File a complaint about post comments
+    public Response postComplainToComment(@PathVariable int id, @PathVariable int comment_id) {
+        return new Response("ok");
+    }
 }
