@@ -33,9 +33,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/account/register").permitAll()
+                .and()
+                .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtAuthenticationFilter(authenticationManager(), jwtConfig))
+                .addFilter(new JwtAuthenticationFilter(authenticationManager(), userDetailsService, jwtConfig))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtConfig))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);

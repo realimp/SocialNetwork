@@ -2,12 +2,18 @@ package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
+import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 @Service
 @Transactional
@@ -15,30 +21,53 @@ public class AccountService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private EMailService eMailService;
+
     private String ABC = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
-    public MessageResponse register(String email, String passwd1, String passwd2, String firstName, String lastName, String code) {
+    public Response register(Register register) {
 
         MessageResponse message = new MessageResponse();
 
-        if (!passwd1.equals(passwd2)) {
-            message.setMessage("");
-            return message;
+        // нажо так же проверять что пароли не пустые
+        if (!register.getPasswd1().equals(register.getPasswd2())
+                || register.getPasswd1().isEmpty()) {
+            message.setMessage("Пароли не идентичны!");
+
+            String error = "Error by registry";
+            long timestamp = new Date().getTime();
+
+            return new Response(error, timestamp, message);
         }
 
         Person person = new Person();
-        person.setConfirmationCode(code);
-        person.setFirstName(firstName);
-        person.setEMail(email);
-        person.setPassword(passwd1);
-        person.setLastName(lastName);
-        personRepository.saveAndFlush(person);
-        message = new MessageResponse();
+        person.setRegDate(new Date());
+        person.setConfirmationCode(register.getCode());
+        person.setFirstName(register.getFirstName());
+        person.setEMail(register.getEmail());
+        person.setPassword(passwordEncoder.encode(register.getPasswd1()));
+        person.setLastName(register.getLastName());
+        person.setApproved(true);
+        person.setBlocked(false);
+        person.setDeleted(false);
+        person.setOnline(false);
+        person.setPhone("");
+        personRepository.save(person);
         message.setMessage("ok");
-        return message;
+
+        long timestamp = new Date().getTime();
+        Response response = new Response(message);
+        response.setTimestamp(timestamp);
+        return response;
     }
 
-    public MessageResponse recovery(String email) {
+    public Response recovery(String email) throws UnsupportedEncodingException, MessagingException {
+        long timestamp = new Date().getTime();
 
         int count = (int) (Math.random() * 5) + 6;
         StringBuilder newPas = new StringBuilder();
@@ -47,61 +76,83 @@ public class AccountService {
             newPas.append(ABC.charAt((int) (Math.random() * ABC.length())));
 
         Person person = getCurrentUser();
-        person.setPassword(newPas.toString());
 
-        personRepository.saveAndFlush(person);
-        EMailService eMailService = new EMailService();
-        String mailText = "You password has been changed to " + newPas.toString();
+        //String mailText = "You password has been changed to " + newPas.toString();
+        String mailText = "You password has been changed to ";
 
         MessageResponse message = new MessageResponse();
-        if (eMailService.sendEMail("JavaPro2.SkillBox@mail.ru", email, "recoveryPassword", mailText)) {
+        if (eMailService.sendEmail("JavaPro2.SkillBox@mail.ru",
+                email, "recoveryPassword", mailText)) {
+
+            person.setPassword(passwordEncoder.encode(newPas.toString()));
+            personRepository.save(person);
+
+            Response response = new Response(message);
+            response.setTimestamp(timestamp);
             message.setMessage("ok");
+            return response;
         } else {
-            message.setMessage("");
+            String error = "Error by recovery";
+            message.setMessage(error);
+            return new Response(error, timestamp, message);
         }
-        return message;
     }
 
-    public MessageResponse changePassword(String token, String password) {
+    public Response changePassword(String token, String password) {
+        long timestamp = new Date().getTime();
+
         Person person = getCurrentUser();
-        person.setPassword(password);
-        person = personRepository.saveAndFlush(person);
+
         MessageResponse message = new MessageResponse();
-        if (person.getPassword().equals(password)) {
+        if (person.getPassword().equals(password) && !password.isEmpty()) {
+            person.setPassword(passwordEncoder.encode(password));
+            personRepository.save(person);
+
+            Response response = new Response(message);
+            response.setTimestamp(timestamp);
             message.setMessage("ok");
+            return response;
         } else {
-            message.setMessage("");
+            String error = "Error by changing Password";
+            message.setMessage(error);
+            return new Response(error, timestamp, message);
         }
-        return message;
     }
 
-    public MessageResponse changeEmail(String email) {
+    public Response changeEmail(String email) {
+        long timestamp = new Date().getTime();
+
         Person person = getCurrentUser();
         person.setEMail(email);
-        person = personRepository.saveAndFlush(person);
+
         if (person.getEMail().equals(email)) {
             MessageResponse message = new MessageResponse();
+
+            personRepository.save(person);
+
+            Response response = new Response(message);
+            response.setTimestamp(timestamp);
             message.setMessage("ok");
-            return message;
-        } else {
+            return response;
+        }
+        else {
             MessageResponse message = new MessageResponse();
-            message.setMessage("");
-            return message;
+            String error = "Error by changing Email";
+            message.setMessage(error);
+            return new Response(error, timestamp, message);
         }
     }
 
-    public MessageResponse getNotification() {
+    public Response getNotification() {
         return null;
     }
 
-    public MessageResponse setNotification() {
+    public Response setNotification() {
         return null;
     }
 
-
-    public Person getCurrentUser(){
+    public Person getCurrentUser() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return  personRepository.findByEMail(email);
+        return personRepository.findByEMail(email);
     }
-
 }

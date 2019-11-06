@@ -1,5 +1,6 @@
 package ru.skillbox.socialnetwork.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.socialnetwork.api.responses.*;
+import ru.skillbox.socialnetwork.services.ProfileService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +18,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 public class ProfileController {
+    @Autowired
+    private ProfileService profileService;
 
     //mapping for a current user
     @GetMapping("/me")
     public Response<PersonResponse> getMe() {
-        return new Response<>(new PersonResponse());
+        PersonResponse currentPerson = profileService.getPerson();
+        return new Response<>(currentPerson);
     }
 
     @PutMapping("/me")

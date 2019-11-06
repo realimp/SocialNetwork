@@ -1,6 +1,7 @@
 package ru.skillbox.socialnetwork.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -16,12 +17,15 @@ import java.util.List;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
+    private static ThreadLocal<Person> personThreadLocal = new ThreadLocal<>();
+
     @Autowired
     private PersonRepository personRepository;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Person person = personRepository.findByEMail(email);
+        saveThreadLocal(person);
 
         if (person != null) {
             List<GrantedAuthority> grantedAuthorities = AuthorityUtils
@@ -30,5 +34,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         throw new UsernameNotFoundException("Username with " + email + " not found");
+    }
+
+    private void saveThreadLocal(Person person) {
+        personThreadLocal.set(person);
+    }
+
+    public Person getThreadLocal() {
+        return personThreadLocal.get();
+    }
+
+    public void deleteThreadLocal() {
+        personThreadLocal.remove();
     }
 }
