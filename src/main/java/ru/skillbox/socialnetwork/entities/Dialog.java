@@ -16,9 +16,15 @@ public class Dialog {
 
     @Column(name = "unread_number")
     private Integer unreadNumber;
+    
+    @Column(name = "owner_id")
+    private Integer ownerId;
 
-    @Column(name = "last_message")
-    private Message lastMessage;
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @Column(name = "invite_code ")
+    private String inviteCode ;
 
     public Dialog() {
     }
@@ -39,11 +45,27 @@ public class Dialog {
         this.unreadNumber = unreadNumber;
     }
 
-    public Message getLastMessage() {
-        return lastMessage;
+    public Integer getOwnerId() {
+        return ownerId;
     }
 
-    public void setLastMessage(Message lastMessage) {
-        this.lastMessage = lastMessage;
+    public void setOwnerId(Integer ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public String getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
     }
 }
