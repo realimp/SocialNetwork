@@ -5,7 +5,6 @@
 package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "dialog")
@@ -14,16 +13,16 @@ public class Dialog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "unread_number")
-    private Integer unreadNumber;
-    
+    @Column(name = "unread_count")
+    private Integer unreadCount;
+
     @Column(name = "owner_id")
-    private Integer ownerId;
+    private Person ownerId;
 
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
-    @Column(name = "invite_code ")
+    @Column(name = "invite_code")
     private String inviteCode ;
 
     public Dialog() {
@@ -37,19 +36,19 @@ public class Dialog {
         this.id = id;
     }
 
-    public Integer getUnreadNumber() {
-        return unreadNumber;
+    public Integer getUnreadCount() {
+        return unreadCount;
     }
 
-    public void setUnreadNumber(Integer unreadNumber) {
-        this.unreadNumber = unreadNumber;
+    public void setUnreadCount(Integer unreadCount) {
+        this.unreadCount = unreadCount;
     }
 
-    public Integer getOwnerId() {
+    public Person getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Integer ownerId) {
+    public void setOwnerId(Person ownerId) {
         this.ownerId = ownerId;
     }
 
