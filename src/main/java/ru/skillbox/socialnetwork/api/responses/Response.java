@@ -1,5 +1,7 @@
 package ru.skillbox.socialnetwork.api.responses;
 
+import java.util.Date;
+
 public class Response<T> {
 
     private String error;
@@ -7,6 +9,12 @@ public class Response<T> {
     private T data;
 
     public Response(T data) {
+        this.data = data;
+    }
+
+    public Response(String error, T data) {
+        this.error = error;
+        this.timestamp = new Date().getTime();
         this.data = data;
     }
 
