@@ -1,5 +1,7 @@
 package ru.skillbox.socialnetwork.entities;
 
+import ru.skillbox.socialnetwork.controllers.DialogController;
+
 import java.util.Objects;
 import javax.persistence.*;
 import java.util.Date;
@@ -88,10 +90,6 @@ public class Message {
     return readStatus;
   }
 
-  public Boolean getDeleted() {
-    return isDeleted;
-  }
-
   public Dialog getDialog() {
     return dialog;
   }
@@ -126,17 +124,17 @@ public class Message {
         .hash(id, author.getId(), recipient.getId());
   }
 
-  @Override
-  public String toString() {
-    return "Message{" +
-        "id=" + id +
-        ", time=" + time +
-        ", author=" + author.getId() +
-        ", recipient=" + recipient.getId() +
-        ", messageText='" + messageText + '\'' +
-        ", readStatus='" + readStatus + '\'' +
-        ", dialogId=" + dialog.getId() +
-        ", isDeleted=" + isDeleted +
-        '}';
-  }
+//  @Override
+//  public String toString() {
+//    return "Message{" +
+//        "id=" + id +
+//        ", time=" + time +
+//        ", author=" + author.getId() +
+//        ", recipient=" + recipient.getId() +
+//        ", messageText='" + messageText + '\'' +
+//        ", readStatus='" + readStatus + '\'' +
+//        ", dialogId=" + dialog.getId() +
+//        ", isDeleted=" + isDeleted +
+//        '}';
+//  }
 }
