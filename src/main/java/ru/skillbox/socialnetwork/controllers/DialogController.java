@@ -8,12 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.api.responses.Error;
 import ru.skillbox.socialnetwork.entities.Dialog;
+import ru.skillbox.socialnetwork.entities.Message;
 import ru.skillbox.socialnetwork.repositories.DialogRepository;
+import ru.skillbox.socialnetwork.repositories.MessageRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/dialogs")
@@ -28,6 +32,9 @@ public class DialogController {
 
     @Autowired
     PersonRepository personRepository;
+
+    @Autowired
+    MessageRepository messageRepository;
 
     @GetMapping("/")
     public ResponseList getDialogs(String query, int offset, int itemsPerPage) {
@@ -150,10 +157,16 @@ public class DialogController {
 
     @DeleteMapping("/{dialog_id}/messages/{message_id}")
     public Response deleteMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
-        //TODO: implement method
-        Error error = new Error();
-
-        return new Response(error);
+        Optional<Dialog> dialog = dialogRepository.findById(dialogId);
+        if (dialog.isPresent()) {
+            dialog.get().getMessages().remove(messageRepository.findById(messageId));
+        }
+        DialogMessage responseData = new DialogMessage();
+        responseData.setId(messageId);
+        Response response = new Response(responseData);
+        response.setError("");
+        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
+        return response;
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}")
@@ -166,10 +179,19 @@ public class DialogController {
 
     @PutMapping("/{dialog_id}/messages/{message_id}/recover")
     public Response recoverMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
-        //TODO: implement method
-        Error error = new Error();
+        Optional<Dialog> dialog = dialogRepository.findById(dialogId);
+        DialogMessage responseData = new DialogMessage();
+        if (dialog.isPresent()) {
+            List<Message> messages = dialog.get().getMessages();
+            messages.add(messageRepository.findById(messageId).get());
+            dialog.get().setMessages(messages);
 
-        return new Response(error);
+            //TODO add response
+        }
+        Response response = new Response(responseData);
+        response.setError("");
+        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
+        return response;
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}/read")
@@ -184,7 +206,7 @@ public class DialogController {
 
     @GetMapping("/{id}/activity/{user_id}")
     public Response getRecipientInfo(@PathVariable("id") int id, @PathVariable("user_id") int userId) {
-        //TODO: implement method to mark message as read
+        //TODO: implement method
         MessageResponse responseData = new MessageResponse();
         responseData.setMessage("ok");
         Response response = new Response(responseData);
@@ -194,7 +216,7 @@ public class DialogController {
 
     @PostMapping("/{id}/activity/{user_id}")
     public Response setActivityStatus(@PathVariable("id") int id, @PathVariable("user_id") int userId) {
-        //TODO: implement method to mark message as read
+        //TODO: implement method
         MessageResponse responseData = new MessageResponse();
         responseData.setMessage("ok");
         Response response = new Response(responseData);
