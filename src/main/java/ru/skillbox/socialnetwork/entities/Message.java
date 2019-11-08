@@ -29,8 +29,9 @@ public class Message {
   @Column(name = "read_status")
   private String readStatus;
 
-  @Column(name = "dialog_id")
-  private Integer dialogId;
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "dialog_id", nullable = false)
+  private Dialog dialog;
 
   @Column(name = "is_deleted")
   private Boolean isDeleted;
@@ -83,12 +84,12 @@ public class Message {
     this.readStatus = readStatus;
   }
 
-  public Integer getDialogId() {
-    return dialogId;
+  public Dialog getDialog() {
+    return dialog;
   }
 
-  public void setDialogId(Integer dialogId) {
-    this.dialogId = dialogId;
+  public void setDialog(Dialog dialog) {
+    this.dialog = dialog;
   }
 
   public Boolean isDeleted() {
@@ -126,7 +127,7 @@ public class Message {
         ", recipient=" + recipient.getId() +
         ", messageText='" + messageText + '\'' +
         ", readStatus='" + readStatus + '\'' +
-        ", dialogId=" + dialogId +
+        ", dialogId=" + dialog.getId() +
         ", isDeleted=" + isDeleted +
         '}';
   }
