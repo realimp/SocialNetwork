@@ -41,7 +41,7 @@ public class MessageRepositoryTest {
     message1.setRecipient(person1);
     message1.setAuthor(person1);
     message1.setMessageText("messageText1");
-    message1.setDialogId(1);
+    //message1.setDialogId(1);
     message1.setDeleted(false);
 
     personRepository.save(person1);
