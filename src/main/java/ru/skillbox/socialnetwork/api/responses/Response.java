@@ -10,13 +10,22 @@ public class Response<T> {
 
     public Response(T data) {
         this.data = data;
+    }
+
+    public Response(String error, T data) {
+        this.error = error;
         this.timestamp = new Date().getTime();
+        this.data = data;
     }
 
     public Response(String error, long timestamp, T data) {
         this.error = error;
         this.timestamp = timestamp;
         this.data = data;
+    }
+
+    public Response() {
+
     }
 
     public String getError() {

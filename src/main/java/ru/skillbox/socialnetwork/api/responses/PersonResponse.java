@@ -30,8 +30,6 @@ public class PersonResponse {
     @JsonProperty("is_blocked")
     private Boolean isBlocked;
 
-    public PersonResponse() {}
-
     @JsonProperty(value="is_blocked")
     public Boolean isBlocked() {
         return isBlocked;
