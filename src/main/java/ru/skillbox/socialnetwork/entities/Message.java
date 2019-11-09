@@ -84,6 +84,14 @@ public class Message {
     this.readStatus = readStatus;
   }
 
+  public String getReadStatus() {
+    return readStatus;
+  }
+
+  public Boolean getDeleted() {
+    return isDeleted;
+  }
+
   public Dialog getDialog() {
     return dialog;
   }

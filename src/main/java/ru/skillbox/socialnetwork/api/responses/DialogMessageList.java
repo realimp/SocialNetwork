@@ -20,4 +20,7 @@ public class DialogMessageList {
         this.messageList = messageList;
     }
 
+    public void addMessage(DialogMessage message) {
+        this.messageList.add(message);
+    }
 }
