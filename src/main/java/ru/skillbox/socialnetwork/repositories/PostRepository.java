@@ -2,6 +2,7 @@ package ru.skillbox.socialnetwork.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.Post;
@@ -15,13 +16,13 @@ import java.util.List;
 
  */
 @Repository
-public interface PostRepository extends JpaRepository<Post, Integer> {
-    List<Post> findByTitleAndText(String searchString);
+public interface PostRepository extends PagingAndSortingRepository<Post, Integer> {
+    //List<Post> findByTitleAndText(String searchString);
 
-    @Query("SELECT * FROM post WHERE time >=:time")
-    List<Post> findByDateFrom(@Param("time") Date fromDate);
-
-    @Query("SELECT * FROM post WHERE time <=:time")
-    List<Post> findByDateTo(@Param("time") Date fromDate);
+//    @Query("SELECT * FROM post WHERE time >=:time")
+//    List<Post> findByDateFrom(@Param("time") Date fromDate);
+//
+//    @Query("SELECT * FROM post WHERE time <=:time")
+//    List<Post> findByDateTo(@Param("time") Date fromDate);
 
 }

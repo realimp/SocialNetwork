@@ -25,26 +25,23 @@ public class PostService {
     }
 
     public Integer deletePostById(int idPost) {
-        if (postRepository.findById(idPost).isPresent()) {
-            postRepository.deleteById(idPost);
+        Optional<Post> post = postRepository.findById(idPost);
+        if (post.isPresent()) {
+            post.get().setDeleted(true);
+            postRepository.save(post.get());
             return idPost;
         }
         return 1; //ToDo тут нужно что то вернуть если поста для удаления нет.
     }
 
-    public List<Post> getPostFromDate(Date time) {
-        List<Post> arrayPost = postRepository.findByDateFrom(time);
-        if (arrayPost.size() > 0) {
-            return arrayPost;
+    public Integer recoveryPostById(int idPost) {
+        Optional<Post> post = postRepository.findById(idPost);
+        if (post.isPresent()) {
+            post.get().setDeleted(false);
+            postRepository.save(post.get());
+            return idPost;
         }
-        return null;//ToDo тут нужно что то вернуть если поиск по дате не дал нижных результатов.
+        return 1; //ToDo тут нужно что то вернуть если поста для удаления нет.
     }
 
-    public List<Post> getPostToDate(Date time) {
-        List<Post> arrayPost = postRepository.findByDateTo(time);
-        if (arrayPost.size() > 0) {
-            return arrayPost;
-        }
-        return null;//ToDo тут нужно что то вернуть если поиск по дате не дал нижных результатов.
-    }
 }
