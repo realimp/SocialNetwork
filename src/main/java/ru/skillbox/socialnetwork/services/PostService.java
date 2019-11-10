@@ -41,7 +41,7 @@ public class PostService {
             postRepository.save(post.get());
             return idPost;
         }
-        return 1; //ToDo тут нужно что то вернуть если поста для удаления нет.
+        return 1; //ToDo тут нужно что то вернуть если поста для восстановления нет.
     }
 
 }
