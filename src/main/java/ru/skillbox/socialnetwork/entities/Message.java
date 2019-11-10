@@ -126,17 +126,17 @@ public class Message {
         .hash(id, author.getId(), recipient.getId());
   }
 
-  @Override
-  public String toString() {
-    return "Message{" +
-        "id=" + id +
-        ", time=" + time +
-        ", author=" + author.getId() +
-        ", recipient=" + recipient.getId() +
-        ", messageText='" + messageText + '\'' +
-        ", readStatus='" + readStatus + '\'' +
-        ", dialogId=" + dialog.getId() +
-        ", isDeleted=" + isDeleted +
-        '}';
-  }
+//  @Override
+//  public String toString() {
+//    return "Message{" +
+//        "id=" + id +
+//        ", time=" + time +
+//        ", author=" + author.getId() +
+//        ", recipient=" + recipient.getId() +
+//        ", messageText='" + messageText + '\'' +
+//        ", readStatus='" + readStatus + '\'' +
+//        ", dialogId=" + dialog.getId() +
+//        ", isDeleted=" + isDeleted +
+//        '}';
+//  }
 }

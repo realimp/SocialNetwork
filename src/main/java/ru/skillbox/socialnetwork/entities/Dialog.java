@@ -1,20 +1,21 @@
 package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Random;
 
 @Entity
 @Table(name = "dialog")
 public class Dialog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, insertable = true, updatable = false)
     private Integer id;
 
     @Column(name = "unread_count")
     private Integer unreadCount;
 
-    @NotNull
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_id", nullable = false)
     private Person owner;
@@ -35,6 +36,10 @@ public class Dialog {
     private List<Person> recipients;
 
     public Dialog() {
+        byte[] array = new byte[20];
+        new Random().nextBytes(array);
+        this.inviteCode = new String(array, Charset.forName("UTF-8"));
+        this.unreadCount = 0;
     }
 
     public Integer getId() {
