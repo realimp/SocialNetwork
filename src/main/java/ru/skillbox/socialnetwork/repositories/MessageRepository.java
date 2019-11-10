@@ -7,13 +7,14 @@ import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.Message;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
 
-    Message findByAuthorId(int id, Pageable sortByDate);
-
     Page<Message> findByDialogIdAndMessageText(int id, String query, Pageable pageable);
 
     List<Message> findByDialogIdAndMessageText(int id, String query);
+
+    Page<Message> findByDialogId(Integer id, Pageable sortByDate);
 }
