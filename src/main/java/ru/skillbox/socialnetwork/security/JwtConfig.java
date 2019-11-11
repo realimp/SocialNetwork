@@ -14,6 +14,9 @@ public class JwtConfig {
     @Value("${security.auth.login}")
     private String loginUrl;
 
+    @Value("${security.auth.logout}")
+    private String logoutUrl;
+
     public String getToken() {
         return token;
     }
@@ -24,5 +27,9 @@ public class JwtConfig {
 
     public String getLoginUrl() {
         return loginUrl;
+    }
+
+    public String getLogoutUrl() {
+        return logoutUrl;
     }
 }

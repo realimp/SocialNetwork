@@ -33,12 +33,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/account/register",jwtConfig.getLogoutUrl()).permitAll()
+                .and()
+                .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), userDetailsService, jwtConfig))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtConfig))
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().logout().logoutUrl(jwtConfig.getLogoutUrl());
     }
 
     @Override

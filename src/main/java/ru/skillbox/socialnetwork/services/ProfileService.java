@@ -9,10 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.City;
 import ru.skillbox.socialnetwork.api.Country;
+import ru.skillbox.socialnetwork.api.requests.EditPerson;
+import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
+import ru.skillbox.socialnetwork.api.responses.PersonsWallPost;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
-import ru.skillbox.socialnetwork.entities.MessagePermission;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.mappers.PersonMapper;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.*;
@@ -25,53 +28,64 @@ public class ProfileService {
     @Autowired
     private PersonRepository personRepository;
 
+    @Autowired
+    private AccountService accountService;
+
     public PersonResponse getPerson() {
-        //TODO: Get current user w/o id (Spring Security)
-        PersonResponse person = new PersonResponse();
+        Person person = accountService.getCurrentUser();
         if (person != null) {
             logger.info("current user is obtained: {}", person.getId());
         } else {
             logger.warn("could not obtain current user");
         }
-        return person;
+        return PersonMapper.getMapping(person);
     }
 
-    public void editPerson(String firstName, String lastName, Date birthDate, String phone, String photoId,
-                           String about, Integer cityId, Integer countryId, String messagesPermission) {
-        //TODO: Get current user w/o id  &&  update after adding city & country dictionaries
+    public PersonResponse editPerson(EditPerson editPerson) {
         Person person = new Person();
-        person.setFirstName(firstName);
-        person.setLastName(lastName);
-        person.setBirthDate(birthDate);
-        person.setPhone(phone);
-        person.setPhoto(photoId);
-        person.setAbout(about);
-        person.setCity(new City(cityId, "test Title").getTitle());
-        person.setCountry(new Country(countryId,"test Title").getTitle());
-        person.setMessagesPermission(messagesPermission);
+        person.setFirstName(editPerson.getFirstName());
+        person.setLastName(editPerson.getLastName());
+        person.setBirthDate(editPerson.getBirthDate());
+        person.setPhone(editPerson.getPhone());
+        person.setPhoto(editPerson.getPhotoId());
+        person.setAbout(editPerson.getAbout());
+        person.setCity(new City(editPerson.getCityId(), "Moscow").getTitle());
+        person.setCountry(new Country(editPerson.getCountryId(),"Russia").getTitle());
+        person.setMessagesPermission(editPerson.getMessagesPermission());
         personRepository.saveAndFlush(person);
+
+        return PersonMapper.getMapping(person);
     }
 
-    public void deletePerson() {
-        //TODO: Get current user w/o id
-        Person person = new Person();
+    public MessageResponse deletePerson() {
+        Person person = accountService.getCurrentUser();
+        if (person != null) {
+            logger.info("current user is obtained: {}", person.getId());
+        } else {
+            logger.warn("could not obtain current user");
+        }
         person.setDeleted(true);
         personRepository.saveAndFlush(person);
+
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("Current user has been successfully deleted!");
+
+        return messageResponse;
     }
 
     public PersonResponse getPersonById(Integer id) {
-        //TODO: update after adding city & country dictionaries
         Person person = personRepository.getOne(id);
-        return convertPersonToPersonResponse(person);
+        return PersonMapper.getMapping(person);
     }
 
-    public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
+    public List<PersonsWallPost> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
         //TODO: update after adding PostRepository
         return new ArrayList<>();
     }
 
-    public void addWallPostById(Integer id, Date publishDate) {
+    public PostResponse addWallPostById(Integer id, Date publishDate) {
         //TODO: update after adding PostRepository
+        return new PostResponse();
     }
 
     public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
@@ -81,7 +95,6 @@ public class ProfileService {
         Date birthDateFrom = calendar.getTime();
         calendar.add(Calendar.YEAR, ageTo - ageFrom);
         Date birthDateTo = calendar.getTime();
-
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
         Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
@@ -91,42 +104,29 @@ public class ProfileService {
         List<PersonResponse> personResponseList = new ArrayList<>();
 
         for (Person person : personList) {
-            personResponseList.add(convertPersonToPersonResponse(person));
+            personResponseList.add(PersonMapper.getMapping(person));
         }
 
         return personResponseList;
     }
 
-    public void blockPersonById(Integer id) {
+    public MessageResponse blockPersonById(Integer id) {
         Person person = personRepository.getOne(id);
         person.setBlocked(true);
         personRepository.saveAndFlush(person);
+
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("User with id: "+id+" has been successfully blocked!");
+        return messageResponse;
     }
 
-    public void unblockPersonById(Integer id) {
+    public MessageResponse unblockPersonById(Integer id) {
         Person person = personRepository.getOne(id);
         person.setBlocked(false);
         personRepository.saveAndFlush(person);
-    }
 
-    public PersonResponse convertPersonToPersonResponse(Person person) {
-        PersonResponse personResponse = new PersonResponse();
-        personResponse.setId(person.getId());
-        personResponse.setFirstName(person.getFirstName());
-        personResponse.setLastName(person.getLastName());
-        personResponse.setRegDate(person.getRegDate() != null ? person.getRegDate().getTime() : null);
-        personResponse.setBirthDate(person.getBirthDate() != null ? person.getBirthDate().getTime() : null);
-        personResponse.seteMail(person.getEMail());
-        personResponse.setPhone(person.getPhone());
-        personResponse.setPhoto(person.getPhoto());
-        personResponse.setAbout(person.getAbout());
-        personResponse.setCity(new City(1,person.getCity()));
-        personResponse.setCountry(new Country(1, person.getCountry()));
-        personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission() != null ?
-                person.getMessagesPermission() : "ALL"));
-        personResponse.setLastOnlineTime(person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null);
-        personResponse.setBlocked(person.getBlocked());
-        return personResponse;
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("User with id: "+id+" has been successfully unblocked!");
+        return messageResponse;
     }
-
 }

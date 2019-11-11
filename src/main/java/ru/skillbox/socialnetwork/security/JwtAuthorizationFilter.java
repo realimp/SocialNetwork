@@ -45,7 +45,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String token = request.getHeader("Authorization");
 
-        if (!StringUtils.isEmpty(token) && token.startsWith("Bearer")) {
+        if (!StringUtils.isEmpty(token) && (token.startsWith("Bearer") || token.startsWith("ey"))) {
             byte[] secret = jwtConfig.getSecret().getBytes();
 
             Jws<Claims> parsedToken = Jwts.parser()
