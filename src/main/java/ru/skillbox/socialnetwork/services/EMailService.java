@@ -1,3 +1,13 @@
+//Автор:
+//Имя:
+//Псевдоним:
+//Почта:
+//-----------------------------
+//Правил:
+//Имя: Дмитрий Хрипков
+//Псевдоним: X64
+//Почта: HDV_1990@mail.ru
+
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +24,6 @@ import java.util.Properties;
 
 @Service
 public class EMailService {
-    /*
-    private String mailServerHostName = "smtp.mail.ru";
-    private int mailServerPort = 587;
-    private String mailServerUsername = "JavaPro2.SkillBox@mail.ru";
-    private String mailServerPassword = "JP2_SkillBox";
-    */
 
     @Value("${email.host}")
     private String mailServerHostName;
