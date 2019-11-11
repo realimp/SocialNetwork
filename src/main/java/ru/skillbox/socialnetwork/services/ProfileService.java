@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.City;
 import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
+import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
+import ru.skillbox.socialnetwork.api.responses.PersonsWallPost;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
@@ -55,7 +57,7 @@ public class ProfileService {
         return PersonMapper.getMapping(person);
     }
 
-    public PersonResponse deletePerson() {
+    public MessageResponse deletePerson() {
         Person person = accountService.getCurrentUser();
         if (person != null) {
             logger.info("current user is obtained: {}", person.getId());
@@ -65,7 +67,10 @@ public class ProfileService {
         person.setDeleted(true);
         personRepository.saveAndFlush(person);
 
-        return PersonMapper.getMapping(person);
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("Current user has been successfully deleted!");
+
+        return messageResponse;
     }
 
     public PersonResponse getPersonById(Integer id) {
@@ -73,13 +78,14 @@ public class ProfileService {
         return PersonMapper.getMapping(person);
     }
 
-    public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
+    public List<PersonsWallPost> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
         //TODO: update after adding PostRepository
         return new ArrayList<>();
     }
 
-    public void addWallPostById(Integer id, Date publishDate) {
+    public PostResponse addWallPostById(Integer id, Date publishDate) {
         //TODO: update after adding PostRepository
+        return new PostResponse();
     }
 
     public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
@@ -104,15 +110,23 @@ public class ProfileService {
         return personResponseList;
     }
 
-    public void blockPersonById(Integer id) {
+    public MessageResponse blockPersonById(Integer id) {
         Person person = personRepository.getOne(id);
         person.setBlocked(true);
         personRepository.saveAndFlush(person);
+
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("User with id: "+id+" has been successfully blocked!");
+        return messageResponse;
     }
 
-    public void unblockPersonById(Integer id) {
+    public MessageResponse unblockPersonById(Integer id) {
         Person person = personRepository.getOne(id);
         person.setBlocked(false);
         personRepository.saveAndFlush(person);
+
+        MessageResponse messageResponse = new MessageResponse();
+        messageResponse.setMessage("User with id: "+id+" has been successfully unblocked!");
+        return messageResponse;
     }
 }
