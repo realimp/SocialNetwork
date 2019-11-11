@@ -44,9 +44,14 @@ public class DialogController {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    @GetMapping("/")
-    public ResponseList getDialogs(@RequestParam String query, @RequestParam int offset, @RequestParam int itemsPerPage) {
-        Pageable resultsPage = PageRequest.of(offset, itemsPerPage);
+    @GetMapping("")
+    public ResponseList getDialogs(@RequestParam(required = false) String query, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemsPerPage) {
+        Pageable resultsPage;
+        if (offset != null && itemsPerPage != null) {
+            resultsPage = PageRequest.of(offset, itemsPerPage);
+        } else {
+            resultsPage = PageRequest.of(0, 20);
+        }
         Page<Dialog> results =  dialogRepository.findByOwnerId(accountService.getCurrentUser().getId(), resultsPage);
 
         ArrayList<DialogResponse> dialogResponses = new ArrayList<>();
@@ -91,14 +96,14 @@ public class DialogController {
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         response.setTotal(results.getTotalElements());
-        response.setOffset(offset);
-        response.setPerPage(itemsPerPage);
+        response.setOffset(resultsPage.getOffset());
+        response.setPerPage(resultsPage.getPageSize());
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
 
         return response;
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public Response startDialog(@RequestBody UserIds userIds) {
         Dialog dialog = new Dialog();
         dialog.setOwner(accountService.getCurrentUser());
@@ -222,8 +227,13 @@ public class DialogController {
     }
 
     @GetMapping("/{id}/messages")
-    public ResponseList findMessages(@PathVariable int id, @RequestParam String query, @RequestParam int offset, @RequestParam int itemsPerPage) {
-        Pageable pageable = PageRequest.of(offset, itemsPerPage);
+    public ResponseList findMessages(@PathVariable int id, @RequestParam(required = false) String query, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemsPerPage) {
+        Pageable pageable;
+        if (offset != null && itemsPerPage != null) {
+            pageable = PageRequest.of(offset, itemsPerPage);
+        } else {
+            pageable = PageRequest.of(0, 20);
+        }
         Page<Message> results = messageRepository.findByDialogIdAndMessageText(id, query, pageable);
 
         DialogMessageList responseData = new DialogMessageList();
@@ -252,8 +262,8 @@ public class DialogController {
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         response.setTotal(messageRepository.findByDialogIdAndMessageText(id, query).size());
-        response.setOffset(offset);
-        response.setPerPage(itemsPerPage);
+        response.setOffset(pageable.getOffset());
+        response.setPerPage(pageable.getPageSize());
         return response;
     }
 
