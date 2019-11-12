@@ -8,7 +8,8 @@ public enum ErrorDescription {
     NO_AUTH_CODE("An authorization code must be supplied"),
     MISMATCH_URI("Redirect URI mismatch"),
     INVALID_CODE("Invalid authorization code: CODE"),
-    BAD_CREDENTIALS("Bad credentials");
+    BAD_CREDENTIALS("Bad credentials"),
+    USER_NOT_FOUND("User not found");
 
     private String description;
 
