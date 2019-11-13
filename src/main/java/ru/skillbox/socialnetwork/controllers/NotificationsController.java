@@ -17,7 +17,7 @@ public class NotificationsController {
     @Autowired
     private NotificationsService notificationsService;
 
-    @GetMapping("")
+    @GetMapping
     public ResponseList<List<NotificationBase>> notificationsForCurrentUser(Integer offset, Integer itemPerPage) {
 
         List<NotificationBase> notificationBaseList = notificationsService.notificationsForCurrentUser();
@@ -39,7 +39,7 @@ public class NotificationsController {
         return responseList;
     }
 
-    @PutMapping("")
+    @PutMapping
     public ResponseList<List<NotificationBase>> notificationsMarkAsRead(@RequestParam(value = "id", required = false) Integer id,
                                                                         @RequestParam(value = "all", required = false) Boolean all) {
 
