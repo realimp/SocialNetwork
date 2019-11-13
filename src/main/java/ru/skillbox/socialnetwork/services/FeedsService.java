@@ -4,18 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.api.responses.BasicPerson;
+import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.Feeds;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.PostLike;
+import ru.skillbox.socialnetwork.mappers.PostMapper;
+import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 import javax.transaction.Transactional;
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,42 +25,41 @@ public class FeedsService {
 
     @Autowired
     PostRepository postRepository;
+    @Autowired
+    PostLikeRepository postLikeRepository;
+    @Autowired
+    AccountService accountService;
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
-        //SortOrder sortOrder = new Sort.Order(Sort.Direction.ASC, "");
-        Pageable pageable = PageRequest.of(offset, itemsPerPage);
+        Sort sort = new Sort(Sort.Direction.ASC, "date");
+        Pageable pageable = PageRequest.of(offset, itemsPerPage, sort);
         Page<Post> postPage = postRepository.findAll(pageable);
+        //todo Доделать метод у репозитория
+        //postRepository.findByQuery(query);
         List<PostResponse> prList = new ArrayList<>();
-        postPage.get().forEach(p->{
-                BasicPerson basicPerson = new BasicPerson();
-                basicPerson.setId(p.getAuthor().getId());
-                basicPerson.setFirstName(p.getAuthor().getFirstName());
-                basicPerson.setLastName(p.getAuthor().getLastName());
-                basicPerson.setPhoto(p.getAuthor().getPhoto());
-                Date lastOnlineTime = p.getAuthor().getLastOnlineTime();
-                if (lastOnlineTime != null) {
-                    basicPerson.setLastOnlineTime(lastOnlineTime.getTime());
-                }
-
-                PostResponse postResponse = new PostResponse();
-                postResponse.setId(p.getId());
-                Date postDate = p.getDate();
-                if (postDate != null) {
-                    postResponse.setTime(postDate.getTime());
-                }
-                postResponse.setAuthor(basicPerson);
-                postResponse.setTitle(p.getTitle());
-                postResponse.setPostText(p.getText());
-                postResponse.setBlocked(p.isBlocked());
-                //todo likes
-                //postResponse.setLikes();
-                //todo tags
-                //postResponse.setTags();
-                //todo myike
-                //postResponse.setMyLike();
-                //todo comments
-                //postResponse.setComments();
-                prList.add(postResponse);
+        postPage.get().forEach(post-> {
+            PostResponse postResponse = PostMapper.getPostResponse(post);
+            List<PostLike> likes = postLikeRepository.findByPostId(post.getId());
+            int likesCount = 0;
+            if (likes != null) {
+                likesCount = likes.size();
+            }
+            postResponse.setLikes(likesCount);
+            boolean myLike = false;
+            List<PostLike> myLikes = likes.stream()
+                    .filter(postLike -> postLike.getPerson().equals(accountService.getCurrentUser()))
+                    .collect(Collectors.toList());
+            if (myLikes.size() >= 1) {
+                myLike = true;
+            }
+            postResponse.setMyLike(myLike);
+            //ToDo Add post tags
+            postResponse.setTags(new ArrayList<String>(){{
+                add("Backend hasn't have entity for post tag");
+            }});
+            //ToDo Add post comments
+            postResponse.setComments(new ArrayList<Comment>(){{add(new Comment());}});
+            prList.add(postResponse);
         });
         return new Feeds(prList);
     }

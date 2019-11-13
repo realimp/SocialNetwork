@@ -1,45 +1,46 @@
-//Автор:
-//Имя: Дмитрий Хрипков
-//Псевдоним: X64
-//Почта: HDV_1990@mail.ru
 package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import ru.skillbox.socialnetwork.api.responses.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import ru.skillbox.socialnetwork.api.responses.Feeds;
+import ru.skillbox.socialnetwork.api.responses.PostResponse;
+import ru.skillbox.socialnetwork.api.responses.ResponseList;
 import ru.skillbox.socialnetwork.services.FeedsService;
-
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/feeds")
 public class FeedsController {
 
-  @Autowired
-  FeedsService feedsService;
+    @Autowired
+    FeedsService feedsService;
+    private final Integer itemPerPageDefault = 20;
+    private final Integer offsetDefault = 0;
+    private final String nameDefault = "";
 
-  @GetMapping("") //Post search
-  public ResponseList<List<PostResponse>> postSearch(String name, Integer offset, Integer itemPerPage) {
-    if (offset == null) {
-      offset = 0;
+    @GetMapping("")
+    public ResponseList<List<PostResponse>> postSearch(@RequestParam(value = "name", required = false) String name,
+                                                       @RequestParam(value = "offset", required = false) Integer offset,
+                                                       @RequestParam(value = "itemPerPage", required = false) Integer itemPerPage) {
+        if (offset == null) {
+          offset = offsetDefault;
+        }
+        if (name == null) {
+          name = nameDefault;
+        }
+        if (itemPerPage == null) {
+          itemPerPage = itemPerPageDefault;
+        }
+        Feeds feeds = feedsService.getFeeds(name,offset,itemPerPage);
+        ResponseList<List<PostResponse>> responseList = new ResponseList<>(feeds.getFeeds());
+        responseList.setOffset(offset);
+        responseList.setPerPage(itemPerPage);
+        responseList.setTimestamp(System.currentTimeMillis());
+        responseList.setTotal(feeds.getFeeds().size());
+        return responseList;
     }
-    if (name == null) {
-      name = "";
-    }
-    if (itemPerPage == null) {
-      itemPerPage = 10;
-    }
-    Feeds feeds = feedsService.getFeeds(name,offset,itemPerPage);
-    feeds.getFeeds().forEach(feed->{
-      System.out.println(feed.toString());
-    });
-    ResponseList<List<PostResponse>> responseList = new ResponseList<>(feeds.getFeeds());
-    responseList.setOffset(offset);
-    responseList.setPerPage(itemPerPage);
-    responseList.setTimestamp(System.currentTimeMillis());
-    return responseList;
-  }
 
 }
