@@ -1,19 +1,30 @@
 package ru.skillbox.socialnetwork.api.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class EditPerson {
 
+    @JsonProperty("first_name")
     private String firstName;
+    @JsonProperty("last_name")
     private String lastName;
+    @JsonProperty("birth_date")
     private Date birthDate;
     private String phone;
+    @JsonProperty("photo_id")
     private String photoId;
     private String about;
+    @JsonProperty("town_id")
     private Integer cityId;
+    @JsonProperty("country_id")
     private Integer countryId;
+    @JsonProperty("messages_permission")
     private String messagesPermission;
 
+    public EditPerson() {
+    }
 
     public String getFirstName() {
         return firstName;

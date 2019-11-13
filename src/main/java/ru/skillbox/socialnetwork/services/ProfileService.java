@@ -42,19 +42,19 @@ public class ProfileService {
     }
 
     public PersonResponse editPerson(EditPerson editPerson) {
-        Person person = new Person();
+        Person person = accountService.getCurrentUser();
         person.setFirstName(editPerson.getFirstName());
         person.setLastName(editPerson.getLastName());
         person.setBirthDate(editPerson.getBirthDate());
         person.setPhone(editPerson.getPhone());
         person.setPhoto(editPerson.getPhotoId());
         person.setAbout(editPerson.getAbout());
-        person.setCity(new City(editPerson.getCityId(), "Moscow").getTitle());
-        person.setCountry(new Country(editPerson.getCountryId(),"Russia").getTitle());
+        person.setCity(new City(editPerson.getCityId(), "Moscow").getTitle()); //TODO: update after adding city & country dictionaries
+        person.setCountry(new Country(editPerson.getCountryId(),"Russia").getTitle()); //TODO: update after adding city & country dictionaries
         person.setMessagesPermission(editPerson.getMessagesPermission());
-        personRepository.saveAndFlush(person);
+        Person savedPerson = personRepository.saveAndFlush(person);
 
-        return PersonMapper.getMapping(person);
+        return PersonMapper.getMapping(savedPerson);
     }
 
     public MessageResponse deletePerson() {
