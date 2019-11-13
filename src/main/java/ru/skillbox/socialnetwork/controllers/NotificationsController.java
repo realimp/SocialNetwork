@@ -17,8 +17,8 @@ public class NotificationsController {
     @Autowired
     private NotificationsService notificationsService;
 
-    @GetMapping("/")
-    public ResponseList<List<NotificationBase>> notificationsForCurrentUser(int offset, int itemPerPage) {
+    @GetMapping("")
+    public ResponseList<List<NotificationBase>> notificationsForCurrentUser(Integer offset, Integer itemPerPage) {
 
         List<NotificationBase> notificationBaseList = notificationsService.notificationsForCurrentUser();
 
@@ -29,14 +29,19 @@ public class NotificationsController {
         long timestamp = new Date().getTime();
         responseList.setTimestamp(timestamp);
         responseList.setData(notificationBaseList);
-        responseList.setOffset(offset);
-        responseList.setPerPage(itemPerPage);
+        if(offset != null) {
+            responseList.setOffset(offset);
+        }
+        if(itemPerPage != null) {
+            responseList.setPerPage(itemPerPage);
+        }
 
         return responseList;
     }
 
-    @PutMapping("/")
-    public ResponseList<List<NotificationBase>> notificationsMarkAsRead(@PathVariable Integer id, boolean all) {
+    @PutMapping("")
+    public ResponseList<List<NotificationBase>> notificationsMarkAsRead(@RequestParam(value = "id", required = false) Integer id,
+                                                                        @RequestParam(value = "all", required = false) Boolean all) {
 
         List<NotificationBase> notificationBaseList = notificationsService.notificationsMarkAsRead(id, all);
 
