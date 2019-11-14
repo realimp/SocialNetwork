@@ -7,19 +7,15 @@ import ru.skillbox.socialnetwork.entities.Post;
 
 public class PostMapper {
 
-    public static PostResponse getPostResponse(Post post) {
+    public static PostResponse getPostResponse(Post post, Person person) {
         PostResponse postResponse = new PostResponse();
         BasicPerson basicPerson = new BasicPerson();
-
-        Person person = new Person();
-        //как нам тут получить нужного персонажа, именно автора поста???
 
         basicPerson.setId(person.getId());
         basicPerson.setFirstName(person.getFirstName());
         basicPerson.setLastName(person.getLastName());
         basicPerson.setPhoto(person.getPhoto());
         basicPerson.setLastOnlineTime(person.getLastOnlineTime().getTime());
-
 
         postResponse.setId(post.getId());
         postResponse.setTime(post.getDate().getTime());
@@ -32,6 +28,11 @@ public class PostMapper {
         //private List<String> tags;
         //private Boolean myLike;
         //private List<Comment> comments;
+        //ToDo эти поля пока руками прописаны
+        postResponse.setLikes(10);
+        postResponse.setTags(null);
+        postResponse.setMyLike(false);
+        postResponse.setComments(null);
 
 
         return postResponse;
