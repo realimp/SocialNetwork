@@ -22,8 +22,8 @@ public class FileUploadController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Response fileUpload(@RequestParam("type") String type, @RequestBody MultipartFile file) {
-        if (file != null && file.getContentType().contains(type)) {
-            return fileUploadService.fileUpload(file, accountService.getCurrentUser().getId());
+        if (file != null && !file.isEmpty() && file.getContentType().toUpperCase().contains(type.toUpperCase())) {
+            return fileUploadService.fileUpload(file, accountService.getCurrentUser());
         }
         Error error = new Error();
         error.setError(Error.ErrorType.INVALID_REQUEST);
