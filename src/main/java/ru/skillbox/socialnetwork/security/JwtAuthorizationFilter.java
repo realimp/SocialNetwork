@@ -22,10 +22,12 @@ import java.util.stream.Collectors;
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final JwtConfig jwtConfig;
+    private CustomUserDetailsService localUserDetailsService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, CustomUserDetailsService userDetailsService, JwtConfig jwtConfig) {
         super(authenticationManager);
         this.jwtConfig = jwtConfig;
+        this.localUserDetailsService = userDetailsService;
     }
 
     @Override
@@ -38,6 +40,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        localUserDetailsService.setAccountOnline(SecurityContextHolder.getContext().getAuthentication().getName(),true);
         chain.doFilter(request, response);
     }
 

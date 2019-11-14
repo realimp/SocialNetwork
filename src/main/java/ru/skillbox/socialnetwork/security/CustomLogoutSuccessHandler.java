@@ -1,6 +1,10 @@
 package ru.skillbox.socialnetwork.security;
 
 import com.google.gson.Gson;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
@@ -18,6 +22,10 @@ import java.util.HashMap;
 public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final HttpStatus customHttpStatus;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+    @Autowired
+    private JwtConfig jwtConfig;
     public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn) {
         super(httpStatusToReturn);
         this.customHttpStatus = httpStatusToReturn;
@@ -25,16 +33,21 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        HashMap message = new HashMap();
-        message.put("message", "ok");
+        String token = request.getHeader("Authorization");
+        Jws<Claims> parsedToken = Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
+        String logoutPerson = parsedToken.getBody().getSubject();
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
+        HashMap message = new HashMap();
+        message.put("message", "ok");
         responseContent.setData(message);
         PrintWriter writer = response.getWriter();
         String jsonString = new Gson().toJson(responseContent);
         response.setStatus(this.customHttpStatus.value());
         writer.print(jsonString);
+        userDetailsService.setAccountOnline(logoutPerson,false);
+        userDetailsService.setAccountLastOnlineTime(logoutPerson);
         super.onLogoutSuccess(request,response,authentication);
     }
 }
