@@ -47,7 +47,6 @@ public class ProfileService {
         person.setLastName(editPerson.getLastName());
         person.setBirthDate(editPerson.getBirthDate());
         person.setPhone(editPerson.getPhone());
-        person.setPhoto(editPerson.getPhotoId());
         person.setAbout(editPerson.getAbout());
         person.setCity(new City(editPerson.getCityId(), "Moscow").getTitle()); //TODO: update after adding city & country dictionaries
         person.setCountry(new Country(editPerson.getCountryId(),"Russia").getTitle()); //TODO: update after adding city & country dictionaries
