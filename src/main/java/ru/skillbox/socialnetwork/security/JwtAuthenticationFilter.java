@@ -112,6 +112,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader("Authorization", "Bearer" + token);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
+
         writer.print(jsonString);
         writer.flush();
     }

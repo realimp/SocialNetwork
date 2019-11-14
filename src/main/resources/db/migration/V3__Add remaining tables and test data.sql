@@ -31,7 +31,7 @@ PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS dialog (
-id INTEGER,
+id INTEGER AUTO_INCREMENT,
 owner_id INTEGER NOT NULL,
 unread_count INTEGER,
 is_deleted BIT NOT NULL DEFAULT 0,
@@ -143,15 +143,15 @@ DELETE FROM person;
 INSERT INTO person (id, first_name, last_name, reg_date, birth_date, e_mail, phone, password,
                     city, country, is_approved, messages_permission, is_blocked, is_online, is_deleted)
                     values (1, 'Pavel', 'Dobromirov', '2010-01-01 00:00:00', '1992-12-23 00:00:00', 'paveldobro92@mail.ru',
-                    '+79031119090', '$2y$12$h8ox82c5T9q.nbJR02vKKevSpOunDwcyAB5BvACraV8TD8hG438ae', 'Moscow', 'Russia', 1, 'ALL', 0, 0, 0);
+                    '+79031119090', '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'Moscow', 'Russia', 1, 'ALL', 0, 0, 0);
 INSERT INTO person (id, first_name, last_name, reg_date, birth_date, e_mail, phone, password,
                    city, country, is_approved, messages_permission, is_blocked, is_online, is_deleted)
                    values (2, 'Oleg', 'Popov', '2011-01-01 00:00:00', '1991-01-15 00:00:00', 'olegpopov232@mail.ru',
-                   '+79031119190', '$2y$12$h8ox82c5T9q.nbJR02vKKevSpOunDwcyAB5BvACraV8TD8hG438ae', 'Ekaterinburg', 'Russia', 1, 'ALL', 0, 0, 0);
+                   '+79031119190', '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'Ekaterinburg', 'Russia', 1, 'ALL', 0, 0, 0);
 INSERT INTO person (id, first_name, last_name, reg_date, birth_date, e_mail, phone, password,
                     city, country, is_approved, messages_permission, is_blocked, is_online, is_deleted)
                     values (3, 'Petr', 'Nevolnyj', '2012-01-01 00:00:00', '1990-02-23 00:00:00', 'petrsvoboda90@mail.ru',
-                    '+79031119290', '$2y$12$h8ox82c5T9q.nbJR02vKKevSpOunDwcyAB5BvACraV8TD8hG438ae', 'St. Petersburg', 'Russia', 1, 'FRIENDS', 0, 0, 0);
+                    '+79031119290', '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'St. Petersburg', 'Russia', 1, 'FRIENDS', 0, 0, 0);
 
 -- Friendship
 DELETE FROM friendship;
@@ -260,7 +260,8 @@ INSERT INTO post2tag (id, post_id, tag_id) values (3, 2, 30);
 
 
 -- Test data
-insert into person(id, first_name, last_name, e_mail, phone, password)
-values (4, 'testName', 'testLastName', 'test@email.com', '8800200600', '$2y$12$h8ox82c5T9q.nbJR02vKKevSpOunDwcyAB5BvACraV8TD8hG438ae');
+insert into person(id, first_name, last_name, reg_date, birth_date, e_mail, phone, password,  city, country, is_approved, messages_permission, is_blocked, is_online, is_deleted)
+values (4, 'testName', 'testLastName', '2011-02-02 23:59:00', '1992-12-23 00:00:00', 'test@email.com', '+7800200600', 
+        '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'Moscow', 'Russia', 1, 'ALL', 0, 0, 0);
 
-UPDATE `social_network`.`person` SET `password` = '$2y$12$h8ox82c5T9q.nbJR02vKKevSpOunDwcyAB5BvACraV8TD8hG438ae';
+UPDATE `social_network`.`person` SET `password` = '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi';

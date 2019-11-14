@@ -1,5 +1,7 @@
 package ru.skillbox.socialnetwork.entities;
 
+import ru.skillbox.socialnetwork.controllers.DialogController;
+
 import java.util.Objects;
 import javax.persistence.*;
 import java.util.Date;
@@ -29,8 +31,9 @@ public class Message {
   @Column(name = "read_status")
   private String readStatus;
 
-  @Column(name = "dialog_id")
-  private Integer dialogId;
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JoinColumn(name = "dialog_id", nullable = false)
+  private Dialog dialog;
 
   @Column(name = "is_deleted")
   private Boolean isDeleted;
@@ -83,12 +86,20 @@ public class Message {
     this.readStatus = readStatus;
   }
 
-  public Integer getDialogId() {
-    return dialogId;
+  public String getReadStatus() {
+    return readStatus;
   }
 
-  public void setDialogId(Integer dialogId) {
-    this.dialogId = dialogId;
+  public Boolean getDeleted() {
+    return isDeleted;
+  }
+
+  public Dialog getDialog() {
+    return dialog;
+  }
+
+  public void setDialog(Dialog dialog) {
+    this.dialog = dialog;
   }
 
   public Boolean isDeleted() {
@@ -117,17 +128,17 @@ public class Message {
         .hash(id, author.getId(), recipient.getId());
   }
 
-  @Override
-  public String toString() {
-    return "Message{" +
-        "id=" + id +
-        ", time=" + time +
-        ", author=" + author.getId() +
-        ", recipient=" + recipient.getId() +
-        ", messageText='" + messageText + '\'' +
-        ", readStatus='" + readStatus + '\'' +
-        ", dialogId=" + dialogId +
-        ", isDeleted=" + isDeleted +
-        '}';
-  }
+//  @Override
+//  public String toString() {
+//    return "Message{" +
+//        "id=" + id +
+//        ", time=" + time +
+//        ", author=" + author.getId() +
+//        ", recipient=" + recipient.getId() +
+//        ", messageText='" + messageText + '\'' +
+//        ", readStatus='" + readStatus + '\'' +
+//        ", dialogId=" + dialog.getId() +
+//        ", isDeleted=" + isDeleted +
+//        '}';
+//  }
 }
