@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/account/register", jwtConfig.getLogoutUrl()).permitAll()
+                .antMatchers("/account/register").permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
