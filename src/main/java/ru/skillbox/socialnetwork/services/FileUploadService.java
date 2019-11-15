@@ -5,23 +5,19 @@ import com.cloudinary.utils.ObjectUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ru.skillbox.socialnetwork.api.responses.Error;
 import ru.skillbox.socialnetwork.api.responses.FileType;
 import ru.skillbox.socialnetwork.api.responses.FileUploadResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Period;
 import java.util.Map;
 
 @Service
@@ -37,9 +33,6 @@ public class FileUploadService {
     @Value("${com.cloudinary.api_secret}")
     private String apiSecret;
 
-    @Autowired
-    private PersonRepository personRepository;
-
     private final DateFormat formatter= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     public Response<FileUploadResponse> fileUpload(MultipartFile file, Person currentUser) {
@@ -53,15 +46,12 @@ public class FileUploadService {
             fileUploadResponse.setId(photoId);
             fileUploadResponse.setOwnerId(currentUser.getId());
             fileUploadResponse.setFileName(photoId + "." + uploadResponse.get("format").toString());
-            String rawUrl = uploadResponse.get("url").toString();
-            fileUploadResponse.setRelativeFilePath(rawUrl.substring(0, rawUrl.indexOf(photoId)));
-            fileUploadResponse.setRawFileURL(rawUrl);
+            fileUploadResponse.setRelativeFilePath(cloudUri + cloudName + "/image/upload/");
+            fileUploadResponse.setRawFileURL(uploadResponse.get("url").toString());
             fileUploadResponse.setFileFormat(uploadResponse.get("format").toString());
             fileUploadResponse.setBytes(Long.valueOf(uploadResponse.get("bytes").toString()));
             fileUploadResponse.setFileType(FileType.IMAGE);
             fileUploadResponse.setCreatedAt(formatter.parse(uploadResponse.get("created_at").toString()).getTime());
-            currentUser.setPhoto(rawUrl);
-            personRepository.saveAndFlush(currentUser);
             logger.info("Файл {} успешно загружен в {}", file.getName(), fileUploadResponse.getRawFileURL());
             Response response = new Response(fileUploadResponse);
             response.setError("");
