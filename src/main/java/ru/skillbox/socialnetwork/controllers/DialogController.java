@@ -127,7 +127,7 @@ public class DialogController {
         int count = 0;
         List<Dialog> dialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
         for (Dialog dialog : dialogs) {
-            count += dialog.getUnreadCount();
+            count += (dialog.getUnreadCount() == null ? 0 : dialog.getUnreadCount());
         }
         DialogResponse responseData = new DialogResponse();
         responseData.setUnreadCount(count);
