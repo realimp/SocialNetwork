@@ -4,6 +4,7 @@ package ru.skillbox.socialnetwork.services;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,11 @@ import java.util.*;
 @Transactional
 public class ProfileService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @Value("${com.cloudinary.cloud_name}")
+    private String cloudName;
+    @Value("${com.cloudinari.url}")
+    private String cloudUri;
 
     @Autowired
     private PersonRepository personRepository;
@@ -46,7 +52,14 @@ public class ProfileService {
         person.setFirstName(editPerson.getFirstName());
         person.setLastName(editPerson.getLastName());
         person.setBirthDate(editPerson.getBirthDate());
-        person.setPhone(editPerson.getPhone());
+        String phoneToSave = editPerson.getPhone();
+        //TODO: update if we'll be using different country codes for phone numbers
+        if (person.getPhone().length() != phoneToSave.length() + 1 && !person.getPhone().contains(phoneToSave)) {
+            person.setPhone(phoneToSave);
+        }
+        if (editPerson.getPhotoId() != null) {
+            person.setPhoto(cloudUri + cloudName + "/image/upload/" + editPerson.getPhotoId());
+        }
         person.setAbout(editPerson.getAbout());
         person.setCity(new City(editPerson.getCityId(), "Moscow").getTitle()); //TODO: update after adding city & country dictionaries
         person.setCountry(new Country(editPerson.getCountryId(),"Russia").getTitle()); //TODO: update after adding city & country dictionaries
