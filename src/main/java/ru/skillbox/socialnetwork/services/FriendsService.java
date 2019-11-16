@@ -11,6 +11,7 @@ import ru.skillbox.socialnetwork.entities.FriendshipStatus;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
 import ru.skillbox.socialnetwork.repositories.FriendshipRepository;
+import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,9 @@ public class FriendsService {
     @Autowired
     private FriendshipRepository friendshipRepository;
 
+    @Autowired
+    private PersonRepository personRepository;
+
     public ResponseList<List<PersonResponse>> getFriends(Person person) {
         logger.info("Получение друзей пользователя {}", person.getEMail());
         List<Friendship> friends = friendshipRepository.findByFriends(person, FriendshipStatus.FRIEND);
@@ -29,5 +33,14 @@ public class FriendsService {
         List<PersonResponse> friendsResponse = new ArrayList<>();
         friends.forEach(f -> friendsResponse.add(PersonMapper.getMapping(f.getSrcPerson())));
         return new ResponseList<>(friendsResponse);
+    }
+
+
+    public ResponseList<List<PersonResponse>> getRecommendations(Person person) {
+        logger.info("Получение рекомендаций для пользователя {}", person.getEMail());
+        List<Integer> recommendations = friendshipRepository.findRecommendations(person.getId());
+        List<PersonResponse> recommendationsResponse = new ArrayList<>();
+        recommendations.forEach(r -> recommendationsResponse.add(PersonMapper.getMapping(personRepository.getOne(r))));
+        return new ResponseList<>(recommendationsResponse);
     }
 }

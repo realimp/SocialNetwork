@@ -26,4 +26,11 @@ public class FriendsController {
         if (currentUser == null) return new ResponseList<>("Не удалось определить пользователя", null);
         return friendsService.getFriends(currentUser);
     }
+
+    @GetMapping("/recommendations")
+    public ResponseList<List<PersonResponse>> getRecommendations() {
+        Person currentUser = accountService.getCurrentUser();
+        if (currentUser == null) return new ResponseList<>("Не удалось определить пользователя", null);
+        return friendsService.getRecommendations(currentUser);
+    }
 }
