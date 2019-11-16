@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.skillbox.socialnetwork.api.City;
-import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
@@ -61,8 +59,8 @@ public class ProfileService {
             person.setPhoto(cloudUri + cloudName + "/image/upload/" + editPerson.getPhotoId());
         }
         person.setAbout(editPerson.getAbout());
-        person.setCity(new City(editPerson.getCityId(), "Moscow").getTitle()); //TODO: update after adding city & country dictionaries
-        person.setCountry(new Country(editPerson.getCountryId(),"Russia").getTitle()); //TODO: update after adding city & country dictionaries
+        person.setCity(editPerson.getCity());
+        person.setCountry(editPerson.getCountry());
         person.setMessagesPermission(editPerson.getMessagesPermission());
         Person savedPerson = personRepository.saveAndFlush(person);
 

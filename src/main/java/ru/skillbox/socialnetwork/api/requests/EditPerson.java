@@ -16,10 +16,8 @@ public class EditPerson {
     @JsonProperty("photo_id")
     private String photoId;
     private String about;
-    @JsonProperty("town_id")
-    private Integer cityId;
-    @JsonProperty("country_id")
-    private Integer countryId;
+    private String city;
+    private String country;
     @JsonProperty("messages_permission")
     private String messagesPermission;
 
@@ -74,27 +72,27 @@ public class EditPerson {
         this.about = about;
     }
 
-    public Integer getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
-
-    public Integer getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
-    }
-
     public String getMessagesPermission() {
         return messagesPermission;
     }
 
     public void setMessagesPermission(String messagesPermission) {
         this.messagesPermission = messagesPermission;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String cityId) {
+        this.city = cityId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String countryId) {
+        this.country = countryId;
     }
 }
