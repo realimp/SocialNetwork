@@ -16,11 +16,11 @@ public class ResponsesTest {
     @Test
     public void responsePersonTest() throws JsonProcessingException, JSONException {
         PersonResponse person = new PersonResponse();
-        person.setCity(new City());
-        person.setCountry(new Country());
+        person.setCity(new City().getTitle());
+        person.setCountry(new Country().getTitle());
         Response<PersonResponse> response = new Response<>(person);
         response.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}",
+        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}",
                 new ObjectMapper().writeValueAsString(response), true);
 
     }
@@ -88,12 +88,12 @@ public class ResponsesTest {
     public void responseListPersonsTest() throws JsonProcessingException, JSONException {
         List<PersonResponse> personList = new ArrayList<>();
         PersonResponse person = new PersonResponse();
-        person.setCity(new City());
-        person.setCountry(new Country());
+        person.setCity(new City().getTitle());
+        person.setCountry(new Country().getTitle());
         personList.add(person);
         ResponseList<List<PersonResponse>> persons = new ResponseList<>(personList);
         persons.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":{\"id\":null,\"title\":null},\"country\":{\"id\":null,\"title\":null},\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}",
+        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}",
                 new ObjectMapper().writeValueAsString(persons), true);
 
     }

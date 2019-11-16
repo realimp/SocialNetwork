@@ -14,7 +14,6 @@ import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
-import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.services.PostService;
 
@@ -37,9 +36,7 @@ public class PostController {
 
     @GetMapping("/{id}") //Getting post by ID
     public Response<PostResponse> postGetById(@PathVariable int id) {
-        Response<PostResponse> response = new Response<PostResponse>(
-                PostMapper.getPostResponse(postService.getOnePostById(id),
-                        postService.getOnePostById(id).getAuthor()));
+        Response<PostResponse> response = new Response<PostResponse>(PostMapper.getPostResponse(postService.getOnePostById(id)));
         return response;
     }
 

@@ -21,8 +21,8 @@ public class PersonResponse {
     private String phone;
     private String photo;
     private String about;
-    private City city;
-    private Country country;
+    private String city;
+    private String country;
     @JsonProperty("messages_permission")
     private MessagePermission messagesPermission;
     @JsonProperty("last_online_time")
@@ -107,19 +107,19 @@ public class PersonResponse {
         this.about = about;
     }
 
-    public City getCity() {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(City city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public Country getCountry() {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry(Country country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
