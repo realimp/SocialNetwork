@@ -8,6 +8,7 @@ public class Friendship {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
@@ -22,6 +23,12 @@ public class Friendship {
     private Person dstPerson;
 
     public Friendship() {}
+
+    public Friendship(Person user, Person friend, FriendshipStatus status) {
+        code = status;
+        dstPerson = user;
+        srcPerson = friend;
+    }
 
     public Integer getId() {
         return id;

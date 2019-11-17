@@ -13,7 +13,7 @@ public class Response<T> {
     }
 
     public Response(String error, T data) {
-        this(null, new Date().getTime(), data);
+        this(error, new Date().getTime(), data);
     }
 
     public Response(String error, long timestamp, T data) {

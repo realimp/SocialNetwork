@@ -15,6 +15,7 @@ import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FriendsService {
@@ -45,11 +46,24 @@ public class FriendsService {
     }
 
     public String deleteFriends(Person user, int friendId) {
-        Person friend = personRepository.getOne(friendId);
-        if (friend == null) return "Не удалось определить пользователя с идентификатором " + friendId;
-        Friendship friendship = friendshipRepository.findByFriend(user, friend, FriendshipStatus.FRIEND);
-        if (friendship == null) return "Пользователь " + friend.getEMail() + " не является другом для пользователя " + user.getEMail();
+        Optional<Person> friend = personRepository.findById(friendId);
+        if (!friend.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
+        Person fPerson = friend.get();
+        Friendship friendship = friendshipRepository.findByFriend(user, fPerson, FriendshipStatus.FRIEND);
+        if (friendship == null) return "Пользователь " + fPerson.getEMail() + " не является другом для пользователя " + user.getEMail();
         friendshipRepository.deleteById(friendship.getId());
+        return null;
+    }
+
+    public String addFriends(Person user, int friendId) {
+        Optional<Person> person = personRepository.findById(friendId);
+        if (!person.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
+        Person friend = person.get();
+        Friendship existFriendship = friendshipRepository.findByFriend(user, friend, FriendshipStatus.FRIEND);
+        if (existFriendship != null) return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();;
+        Friendship friendship = new Friendship(user, friend, FriendshipStatus.FRIEND);
+        friendship = friendshipRepository.saveAndFlush(friendship);
+        if (friendship.getId() == null) return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
         return null;
     }
 }

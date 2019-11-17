@@ -44,10 +44,21 @@ public class FriendsController {
     }
 
     @DeleteMapping("/{id}")
-    public Response<MessageResponse> deleteFriends(@PathVariable("id") int id) {
+    public Response<MessageResponse> deleteFriends(@PathVariable("id") Integer id) {
+        if (id == null) new Response<>("Передан пустой параметр", null);
         Person currentUser = accountService.getCurrentUser();
         if (currentUser == null) return new Response<>("Не удалось определить пользователя", null);
         String result = friendsService.deleteFriends(currentUser, id);
+        if (result == null) return new Response<>(new MessageResponse("ok"));
+        else return new Response<>(result, null);
+    }
+
+    @PostMapping("/{id}")
+    public Response<MessageResponse> addFriends(@PathVariable("id") Integer id) {
+        if (id == null) new Response<>("Передан пустой параметр", null);
+        Person currentUser = accountService.getCurrentUser();
+        if (currentUser == null) return new Response<>("Не удалось определить пользователя", null);
+        String result = friendsService.addFriends(currentUser, id);
         if (result == null) return new Response<>(new MessageResponse("ok"));
         else return new Response<>(result, null);
     }
