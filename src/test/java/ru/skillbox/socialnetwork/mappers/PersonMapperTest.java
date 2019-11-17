@@ -68,17 +68,11 @@ public class PersonMapperTest {
         String expectedAbout = "about";
         Assert.assertEquals(expectedAbout, personMapper.getAbout());
 
-        Integer expectedCountryId = 1;
-        Assert.assertEquals(expectedCountryId, personMapper.getCountry().getId());
-
         String expectedCountryTitle = "Russia";
-        Assert.assertEquals(expectedCountryTitle, personMapper.getCountry().getTitle());
-
-        Integer expectedCityId = 1;
-        Assert.assertEquals(expectedCityId, personMapper.getCity().getId());
+        Assert.assertEquals(expectedCountryTitle, personMapper.getCountry());
 
         String expectedCityTitle = "Moscow";
-        Assert.assertEquals(expectedCityTitle, personMapper.getCity().getTitle());
+        Assert.assertEquals(expectedCityTitle, personMapper.getCity());
 
         String expectedMessagePermission = "FRIENDS";
         Assert.assertEquals(expectedMessagePermission, personMapper.getMessagesPermission().toString());
