@@ -40,7 +40,7 @@ PRIMARY KEY (id, invite_code)
 );
 
 CREATE TABLE IF NOT EXISTS tag (
-id INTEGER,
+id INTEGER AUTO_INCREMENT,
 tag VARCHAR(50),
 PRIMARY KEY (id)
 );
@@ -248,15 +248,15 @@ INSERT INTO comment_like (id, time, person_id, comment_id) values (3, '2019-10-2
 
 -- Tag
 DELETE FROM tag;
-INSERT INTO tag (id, tag) values (10, '#TAG1');
-INSERT INTO tag (id, tag) values (20, '#TAG2');
-INSERT INTO tag (id, tag) values (30, '#TAG3');
+INSERT INTO tag (tag) values ('#TAG1');
+INSERT INTO tag (tag) values ('#TAG2');
+INSERT INTO tag (tag) values ('#TAG3');
 
 -- Post2tag
 DELETE FROM post2tag;
-INSERT INTO post2tag (id, post_id, tag_id) values (1, 1, 10);
-INSERT INTO post2tag (id, post_id, tag_id) values (2, 2, 20);
-INSERT INTO post2tag (id, post_id, tag_id) values (3, 2, 30);
+INSERT INTO post2tag (id, post_id, tag_id) values (1, 1, 1);
+INSERT INTO post2tag (id, post_id, tag_id) values (2, 2, 2);
+INSERT INTO post2tag (id, post_id, tag_id) values (3, 2, 3);
 
 
 -- Test data

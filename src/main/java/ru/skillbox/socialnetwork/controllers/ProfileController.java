@@ -1,19 +1,13 @@
 package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
+import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
+import ru.skillbox.socialnetwork.services.PostService;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,6 +16,9 @@ import java.util.List;
 public class ProfileController {
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private PostService postService;
 
     //mapping for a current user
     @GetMapping("/me")
@@ -51,7 +48,7 @@ public class ProfileController {
 
     //getting posts on the user's wall
     @GetMapping("/{id}/wall")
-    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id, @PathVariable Integer offset,  @PathVariable Integer itemPerPage) {
+    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id, @PathVariable Integer offset, @PathVariable Integer itemPerPage) {
         List<PersonsWallPost> personsWallPostList = profileService.getWallPostsById(id, offset, itemPerPage);
         personsWallPostList.add(new PersonsWallPost());
         return new ResponseList<>(personsWallPostList);
@@ -59,8 +56,12 @@ public class ProfileController {
 
     //adding a post to a user's wall
     @PostMapping("/{id}/wall")
-    public Response<PostResponse> postUserWall(@PathVariable Integer id, @PathVariable Date publishDate) {
-        PostResponse postResponse = profileService.addWallPostById(id, publishDate);
+    public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestParam(value = "publish_date", required = false) Long publishDate, @RequestBody PostRequest postRequest) {
+
+        if (publishDate == null) publishDate = System.currentTimeMillis();
+        postService.addPost(id,new Date(publishDate),postRequest);
+        //ToDo после того как мы пост добавили нам нужно что то возвращать на фронт или просто редирект на главную страницу?
+        PostResponse postResponse = profileService.addWallPostById(id, new Date(publishDate));
         return new Response<>(postResponse);
     }
 
