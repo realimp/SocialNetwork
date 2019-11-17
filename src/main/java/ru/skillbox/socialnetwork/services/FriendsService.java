@@ -32,7 +32,7 @@ public class FriendsService {
         logger.info("Количество друзей пользователя {} - {}", person.getEMail(), friends.size());
         List<PersonResponse> friendsResponse = new ArrayList<>();
         friends.forEach(f -> friendsResponse.add(PersonMapper.getMapping(f.getSrcPerson())));
-        return new ResponseList<>(friendsResponse);
+        return new ResponseList<>(friendsResponse, friendsResponse.size());
     }
 
 
@@ -41,6 +41,6 @@ public class FriendsService {
         List<Integer> recommendations = friendshipRepository.findRecommendations(person.getId());
         List<PersonResponse> recommendationsResponse = new ArrayList<>();
         recommendations.forEach(r -> recommendationsResponse.add(PersonMapper.getMapping(personRepository.getOne(r))));
-        return new ResponseList<>(recommendationsResponse);
+        return new ResponseList<>(recommendationsResponse, recommendationsResponse.size());
     }
 }
