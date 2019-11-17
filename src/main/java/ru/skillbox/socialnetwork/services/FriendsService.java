@@ -26,9 +26,9 @@ public class FriendsService {
     @Autowired
     private PersonRepository personRepository;
 
-    public ResponseList<List<PersonResponse>> getFriends(Person person) {
+    public ResponseList<List<PersonResponse>> getFriends(Person person, FriendshipStatus friendshipStatus) {
         logger.info("Получение друзей пользователя {}", person.getEMail());
-        List<Friendship> friends = friendshipRepository.findByFriends(person, FriendshipStatus.FRIEND);
+        List<Friendship> friends = friendshipRepository.findByFriends(person, friendshipStatus);
         logger.info("Количество друзей пользователя {} - {}", person.getEMail(), friends.size());
         List<PersonResponse> friendsResponse = new ArrayList<>();
         friends.forEach(f -> friendsResponse.add(PersonMapper.getMapping(f.getSrcPerson())));
