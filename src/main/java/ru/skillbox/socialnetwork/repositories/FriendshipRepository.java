@@ -25,7 +25,7 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
             "ORDER BY RAND() limit 5")
     List<Integer> findRecommendations(@Param("person_id") Integer personId);
 
-    @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person AND f.srcPerson=:friend AND f.code=:status")
-    Friendship findByFriend(@Param("person") Person person, @Param("friend") Person friend, @Param("status") FriendshipStatus status);
+    @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person AND f.srcPerson=:friend")
+    Friendship findByFriend(@Param("person") Person person, @Param("friend") Person friend);
 
 }

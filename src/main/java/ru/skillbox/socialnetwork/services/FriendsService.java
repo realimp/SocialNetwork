@@ -49,7 +49,7 @@ public class FriendsService {
         Optional<Person> friend = personRepository.findById(friendId);
         if (!friend.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
         Person fPerson = friend.get();
-        Friendship friendship = friendshipRepository.findByFriend(user, fPerson, FriendshipStatus.FRIEND);
+        Friendship friendship = friendshipRepository.findByFriend(user, fPerson);
         if (friendship == null) return "Пользователь " + fPerson.getEMail() + " не является другом для пользователя " + user.getEMail();
         friendshipRepository.deleteById(friendship.getId());
         return null;
@@ -59,11 +59,26 @@ public class FriendsService {
         Optional<Person> person = personRepository.findById(friendId);
         if (!person.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
         Person friend = person.get();
-        Friendship existFriendship = friendshipRepository.findByFriend(user, friend, FriendshipStatus.FRIEND);
+        Friendship existFriendship = friendshipRepository.findByFriend(user, friend);
         if (existFriendship != null) return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();;
         Friendship friendship = new Friendship(user, friend, FriendshipStatus.FRIEND);
         friendship = friendshipRepository.saveAndFlush(friendship);
         if (friendship.getId() == null) return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
         return null;
+    }
+
+    public FriendshipStatus getFriendship(Person user, int friendId) {
+        Optional<Person> person = personRepository.findById(friendId);
+        if (!person.isPresent()) {
+            logger.error("Не удалось определить пользователя с идентификатором {}", friendId);
+            return null;
+        }
+        Person friend = person.get();
+        Friendship friendship = friendshipRepository.findByFriend(user, friend);
+        if (friendship == null) {
+            logger.warn("Нет информации для пользователя {} относительно пользователя {}", friend.getEMail(), user.getEMail());
+            return null;
+        };
+        return friendship.getCode();
     }
 }
