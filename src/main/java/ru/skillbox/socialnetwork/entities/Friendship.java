@@ -13,11 +13,11 @@ public class Friendship {
     @Enumerated(EnumType.STRING)
     private FriendshipStatus code;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "src_person_id", nullable = false)
     private Person srcPerson;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dst_person_id", nullable = false)
     private Person dstPerson;
 

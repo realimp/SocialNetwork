@@ -43,4 +43,13 @@ public class FriendsService {
         recommendations.forEach(r -> recommendationsResponse.add(PersonMapper.getMapping(personRepository.getOne(r))));
         return new ResponseList<>(recommendationsResponse, recommendationsResponse.size());
     }
+
+    public String deleteFriends(Person user, int friendId) {
+        Person friend = personRepository.getOne(friendId);
+        if (friend == null) return "Не удалось определить пользователя с идентификатором " + friendId;
+        Friendship friendship = friendshipRepository.findByFriend(user, friend, FriendshipStatus.FRIEND);
+        if (friendship == null) return "Пользователь " + friend.getEMail() + " не является другом для пользователя " + user.getEMail();
+        friendshipRepository.deleteById(friendship.getId());
+        return null;
+    }
 }
