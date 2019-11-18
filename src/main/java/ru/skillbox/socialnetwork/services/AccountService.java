@@ -9,7 +9,6 @@ import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
-
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
@@ -34,7 +33,6 @@ public class AccountService {
 
         MessageResponse message = new MessageResponse();
 
-        // нажо так же проверять что пароли не пустые
         if (!register.getPasswd1().equals(register.getPasswd2())
                 || register.getPasswd1().isEmpty()) {
             message.setMessage("Пароли не идентичны!");
@@ -42,6 +40,13 @@ public class AccountService {
             String error = "Error by registry";
             long timestamp = new Date().getTime();
 
+            return new Response(error, timestamp, message);
+        }
+
+        if (personRepository.findByEMail(register.getEmail()) != null) {
+            message.setMessage("Указанный email уже существует!");
+            String error = "Error by registry";
+            long timestamp = new Date().getTime();
             return new Response(error, timestamp, message);
         }
 
