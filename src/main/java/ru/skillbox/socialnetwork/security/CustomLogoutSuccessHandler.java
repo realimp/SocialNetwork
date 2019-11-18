@@ -22,13 +22,13 @@ import java.util.HashMap;
 public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final HttpStatus customHttpStatus;
-    @Autowired
     private CustomUserDetailsService userDetailsService;
-    @Autowired
     private JwtConfig jwtConfig;
-    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn) {
+    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn, CustomUserDetailsService uDetailsService, JwtConfig jConfig) {
         super(httpStatusToReturn);
         this.customHttpStatus = httpStatusToReturn;
+        this.userDetailsService = uDetailsService;
+        this.jwtConfig = jConfig;
     }
 
     @Override
