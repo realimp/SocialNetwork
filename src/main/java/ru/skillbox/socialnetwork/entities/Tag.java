@@ -12,8 +12,7 @@ public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "tag")
-    @Size
+    @Column(name = "tag"
     private String text;
 
     public Tag() {}
