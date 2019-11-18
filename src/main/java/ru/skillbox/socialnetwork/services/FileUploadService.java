@@ -11,8 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.socialnetwork.api.responses.FileType;
 import ru.skillbox.socialnetwork.api.responses.FileUploadResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.entities.Person;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,33 +35,28 @@ public class FileUploadService {
 
     private final DateFormat formatter= new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    public Response<FileUploadResponse> fileUpload(MultipartFile file, Integer currentUserId) {
+    public Response<FileUploadResponse> fileUpload(MultipartFile file, Person currentUser) {
         logger.info("Загрузка файла {}", file.getName());
-        if (file.isEmpty()) {
-            logger.error("Не удалось загрузить файл, потому что файл пустой");
-            return new Response<>("Не удалось загрузить файл, потому что файл пустой", null);
-        }
-        if (file.getContentType() == null || !file.getContentType().contains("image")) {
-            logger.error("Не удалось загрузить файл, тип файлов {} не поддерживается.", file.getContentType());
-            return new Response<>("Не удалось загрузить файл, данный тип файлов не поддерживается", null);
-        }
         try {
             Cloudinary cloudinary = new Cloudinary("cloudinary://" + apiKey + ":" + apiSecret + "@" + cloudName);
-            Map response = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+            Map uploadResponse = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+
             FileUploadResponse fileUploadResponse = new FileUploadResponse();
-            fileUploadResponse.setId(response.get("public_id").toString());
-            fileUploadResponse.setFileName(file.getName());
-            fileUploadResponse.setRelativeFilePath(cloudUri + cloudName + "/" + response.get("resource_type").toString()
-                    + "/" + response.get("type").toString() + "/c_thumb,w_100,h_100/v" + response.get("version").toString() + "/"
-                    + response.get("public_id").toString() + "." + response.get("format").toString());
-            fileUploadResponse.setRawFileURL(response.get("url").toString());
-            fileUploadResponse.setFileFormat(response.get("format").toString());
-            fileUploadResponse.setBytes(Long.valueOf(response.get("bytes").toString()));
+            String photoId = uploadResponse.get("public_id").toString();
+            fileUploadResponse.setId(photoId);
+            fileUploadResponse.setOwnerId(currentUser.getId());
+            fileUploadResponse.setFileName(photoId + "." + uploadResponse.get("format").toString());
+            fileUploadResponse.setRelativeFilePath(cloudUri + cloudName + "/image/upload/");
+            fileUploadResponse.setRawFileURL(uploadResponse.get("url").toString());
+            fileUploadResponse.setFileFormat(uploadResponse.get("format").toString());
+            fileUploadResponse.setBytes(Long.valueOf(uploadResponse.get("bytes").toString()));
             fileUploadResponse.setFileType(FileType.IMAGE);
-            fileUploadResponse.setCreatedAt(formatter.parse(response.get("created_at").toString()).getTime());
-            fileUploadResponse.setOwnerId(currentUserId);
+            fileUploadResponse.setCreatedAt(formatter.parse(uploadResponse.get("created_at").toString()).getTime());
             logger.info("Файл {} успешно загружен в {}", file.getName(), fileUploadResponse.getRawFileURL());
-            return new Response<>(fileUploadResponse);
+            Response response = new Response(fileUploadResponse);
+            response.setError("");
+            response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
+            return response;
         } catch (IOException | ParseException e) {
             logger.error("При загрузке файла {} произошла ошибка {}", file.getName(), e.getMessage());
             new Response<FileUploadResponse>("Не удалось загрузить файл. " + e.getMessage(), null);

@@ -8,20 +8,27 @@ public class Friendship {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
     private FriendshipStatus code;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "src_person_id", nullable = false)
     private Person srcPerson;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dst_person_id", nullable = false)
     private Person dstPerson;
 
     public Friendship() {}
+
+    public Friendship(Person user, Person friend, FriendshipStatus status) {
+        code = status;
+        dstPerson = user;
+        srcPerson = friend;
+    }
 
     public Integer getId() {
         return id;

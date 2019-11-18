@@ -10,6 +10,11 @@ public class ResponseList<T> extends Response<T> {
         super(data);
     }
 
+    public ResponseList(T data, long total) {
+        super(data);
+        this.total = total;
+    }
+
     public ResponseList(String error, T data) {
         super(data);
     }
