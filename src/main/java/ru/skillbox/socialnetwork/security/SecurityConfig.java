@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userDetailsService, jwtConfig))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().logout().logoutUrl(jwtConfig.getLogoutUrl()).logoutSuccessHandler(logoutSuccessHandler()).permitAll();
+                .and().logout().logoutUrl(jwtConfig.getLogoutUrl()).logoutSuccessHandler(logoutSuccessHandler(accountService.getCurrentUser().getEMail())).permitAll();
     }
 
     @Override
