@@ -264,4 +264,4 @@ insert into person(id, first_name, last_name, reg_date, birth_date, e_mail, phon
 values (4, 'testName', 'testLastName', '2011-02-02 23:59:00', '1992-12-23 00:00:00', 'test@email.com', '+7800200600', 
         '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'Moscow', 'Russia', 1, 'ALL', 0, 0, 0);
 
-UPDATE person SET `password` = '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi';
+UPDATE person SET `password` = '$2a$12$cAWrX/TEdZrY0WzFz8XGsOUWDYMHob62JJ0AcKMnyiLJAp7LZ4YJC';
