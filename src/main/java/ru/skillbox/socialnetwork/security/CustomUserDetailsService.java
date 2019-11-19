@@ -47,6 +47,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         long timeNow = Calendar.getInstance().getTimeInMillis();
         Timestamp tm = new Timestamp(timeNow);
         person.setLastOnlineTime(tm);
+        person.setOnline(false);
         changeUser(person);
     }
 

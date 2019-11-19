@@ -51,7 +51,6 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
         response.setStatus(this.customHttpStatus.value());
         writer.print(jsonString);
         Person person = userDetailsService.findPerson(logoutPersonEmail);
-        userDetailsService.setAccountOnline(person,false);
         userDetailsService.setAccountLastOnlineTime(person);
         super.onLogoutSuccess(request,response,authentication);
     }
