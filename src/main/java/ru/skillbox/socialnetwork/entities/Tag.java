@@ -5,14 +5,14 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity(name = "Post")
-@Table(name="post")
+//@Entity(name = "Post")
+//@Table(name="post") почему post ??
 public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "tag"
+    @Column(name = "tag")
     private String text;
 
     public Tag() {}

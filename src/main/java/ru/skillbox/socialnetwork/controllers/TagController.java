@@ -16,7 +16,7 @@ public class TagController {
 
   @GetMapping("/") //Tag search
   public ResponseList<PostResponse> tagSearch(String text) {
-    return new ResponseList<>(new tagResponse());
+    return new ResponseList<>(null);
   }
 
 }
