@@ -93,7 +93,7 @@ public class ProfileService {
         return new ArrayList<>();
     }
 
-    public PostResponse addWallPostById(Integer id, Date publishDate) {
+    public PostResponse addWallPostById(Integer id, Date publishDate, List<String> tagsList) {
         //TODO: update after adding PostRepository
         return new PostResponse();
     }
