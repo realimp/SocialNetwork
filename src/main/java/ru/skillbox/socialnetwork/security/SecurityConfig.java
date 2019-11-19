@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.services.AccountService;
 
 import javax.servlet.ServletException;
@@ -86,7 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
-        return new CustomLogoutSuccessHandler(HttpStatus.ACCEPTED, accountService.getCurrentUser().getEMail());
+        Person person = accountService.getCurrentUser();
+        return new CustomLogoutSuccessHandler(HttpStatus.ACCEPTED, person.getEMail());
     }
 
 }
