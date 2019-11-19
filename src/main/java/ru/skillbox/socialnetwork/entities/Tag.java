@@ -5,8 +5,8 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.Objects;
 
-//@Entity(name = "Post")
-//@Table(name="post") почему post ??
+@Entity(name = "Tag")
+@Table(name="tag")
 public class Tag {
 
     @Id
