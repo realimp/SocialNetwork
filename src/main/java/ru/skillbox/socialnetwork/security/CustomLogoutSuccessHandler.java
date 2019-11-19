@@ -37,11 +37,12 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        //String token = request.getHeader("Authorization");
-        //byte[] secret = jwtConfig.getSecret().getBytes();
-        //Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
-        //String logoutPerson = parsedToken.getBody().getSubject();
-        String logoutPerson = email;
+        String token = request.getHeader("Authorization");
+        byte[] secret = jwtConfig.getSecret().getBytes();
+        Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
+        String logoutPerson = parsedToken.getBody().getSubject();
+        Person person = (Person) parsedToken.getBody();
+        String email = person.getEMail();
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());

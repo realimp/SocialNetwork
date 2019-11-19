@@ -36,9 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Autowired
-    private AccountService accountService;
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -54,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userDetailsService, jwtConfig))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().logout().logoutUrl(jwtConfig.getLogoutUrl()).logoutSuccessHandler(logoutSuccessHandler(accountService.getCurrentUser().getEMail())).permitAll();
+                .and().logout().logoutUrl(jwtConfig.getLogoutUrl()).logoutSuccessHandler(logoutSuccessHandler()).permitAll();
     }
 
     @Override
@@ -86,8 +83,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public LogoutSuccessHandler logoutSuccessHandler(String email) {
-        return new CustomLogoutSuccessHandler(HttpStatus.ACCEPTED, email);
+    public LogoutSuccessHandler logoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler(HttpStatus.ACCEPTED);
     }
 
 }
