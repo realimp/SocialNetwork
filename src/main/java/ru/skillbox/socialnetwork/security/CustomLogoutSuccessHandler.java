@@ -28,11 +28,10 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
     private CustomUserDetailsService userDetailsService;
     @Autowired
     private JwtConfig jwtConfig;
-    private String email;
-    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn, String email) {
+
+    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn) {
         super(httpStatusToReturn);
         this.customHttpStatus = httpStatusToReturn;
-        this.email = email;
     }
 
     @Override
