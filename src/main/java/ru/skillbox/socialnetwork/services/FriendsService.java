@@ -60,7 +60,8 @@ public class FriendsService {
         if (!person.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
         Person friend = person.get();
         Friendship existFriendship = friendshipRepository.findByFriend(user, friend);
-        if (existFriendship != null) return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();;
+        if (existFriendship != null) return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();
+        if (user.equals(friend)) return "Пользователь " + friend.getEMail() + " не может быть сам себе другом";
         Friendship friendship = new Friendship(user, friend, FriendshipStatus.FRIEND);
         friendship = friendshipRepository.saveAndFlush(friendship);
         if (friendship.getId() == null) return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
