@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.services.AccountService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,21 +23,24 @@ import java.util.HashMap;
 public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccessHandler implements LogoutSuccessHandler {
 
     private final HttpStatus customHttpStatus;
+    @Autowired
     private CustomUserDetailsService userDetailsService;
+    @Autowired
     private JwtConfig jwtConfig;
-    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn, CustomUserDetailsService uDetailsService, JwtConfig jConfig) {
+    @Autowired
+    private AccountService accountService;
+    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn) {
         super(httpStatusToReturn);
         this.customHttpStatus = httpStatusToReturn;
-        this.userDetailsService = uDetailsService;
-        this.jwtConfig = jConfig;
     }
 
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String token = request.getHeader("Authorization");
-        byte[] secret = jwtConfig.getSecret().getBytes();
-        Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
-        String logoutPerson = parsedToken.getBody().getSubject();
+        //String token = request.getHeader("Authorization");
+        //byte[] secret = jwtConfig.getSecret().getBytes();
+        //Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
+        //String logoutPerson = parsedToken.getBody().getSubject();
+        String logoutPerson = accountService.getCurrentUser().getEMail();
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
