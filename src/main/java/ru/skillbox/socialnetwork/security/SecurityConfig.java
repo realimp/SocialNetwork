@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
-        return new CustomLogoutSuccessHandler(HttpStatus.ACCEPTED, accountService);
+        return new CustomLogoutSuccessHandler(HttpStatus.ACCEPTED, accountService.getCurrentUser().getEMail());
     }
 
 }

@@ -28,11 +28,11 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
     private CustomUserDetailsService userDetailsService;
     @Autowired
     private JwtConfig jwtConfig;
-    private AccountService accountService;
-    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn, AccountService accountService) {
+    private String email;
+    public CustomLogoutSuccessHandler(HttpStatus httpStatusToReturn, String email) {
         super(httpStatusToReturn);
         this.customHttpStatus = httpStatusToReturn;
-        this.accountService = accountService;
+        this.email = email;
     }
 
     @Override
@@ -41,8 +41,7 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
         //byte[] secret = jwtConfig.getSecret().getBytes();
         //Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
         //String logoutPerson = parsedToken.getBody().getSubject();
-        Person pers = accountService.getCurrentUser();
-        String logoutPerson = pers.getEMail();
+        String logoutPerson = email;
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
