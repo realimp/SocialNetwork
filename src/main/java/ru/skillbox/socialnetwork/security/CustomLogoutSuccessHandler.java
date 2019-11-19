@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.services.AccountService;
 
 import javax.servlet.ServletException;
@@ -40,7 +41,7 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
         //byte[] secret = jwtConfig.getSecret().getBytes();
         //Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
         //String logoutPerson = parsedToken.getBody().getSubject();
-        String logoutPerson = accountService.getCurrentUser().getEMail();
+        Person pers = accountService.getCurrentUser();
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
