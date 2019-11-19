@@ -1,19 +1,28 @@
 package ru.skillbox.socialnetwork.api.requests;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
 public class EditPerson {
 
+    @JsonProperty("first_name")
     private String firstName;
+    @JsonProperty("last_name")
     private String lastName;
+    @JsonProperty("birth_date")
     private Date birthDate;
     private String phone;
+    @JsonProperty("photo_id")
     private String photoId;
     private String about;
-    private Integer cityId;
-    private Integer countryId;
+    private String city;
+    private String country;
+    @JsonProperty("messages_permission")
     private String messagesPermission;
 
+    public EditPerson() {
+    }
 
     public String getFirstName() {
         return firstName;
@@ -63,27 +72,27 @@ public class EditPerson {
         this.about = about;
     }
 
-    public Integer getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(Integer cityId) {
-        this.cityId = cityId;
-    }
-
-    public Integer getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
-    }
-
     public String getMessagesPermission() {
         return messagesPermission;
     }
 
     public void setMessagesPermission(String messagesPermission) {
         this.messagesPermission = messagesPermission;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String cityId) {
+        this.city = cityId;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String countryId) {
+        this.country = countryId;
     }
 }

@@ -2,12 +2,27 @@ package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.skillbox.socialnetwork.api.City;
+import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.services.PostService;
+import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.repositories.PersonRepository;
+import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,9 +43,12 @@ public class ProfileController {
     }
 
     @PutMapping("/me")
-    public Response<PersonResponse> putMe(@RequestBody EditPerson editPerson) {
-        PersonResponse personResponse = profileService.editPerson(editPerson);
-        return new Response<>(personResponse);
+    public Response putMe(@RequestBody EditPerson editPerson) {
+        PersonResponse responseData = profileService.editPerson(editPerson);
+        Response response = new Response(responseData);
+        response.setError("");
+        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
+        return response;
     }
 
     @DeleteMapping("/me")
