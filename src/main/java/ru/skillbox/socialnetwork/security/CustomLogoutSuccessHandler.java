@@ -39,9 +39,7 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
         String token = request.getHeader("Authorization");
         byte[] secret = jwtConfig.getSecret().getBytes();
         Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
-        String logoutPerson = parsedToken.getBody().getSubject();
-        Person person = (Person) parsedToken.getBody();
-        String email = person.getEMail();
+        String logoutPersonEmail = parsedToken.getBody().getSubject();
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
@@ -52,8 +50,9 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
         String jsonString = new Gson().toJson(responseContent);
         response.setStatus(this.customHttpStatus.value());
         writer.print(jsonString);
-        userDetailsService.setAccountOnline(logoutPerson,false);
-        userDetailsService.setAccountLastOnlineTime(logoutPerson);
+        Person person = userDetailsService.findPerson(logoutPersonEmail);
+        userDetailsService.setAccountOnline(person,false);
+        userDetailsService.setAccountLastOnlineTime(person);
         super.onLogoutSuccess(request,response,authentication);
     }
 }

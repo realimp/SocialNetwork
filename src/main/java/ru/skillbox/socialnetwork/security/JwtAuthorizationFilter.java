@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.skillbox.socialnetwork.entities.Person;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -40,7 +41,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        localUserDetailsService.setAccountOnline(SecurityContextHolder.getContext().getAuthentication().getName(),true);
+        Person person = localUserDetailsService.findPerson(SecurityContextHolder.getContext().getAuthentication().getName());
+        localUserDetailsService.setAccountOnline(person,true);
         chain.doFilter(request, response);
     }
 

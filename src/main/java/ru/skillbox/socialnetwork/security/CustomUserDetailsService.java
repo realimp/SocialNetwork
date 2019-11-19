@@ -38,14 +38,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         throw new UsernameNotFoundException("Username with " + email + " not found");
     }
 
-    public void setAccountOnline(String eMail, Boolean onLine) throws  UsernameNotFoundException {
-        Person person = personRepository.findByEMail(eMail);
+    public void setAccountOnline(Person person, Boolean onLine) throws  UsernameNotFoundException {
         person.setOnline(onLine);
         changeUser(person);
     }
 
-    public void setAccountLastOnlineTime(String eMail) throws  UsernameNotFoundException{
-        Person person = personRepository.findByEMail(eMail);
+    public void setAccountLastOnlineTime(Person person) throws  UsernameNotFoundException{
         long timeNow = Calendar.getInstance().getTimeInMillis();
         Timestamp tm = new Timestamp(timeNow);
         person.setLastOnlineTime(tm);
@@ -54,6 +52,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private void changeUser(Person person){
         personRepository.save(person);
+    }
+
+    public Person findPerson(String email){
+        return personRepository.findByEMail(email);
     }
 
     private void saveThreadLocal(Person person) {
