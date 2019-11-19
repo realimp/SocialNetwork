@@ -18,7 +18,6 @@ import java.util.Date;
 
 @Service
 @Transactional
-@EnableWebSecurity
 public class AccountService {
 
     @Autowired
