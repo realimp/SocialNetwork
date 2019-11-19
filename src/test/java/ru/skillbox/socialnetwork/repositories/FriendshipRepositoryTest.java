@@ -150,7 +150,7 @@ public class FriendshipRepositoryTest {
         addAndAssert(null, addedPerson.get(6), addedPerson.get(12), FriendshipStatus.SUBSCRIBED);
         List<Integer> recommendations = friendshipRepository.findRecommendations(user.getId());
         System.out.println(recommendations);
-        assertTrue(recommendations.size() <= 5);
+        assertTrue(recommendations.size() == 5);
         for (Integer r : recommendations) {
             assertNull(friendshipRepository.findByFriend(user, personRepository.getOne(r)));
             assertTrue(userFriends.stream()

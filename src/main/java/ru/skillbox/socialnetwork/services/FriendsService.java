@@ -28,6 +28,8 @@ public class FriendsService {
     private PersonRepository personRepository;
 
     public ResponseList<List<PersonResponse>> getFriends(Person person, FriendshipStatus friendshipStatus) {
+        if (person == null)
+            return new ResponseList<>("Не удалось определить пользователя с идентификатором null", null);
         logger.info("Получение друзей пользователя {}", person.getEMail());
         List<Friendship> friends = friendshipRepository.findByFriends(person, friendshipStatus);
         logger.info("Количество друзей пользователя {} - {}", person.getEMail(), friends.size());
@@ -38,6 +40,8 @@ public class FriendsService {
 
 
     public ResponseList<List<PersonResponse>> getRecommendations(Person person) {
+        if (person == null)
+            return new ResponseList<>("Не удалось определить пользователя с идентификатором null", null);
         logger.info("Получение рекомендаций для пользователя {}", person.getEMail());
         List<Integer> recommendations = friendshipRepository.findRecommendations(person.getId());
         List<PersonResponse> recommendationsResponse = new ArrayList<>();
@@ -46,29 +50,38 @@ public class FriendsService {
     }
 
     public String deleteFriends(Person user, int friendId) {
+        if (user == null) return "Не удалось определить пользователя с идентификатором null";
         Optional<Person> friend = personRepository.findById(friendId);
         if (!friend.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
         Person fPerson = friend.get();
         Friendship friendship = friendshipRepository.findByFriend(user, fPerson);
-        if (friendship == null) return "Пользователь " + fPerson.getEMail() + " не является другом для пользователя " + user.getEMail();
+        if (friendship == null)
+            return "Пользователь " + fPerson.getEMail() + " не является другом для пользователя " + user.getEMail();
         friendshipRepository.deleteById(friendship.getId());
         return null;
     }
 
     public String addFriends(Person user, int friendId) {
+        if (user == null) return "Не удалось определить пользователя с идентификатором null";
         Optional<Person> person = personRepository.findById(friendId);
         if (!person.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
         Person friend = person.get();
         Friendship existFriendship = friendshipRepository.findByFriend(user, friend);
-        if (existFriendship != null) return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();
+        if (existFriendship != null)
+            return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();
         if (user.equals(friend)) return "Пользователь " + friend.getEMail() + " не может быть сам себе другом";
         Friendship friendship = new Friendship(user, friend, FriendshipStatus.FRIEND);
         friendship = friendshipRepository.saveAndFlush(friendship);
-        if (friendship.getId() == null) return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
+        if (friendship.getId() == null)
+            return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
         return null;
     }
 
     public FriendshipStatus getFriendship(Person user, int friendId) {
+        if (user == null) {
+            logger.error("Не удалось определить пользователя с идентификатором null");
+            return null;
+        }
         Optional<Person> person = personRepository.findById(friendId);
         if (!person.isPresent()) {
             logger.error("Не удалось определить пользователя с идентификатором {}", friendId);
@@ -79,7 +92,7 @@ public class FriendsService {
         if (friendship == null) {
             logger.warn("Нет информации для пользователя {} относительно пользователя {}", friend.getEMail(), user.getEMail());
             return null;
-        };
+        }
         return friendship.getCode();
     }
 }
