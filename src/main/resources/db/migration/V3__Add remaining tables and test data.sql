@@ -16,7 +16,7 @@ PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS friendship (
-id INTEGER,
+id INTEGER AUTO_INCREMENT,
 src_person_id INTEGER NOT NULL,
 dst_person_id INTEGER NOT NULL,
 code VARCHAR(50),
@@ -40,7 +40,7 @@ PRIMARY KEY (id, invite_code)
 );
 
 CREATE TABLE IF NOT EXISTS tag (
-id INTEGER AUTO_INCREMENT,
+id INTEGER,
 tag VARCHAR(50),
 PRIMARY KEY (id)
 );
@@ -248,20 +248,20 @@ INSERT INTO comment_like (id, time, person_id, comment_id) values (3, '2019-10-2
 
 -- Tag
 DELETE FROM tag;
-INSERT INTO tag (tag) values ('#TAG1');
-INSERT INTO tag (tag) values ('#TAG2');
-INSERT INTO tag (tag) values ('#TAG3');
+INSERT INTO tag (id, tag) values (10, '#TAG1');
+INSERT INTO tag (id, tag) values (20, '#TAG2');
+INSERT INTO tag (id, tag) values (30, '#TAG3');
 
 -- Post2tag
 DELETE FROM post2tag;
-INSERT INTO post2tag (id, post_id, tag_id) values (1, 1, 1);
-INSERT INTO post2tag (id, post_id, tag_id) values (2, 2, 2);
-INSERT INTO post2tag (id, post_id, tag_id) values (3, 2, 3);
+INSERT INTO post2tag (id, post_id, tag_id) values (1, 1, 10);
+INSERT INTO post2tag (id, post_id, tag_id) values (2, 2, 20);
+INSERT INTO post2tag (id, post_id, tag_id) values (3, 2, 30);
 
 
 -- Test data
 insert into person(id, first_name, last_name, reg_date, birth_date, e_mail, phone, password,  city, country, is_approved, messages_permission, is_blocked, is_online, is_deleted)
-values (4, 'testName', 'testLastName', '2011-02-02 23:59:00', '1992-12-23 00:00:00', 'test@email.com', '+7800200600', 
+values (4, 'testName', 'testLastName', '2011-02-02 23:59:00', '1992-12-23 00:00:00', 'test@email.com', '+7800200600',
         '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'Moscow', 'Russia', 1, 'ALL', 0, 0, 0);
 
-UPDATE `social_network`.`person` SET `password` = '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi';
+UPDATE person SET `password` = '$2a$12$cAWrX/TEdZrY0WzFz8XGsOUWDYMHob62JJ0AcKMnyiLJAp7LZ4YJC';
