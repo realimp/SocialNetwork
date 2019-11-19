@@ -42,6 +42,7 @@ public class CustomLogoutSuccessHandler extends HttpStatusReturningLogoutSuccess
         //Jws<Claims> parsedToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token.replace("Bearer ", "").replace("Bearer", ""));
         //String logoutPerson = parsedToken.getBody().getSubject();
         Person pers = accountService.getCurrentUser();
+        String logoutPerson = pers.getEMail();
         Response responseContent = new Response();
         responseContent.setError("string");
         responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
