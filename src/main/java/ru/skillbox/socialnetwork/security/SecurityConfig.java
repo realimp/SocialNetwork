@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.services.AccountService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,13 +42,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/account/register","/",jwtConfig.getLogoutUrl()).permitAll()
+                .antMatchers("/account/register").permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), userDetailsService, jwtConfig))
-                .addFilter(new JwtAuthorizationFilter(authenticationManager(), jwtConfig))
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), userDetailsService, jwtConfig))
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().logout().logoutUrl(jwtConfig.getLogoutUrl()).logoutSuccessHandler(logoutSuccessHandler()).permitAll();
