@@ -16,7 +16,7 @@ public class ResponseList<T> extends Response<T> {
     }
 
     public ResponseList(String error, T data) {
-        super(data);
+        super(error, data);
     }
 
     public long getTotal() {

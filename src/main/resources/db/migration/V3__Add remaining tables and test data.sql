@@ -157,7 +157,7 @@ INSERT INTO person (id, first_name, last_name, reg_date, birth_date, e_mail, pho
 DELETE FROM friendship;
 INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (1, 1, 2, 'REQUEST');
 INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (2, 1, 3, 'FRIEND');
-INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (3, 1, 2, 'BLOCKED');
+INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (3, 2, 1, 'BLOCKED');
 
 -- Dialog
 DELETE FROM dialog;
