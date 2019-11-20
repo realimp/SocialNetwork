@@ -14,8 +14,12 @@ import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.api.responses.PersonsWallPost;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
+import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
+import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import java.util.*;
 
@@ -31,6 +35,9 @@ public class ProfileService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Autowired
     private AccountService accountService;
@@ -51,7 +58,6 @@ public class ProfileService {
         person.setLastName(editPerson.getLastName());
         person.setBirthDate(editPerson.getBirthDate());
         String phoneToSave = editPerson.getPhone();
-        //TODO: update if we'll be using different country codes for phone numbers
         if (person.getPhone().length() != phoneToSave.length() + 1 && !person.getPhone().contains(phoneToSave)) {
             person.setPhone(phoneToSave);
         }
@@ -88,14 +94,33 @@ public class ProfileService {
         return PersonMapper.getMapping(person);
     }
 
-    public List<PersonsWallPost> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
-        //TODO: update after adding PostRepository
-        return new ArrayList<>();
+    public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
+        Pageable pageable = PageRequest.of(offset, itemPerPage);
+        Page<Post> postPageList = postRepository.findByAuthor(personRepository.getOne(id), pageable);
+
+        List<Post> postList = postPageList.getContent();
+        List<PostResponse> postResponseList = new ArrayList<>();
+
+        for (Post post : postList) {
+            postResponseList.add(PostMapper.getPostResponse(post));
+        }
+        return postResponseList;
     }
 
-    public PostResponse addWallPostById(Integer id, Date publishDate) {
-        //TODO: update after adding PostRepository
-        return new PostResponse();
+    public PostResponse addWallPostById(Integer id, Date publishDate, String title, String post_text, List<Tag> tags) {
+        Post post = new Post();
+
+        post.setAuthor(personRepository.getOne(id));
+        post.setDate(publishDate);
+        post.setTitle(title);
+        post.setText(post_text);
+        post.setBlocked(false);
+        post.setDeleted(false);
+
+        //TODO: update after adding Tag repository
+
+        postRepository.save(post);
+        return PostMapper.getPostResponse(post);
     }
 
     public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
