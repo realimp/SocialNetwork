@@ -41,7 +41,6 @@ public class ProfileController {
         return new Response<>(messageResponse);
     }
 
-    //get user by id
     @GetMapping("/{id}")
     public Response<PersonResponse> getUser(@PathVariable Integer id) {
         PersonResponse personResponse = profileService.getPersonById(id);
