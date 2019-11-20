@@ -14,6 +14,7 @@ import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.ProfileService;
@@ -60,16 +61,17 @@ public class ProfileController {
 
     //getting posts on the user's wall
     @GetMapping("/{id}/wall")
-    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id, @PathVariable Integer offset,  @PathVariable Integer itemPerPage) {
-        List<PersonsWallPost> personsWallPostList = profileService.getWallPostsById(id, offset, itemPerPage);
-        personsWallPostList.add(new PersonsWallPost());
-        return new ResponseList<>(personsWallPostList);
+    public ResponseList<List<PostResponse>> getUserWall(@PathVariable Integer id, @PathVariable Integer offset,  @PathVariable Integer itemPerPage) {
+        List<PostResponse> postResponseList = profileService.getWallPostsById(id, offset, itemPerPage);
+        return new ResponseList<>(postResponseList);
     }
 
     //adding a post to a user's wall
     @PostMapping("/{id}/wall")
-    public Response<PostResponse> postUserWall(@PathVariable Integer id, @PathVariable Date publishDate) {
-        PostResponse postResponse = profileService.addWallPostById(id, publishDate);
+    public Response<PostResponse> postUserWall(@PathVariable Integer id, @PathVariable Date publishDate,
+                                               @PathVariable String title, @PathVariable String post_text,
+                                               @PathVariable List<Tag> tags) {
+        PostResponse postResponse = profileService.addWallPostById(id, publishDate, title, post_text, tags);
         return new Response<>(postResponse);
     }
 
