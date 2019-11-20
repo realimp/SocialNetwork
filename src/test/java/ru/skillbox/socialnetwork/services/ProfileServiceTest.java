@@ -7,13 +7,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
+import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.security.CustomUserDetailsService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -42,6 +45,23 @@ public class ProfileServiceTest {
         org.junit.Assert.assertTrue(personResponse.getFirstName().equals("Stefan"));
         org.junit.Assert.assertTrue(personResponse.getLastName().equals("Radzhinskij"));
         org.junit.Assert.assertTrue(personResponse.getPhone().equals("+79163202121"));
+    }
+
+    @Test
+    public void getWallPostByIdTest() {
+        List<PostResponse> list = profileService.getWallPostsById(2, 0, 10);
+        System.out.println(list.get(0).toString());
+        org.junit.Assert.assertTrue(list.size() == 1);
+    }
+
+    @Test
+    public void addWallPostByIdTest() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        Date date = dateFormat.parse("19.11.2019");
+        List<Tag> tags = new ArrayList<>();
+        profileService.addWallPostById(90901, date, "POST TITLE", "POST TEXT", tags);
+        List<PostResponse> list = profileService.getWallPostsById(90901, 0, 10);
+        org.junit.Assert.assertTrue(list.size() == 1);
     }
 
     @Test

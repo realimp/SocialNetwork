@@ -17,6 +17,7 @@ import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.services.PostService;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.ProfileService;
