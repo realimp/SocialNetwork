@@ -3,13 +3,9 @@ package ru.skillbox.socialnetwork.controllers;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.skillbox.socialnetwork.api.requests.CommentRequest;
+import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
@@ -24,13 +20,13 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("/") //Post search
-    public ResponseList<PostResponse> postSearch(String text, Date dateFrom, Date dateTo, int offset, int itemPerPage) {
+    @GetMapping("") //Post search
+    public ResponseList<PostResponse> postSearch(@RequestParam(required = false) String text, @RequestParam(required = false) Long dateFrom, @RequestParam(required = false) Long dateTo, @RequestParam(required = false) Integer offset, @RequestParam Integer itemPerPage) {
         return new ResponseList<>(new PostResponse());
     }
 
     @PostMapping("/") //Post creation
-    public Response<PostResponse> postCreate(Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
+    public Response<PostResponse> postCreate(@RequestParam(required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
         return new Response<>(new PostResponse());
     }
 
@@ -41,7 +37,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}") //Editing a post by ID
-    public Response<PostResponse> postEditById(@PathVariable int id, Date publishDate) { //@RequestBody "title": "string","post_text": "string","tags": ["tag1"]
+    public Response<PostResponse> postEditById(@PathVariable int id, @RequestParam(required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
         return new Response<>(new PostResponse());
     }
 
@@ -58,17 +54,17 @@ public class PostController {
     }
 
     @GetMapping("/{id}/comments") //Getting post comments
-    public ResponseList<Comment> postGetComments(@PathVariable int id, int offset, int itemPerPage) {
+    public ResponseList<Comment> postGetComments(@PathVariable int id, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
         return new ResponseList<>(new Comment());
     }
 
     @PostMapping("/{id}/comments") //Post comment
-    public Response<Comment> postComments(@PathVariable int id) {//@RequestBody
+    public Response<Comment> postComments(@PathVariable int id, @RequestBody CommentRequest commentRequest) { //@RequestBody
         return new Response<>(new Comment());
     }
 
     @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
-    public Response<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id) {//@RequestBody
+    public Response<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id, @RequestBody CommentRequest commentRequest) {//@RequestBody
         return new Response<>(new PostResponse());
     }
 

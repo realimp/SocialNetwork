@@ -44,7 +44,7 @@ public class DialogController {
     @Value("${server.servlet.context-path}")
     private String contextPath;
 
-    @GetMapping("")
+    @GetMapping
     public ResponseList getDialogs(@RequestParam(required = false) String query, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemsPerPage) {
         Pageable resultsPage;
         if (offset != null && itemsPerPage != null) {
@@ -103,7 +103,7 @@ public class DialogController {
         return response;
     }
 
-    @PostMapping("")
+    @PostMapping
     public Response startDialog(@RequestBody UserIds userIds) {
         Dialog dialog = new Dialog();
         dialog.setOwner(accountService.getCurrentUser());
@@ -126,11 +126,12 @@ public class DialogController {
     public Response unreadCount() {
         int count = 0;
         List<Dialog> dialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
-        for (Dialog dialog : dialogs) {
-            count += (dialog.getUnreadCount() == null ? 0 : dialog.getUnreadCount());
+        if (dialogs.size() > 0) {
+            for (Dialog dialog : dialogs) {
+                count += dialog.getUnreadCount();
+            }
         }
-        DialogResponse responseData = new DialogResponse();
-        responseData.setUnreadCount(count);
+        UnreadCount responseData = new UnreadCount(count);
         Response response = new Response(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
