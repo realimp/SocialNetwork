@@ -40,7 +40,7 @@ PRIMARY KEY (id, invite_code)
 );
 
 CREATE TABLE IF NOT EXISTS tag (
-id INTEGER,
+id INTEGER AUTO_INCREMENT,
 tag VARCHAR(50),
 PRIMARY KEY (id)
 );
