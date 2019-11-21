@@ -2,24 +2,11 @@ package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.skillbox.socialnetwork.api.City;
-import ru.skillbox.socialnetwork.api.Country;
+import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
-import ru.skillbox.socialnetwork.services.PostService;
-import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Tag;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
-import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
 import java.sql.Timestamp;
@@ -58,7 +45,6 @@ public class ProfileController {
         return new Response<>(messageResponse);
     }
 
-    //get user by id
     @GetMapping("/{id}")
     public Response<PersonResponse> getUser(@PathVariable Integer id) {
         PersonResponse personResponse = profileService.getPersonById(id);
@@ -67,32 +53,54 @@ public class ProfileController {
 
     //getting posts on the user's wall
     @GetMapping("/{id}/wall")
-    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id, @PathVariable Integer offset, @PathVariable Integer itemPerPage) {
-        List<PersonsWallPost> personsWallPostList = profileService.getWallPostsById(id, offset, itemPerPage);
-        personsWallPostList.add(new PersonsWallPost());
-        return new ResponseList<>(personsWallPostList);
+    public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id, @RequestParam(required = false) Integer offset,  @RequestParam(required = false) Integer itemPerPage) {
+        int pageOffset = 0, itemsPerPage = 20;
+        if (offset != null) {
+            pageOffset = offset;
+        }
+        if (itemPerPage != null) {
+            itemsPerPage = itemPerPage;
+        }
+        List<PostResponse> personsWallPostList = profileService.getWallPostsById(id, pageOffset, itemsPerPage);
+        return new ResponseList(personsWallPostList);
     }
 
     //adding a post to a user's wall
     @PostMapping("/{id}/wall")
-    public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestParam(value = "publish_date", required = false) Long publishDate, @RequestBody PostRequest postRequest) {
-
-        if (publishDate == null) publishDate = System.currentTimeMillis();
-        postService.addPost(id,new Date(publishDate),postRequest);
-        //ToDo после того как мы пост добавили нам нужно что то возвращать на фронт или просто редирект на главную страницу?
-        PostResponse postResponse = profileService.addWallPostById(id, new Date(publishDate));
+    public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestParam(required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
+        Date date = new Date();
+        List<Tag> tagsList = new ArrayList<>();
+        if (publishDate != null) {
+            date = new Date(publishDate);
+        }
+        if (createPostRequest.getTags().length > 0) {
+            for (String tagString : createPostRequest.getTags()) {
+                Tag tag = new Tag();
+                tag.setText(tagString);
+                tagsList.add(tag);
+            }
+        }
+        PostResponse postResponse = profileService.addWallPostById(id, date, createPostRequest.getTitle(), createPostRequest.getPostText(), tagsList);
         return new Response<>(postResponse);
     }
 
     //user Search
     @GetMapping("/search")
-    public ResponseList<List<PersonResponse>> getUserSearch(@PathVariable String firstName, @PathVariable String lastName,
-                                                            @PathVariable Integer ageFrom, @PathVariable Integer ageTo,
-                                                            @PathVariable String country, @PathVariable String city,
-                                                            @PathVariable Integer offset, @PathVariable Integer itemPerPage) {
+    public ResponseList<List<PersonResponse>> getUserSearch(@RequestParam(required = false) String firstName, @RequestParam(required = false) String lastName,
+                                                            @RequestParam(required = false) Integer ageFrom, @RequestParam(required = false) Integer ageTo,
+                                                            @RequestParam(required = false) String country, @RequestParam(required = false) String city,
+                                                            @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
+        String firstNameQuery = firstName != null ? firstName : "";
+        String lastNameQuery = lastName != null ? lastName : "";
+        int ageSearchFrom = ageFrom != null ? ageFrom : 0;
+        int ageSearchTo = ageTo != null ? ageTo : Integer.MAX_VALUE;
+        String countryQuery = country != null ? country : "";
+        String cityQuery = city != null ? city : "";
+        int pageOffset = offset != null ? offset : 0;
+        int itemsPerPage = itemPerPage != null ? itemPerPage : 20;
 
-        List<PersonResponse> personResponseList = profileService.searchPerson(firstName, lastName, ageFrom, ageTo,
-                country, city, offset, itemPerPage);
+        List<PersonResponse> personResponseList = profileService.searchPerson(firstNameQuery, lastNameQuery, ageSearchFrom, ageSearchTo,
+                countryQuery, cityQuery, pageOffset, itemsPerPage);
         return new ResponseList<>(personResponseList);
     }
 
@@ -106,7 +114,7 @@ public class ProfileController {
     //unblock user by id
     @DeleteMapping("/block/{id}")
     public Response<MessageResponse> unblockUser(@PathVariable Integer id) {
-        MessageResponse messageResponse = profileService.blockPersonById(id);
+        MessageResponse messageResponse = profileService.unblockPersonById(id);
         return new Response<>(messageResponse);
     }
 }
