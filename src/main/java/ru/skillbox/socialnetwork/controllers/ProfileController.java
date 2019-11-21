@@ -7,6 +7,7 @@ import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.Tag;
+import ru.skillbox.socialnetwork.services.PostService;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
 import java.sql.Timestamp;
