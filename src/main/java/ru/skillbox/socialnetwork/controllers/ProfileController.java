@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
+import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.services.ProfileService;
@@ -18,6 +19,9 @@ import java.util.List;
 public class ProfileController {
     @Autowired
     private ProfileService profileService;
+
+    @Autowired
+    private PostService postService;
 
     //mapping for a current user
     @GetMapping("/me")
