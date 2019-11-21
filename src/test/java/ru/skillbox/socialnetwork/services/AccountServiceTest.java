@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+import ru.skillbox.socialnetwork.api.requests.Email;
 import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
@@ -114,12 +115,14 @@ public class AccountServiceTest {
     @Test
     public void recoveryTest() throws MessagingException, UnsupportedEncodingException {
 
+        Email eMail = new Email();
+        eMail.setEmail(person.getEMail());
         String mailText = "You password has been changed to ";
-        String eMail = person.getEMail();
+        //String eMail = person.getEMail();
 
         //проверяем, что ответ 'ok', при отправке email
         Mockito.when(eMailService.sendEmail("JavaPro2.SkillBox@mail.ru",
-                eMail, "recoveryPassword", mailText)).thenReturn(true);
+                eMail.getEmail(), "recoveryPassword", mailText)).thenReturn(true);
 
         Response<MessageResponse> result = accountService.recovery(eMail);
         Assert.assertEquals("ok", result.getData().getMessage());
@@ -129,13 +132,13 @@ public class AccountServiceTest {
         Mockito.verify(eMailService, Mockito.times(1))
                 .sendEmail(
                         ArgumentMatchers.eq("JavaPro2.SkillBox@mail.ru"),
-                        ArgumentMatchers.eq(eMail),
+                        ArgumentMatchers.eq(eMail.getEmail()),
                         ArgumentMatchers.anyString(),
                         ArgumentMatchers.anyString());
 
         //проверяем, что ответ 'error', т.к. email не был отправлен
         Mockito.when(eMailService.sendEmail("JavaPro2.SkillBox@mail.ru",
-                eMail, "recoveryPassword", mailText)).thenReturn(false);
+                eMail.getEmail(), "recoveryPassword", mailText)).thenReturn(false);
 
         Response<MessageResponse> resultFail = accountService.recovery(eMail);
         String error = "Error by recovery";
