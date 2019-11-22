@@ -32,16 +32,12 @@ public class PostController {
 
     @GetMapping("/{id}") //Getting post by ID
     public Response<PostResponse> postGetById(@PathVariable int id) {
-        Response<PostResponse> response = new Response<PostResponse>(PostMapper.getPostResponse(postService.getOnePostById(id)));
-        return response;
+        return new Response<PostResponse>("Answer to front GET metod",PostMapper.getPostResponse(postService.getOnePostById(id)));
     }
 
     @PutMapping("/{id}") //Editing a post by ID
     public Response<PostResponse> postEditById(@PathVariable int id, @RequestParam(required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
-
-        postService.postEditing(id, createPostRequest);
-
-        return new Response<>(new PostResponse());
+        return new Response<>("Answer to front PUT metod", PostMapper.getPostResponse(postService.postEditing(id, createPostRequest)));
     }
 
     @DeleteMapping("/{id}") //Delete post by ID
