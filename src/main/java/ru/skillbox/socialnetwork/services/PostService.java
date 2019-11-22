@@ -2,6 +2,7 @@ package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
@@ -56,6 +57,16 @@ public class PostService {
         newPost.setAuthor(accountService.getCurrentUser());
 
         postRepository.save(newPost);
+
+        return null;
+    }
+
+    public String postEditing(Integer postId, CreatePostRequest createPostRequest) {
+
+        Optional<Post> post = postRepository.findById(postId);
+        post.get().setTitle(createPostRequest.getTitle());
+        post.get().setText(createPostRequest.getPostText());
+        postRepository.save(post.get());
 
         return null;
     }

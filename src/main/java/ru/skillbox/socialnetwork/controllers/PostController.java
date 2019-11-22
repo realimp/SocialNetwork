@@ -38,6 +38,9 @@ public class PostController {
 
     @PutMapping("/{id}") //Editing a post by ID
     public Response<PostResponse> postEditById(@PathVariable int id, @RequestParam(required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
+
+        postService.postEditing(id, createPostRequest);
+
         return new Response<>(new PostResponse());
     }
 
