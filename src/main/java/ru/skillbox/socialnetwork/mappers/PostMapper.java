@@ -33,6 +33,13 @@ public class PostMapper {
         postResponse.setTitle(post.getTitle());
         postResponse.setPostText(post.getText());
         postResponse.setBlocked(post.isBlocked());
+        //где мы берем инфу для остальных полей -
+        //private Integer likes;
+        //private List<String> tags;
+        //private Boolean myLike;
+        //private List<Comment> comments;
+
+
         return postResponse;
     }
 }

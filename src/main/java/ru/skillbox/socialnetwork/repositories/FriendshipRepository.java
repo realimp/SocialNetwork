@@ -17,12 +17,16 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
     List<Friendship> findByFriends(@Param("person") Person person, @Param("status") FriendshipStatus status);
 
     @Query(nativeQuery = true,
-            value = "with personIds as (SELECT distinct src_person_id FROM social_network.friendship where dst_person_id = :person_id)" +
-                    "SELECT distinct src_person_id FROM social_network.friendship where \n" +
-            "dst_person_id in (SELECT distinct src_person_id FROM personIds) \n" +
-            "and src_person_id <> :person_id \n" +
-            "and src_person_id not in (SELECT distinct src_person_id FROM personIds)  \n" +
-            "ORDER BY RAND() limit 5")
+            value = "select distinct fr2.src_person_id \n" +
+                    "        from social_network.friendship fr1 \n" +
+                    "        join social_network.friendship fr2 \n" +
+                    "             on fr1.src_person_id = fr2.dst_person_id \n" +
+                    "where fr1.dst_person_id = :person_id \n" +
+                    "      and fr2.src_person_id <> :person_id \n" +
+                    "      and not exists (select 1 from social_network.friendship fr \n " +
+                    "          where fr.dst_person_id = :person_id and  fr.src_person_id = fr2.src_person_id) \n" +
+                    "order by rand() limit 5")
+
     List<Integer> findRecommendations(@Param("person_id") Integer personId);
 
     @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person AND f.srcPerson=:friend")

@@ -2,13 +2,12 @@ package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
-import javax.swing.plaf.PanelUI;
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +16,9 @@ public class PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private AccountService accountService;
 
     public Post getOnePostById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
@@ -42,6 +44,20 @@ public class PostService {
             return idPost;
         }
         return 1; //ToDo тут нужно что то вернуть если поста для восстановления нет.
+    }
+
+    public String addPost(int idAuthor, Date publishDate, PostRequest postRequest) {
+        Post newPost = new Post();
+        newPost.setDate(publishDate);
+        newPost.setTitle(postRequest.getTitle());
+        newPost.setText(postRequest.getPostText());
+        newPost.setBlocked(false);
+        newPost.setDeleted(false);
+        newPost.setAuthor(accountService.getCurrentUser());
+
+        postRepository.save(newPost);
+
+        return null;
     }
 
 }
