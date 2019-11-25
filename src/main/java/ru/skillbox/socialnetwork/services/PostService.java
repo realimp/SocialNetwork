@@ -61,14 +61,14 @@ public class PostService {
         return null;
     }
 
-    public String postEditing(Integer postId, CreatePostRequest createPostRequest) {
+    public Post postEditing(Integer postId, CreatePostRequest createPostRequest) {
 
         Optional<Post> post = postRepository.findById(postId);
         post.get().setTitle(createPostRequest.getTitle());
         post.get().setText(createPostRequest.getPostText());
         postRepository.save(post.get());
 
-        return null;
+        return post.get();
     }
 
 }
