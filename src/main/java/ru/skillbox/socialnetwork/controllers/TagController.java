@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
+import ru.skillbox.socialnetwork.api.responses.TagResponse;
 
 @RestController
-@RequestMapping("/tag")
+@RequestMapping("/Tag")
 public class TagController {
 
   @GetMapping("/") //Tag search
-  public ResponseList<PostResponse> tagSearch(String text) {
-    return new ResponseList<>(new tagResponse());
+  public ResponseList<TagResponse> tagSearch(String text) {
+    return new ResponseList<>(new TagResponse());
   }
 
 }
