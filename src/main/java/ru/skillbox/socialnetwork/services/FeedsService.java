@@ -31,7 +31,7 @@ public class FeedsService {
     AccountService accountService;
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
-        Sort sort = new Sort(Sort.Direction.ASC, "date");
+        Sort sort = new Sort(Sort.Direction.DESC, "date");
         Pageable pageable = PageRequest.of(offset, itemsPerPage, sort);
         Page<Post> postPage = postRepository.findAll(pageable);
         //todo Доделать метод у репозитория
