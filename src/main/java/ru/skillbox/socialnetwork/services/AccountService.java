@@ -5,16 +5,24 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 import ru.skillbox.socialnetwork.api.requests.Email;
 import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
+import ru.skillbox.socialnetwork.api.responses.NotificationParameter;
+import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.entities.NotificationSettings;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.repositories.NotificationSettingsRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
+
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 @Service
@@ -23,6 +31,9 @@ public class AccountService {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private NotificationSettingsRepository notificationSettingsRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -81,7 +92,7 @@ public class AccountService {
 
         Person person = personRepository.findByEMail(email.getEmail());
 
-        if(person != null) {
+        if (person != null) {
 
             int count = (int) (Math.random() * 10) + 6;
             StringBuilder newPas = new StringBuilder();
@@ -108,8 +119,7 @@ public class AccountService {
                 message.setMessage(error);
                 return new Response(error, timestamp, message);
             }
-        }
-        else {
+        } else {
             String error = "Wrong e-Mail";
             message.setMessage(error);
             return new Response(error, timestamp, message);
@@ -152,8 +162,7 @@ public class AccountService {
             response.setTimestamp(timestamp);
             message.setMessage("ok");
             return response;
-        }
-        else {
+        } else {
             MessageResponse message = new MessageResponse();
             String error = "Error by changing Email";
             message.setMessage(error);
@@ -162,11 +171,94 @@ public class AccountService {
     }
 
     public Response getNotification() {
-        return null;
+        long timestamp = new Date().getTime();
+        MessageResponse message = new MessageResponse();
+        message.setMessage("ok");
+        Response response = new Response(message);
+        response.setTimestamp(timestamp);
+
+        Person person = getCurrentUser();
+
+        List<NotificationSettings> notificationSettingsList = notificationSettingsRepository.findByPersonId(person);
+        System.out.println("notificationSettingsList");
+        for (NotificationSettings notificationSettings : notificationSettingsList) {
+            System.out.println(notificationSettings.getNotificationTypeCode() + " - " + notificationSettings.getEnable());
+        }
+
+        NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
+
+        List<NotificationParameter> notificationParameters = new ArrayList<>();
+
+        for (NotificationTypeCode notificationTypeCode : typeCodes) {
+            boolean isAdded = false;
+            for (int i = 0; i < notificationSettingsList.size(); i++) {
+                if (notificationSettingsList.get(i).getNotificationTypeCode().equals(notificationTypeCode)) {
+                    notificationParameters.add(new NotificationParameter
+                            (NotificationTypeCode.valueOf(notificationTypeCode.name()),
+                                    notificationSettingsList.get(i).getEnable()));
+                    isAdded = true;
+                    break;
+                }
+            }
+            if (!isAdded){
+                notificationParameters.add(new NotificationParameter
+                        (NotificationTypeCode.valueOf(notificationTypeCode.name()),
+                                false));
+            }
+        }
+
+        System.out.println("NotificationParameter");
+        for (NotificationParameter notificationParameter: notificationParameters){
+            System.out.println(notificationParameter.getType().name() + " - " + notificationParameter.isEnable());
+        }
+
+        response.setData(notificationParameters);
+        return response;
     }
 
-    public Response setNotification() {
-        return null;
+    public Response setNotification(NotificationParameter notificationParameter) {
+        long timestamp = new Date().getTime();
+        MessageResponse message = new MessageResponse();
+        Response response = new Response(message);
+        response.setTimestamp(timestamp);
+
+        Person person = getCurrentUser();
+
+        List<NotificationSettings> notificationSettingsList = notificationSettingsRepository.findByPersonId(person);
+        System.out.println("notificationSettingsList");
+        for (NotificationSettings notificationSettings : notificationSettingsList) {
+            System.out.println(notificationSettings.getNotificationTypeCode() + " - " + notificationSettings.getEnable());
+        }
+
+        NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
+
+        List<NotificationParameter> notificationParameters = new ArrayList<>();
+
+        for (NotificationTypeCode notificationTypeCode : typeCodes) {
+            boolean isAdded = false;
+            for (int i = 0; i < notificationSettingsList.size(); i++) {
+                if (notificationSettingsList.get(i).getNotificationTypeCode().equals(notificationTypeCode)) {
+                    notificationParameters.add(new NotificationParameter
+                            (NotificationTypeCode.valueOf(notificationTypeCode.name()),
+                                    notificationSettingsList.get(i).getEnable()));
+                    isAdded = true;
+                    break;
+                }
+            }
+            if (!isAdded){
+                notificationParameters.add(new NotificationParameter
+                        (NotificationTypeCode.valueOf(notificationTypeCode.name()),
+                                false));
+            }
+        }
+
+        System.out.println("NotificationParameter");
+        for (NotificationParameter notif: notificationParameters){
+            System.out.println(notif.getType().name() + " - " + notif.isEnable());
+        }
+
+        response.setData(notificationParameters);
+        return response;
     }
 
     public Person getCurrentUser() {
