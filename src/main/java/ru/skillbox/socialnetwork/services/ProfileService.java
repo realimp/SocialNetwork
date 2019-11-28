@@ -136,16 +136,15 @@ public class ProfileService {
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
         Page<Person> personPageList = null;
-        int firstNameLen = firstName.trim().length();
-        int lastNameLen = lastName.trim().length();
-        int countryLen = country.trim().length();
-        int cityLen = city.trim().length();
-
         String[] names = firstName.trim().split(" ");
-
         String searchFirstName = names[0];
         names[0] = "";
         String searchLastName = Arrays.stream(names).collect(Collectors.joining());
+
+        int firstNameLen = searchFirstName.trim().length();
+        int lastNameLen = searchLastName.trim().length();
+        int countryLen = country.trim().length();
+        int cityLen = city.trim().length();
 
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
             personPageList = personRepository.findByFirstName(firstName, pageable);
