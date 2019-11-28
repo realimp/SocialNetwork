@@ -135,39 +135,37 @@ public class ProfileService {
         Date birthDateTo = calendar.getTime();
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
-
-        boolean visaVersa = false;
         HashMap<String, String> namesToSearch = new HashMap<>();
         int firstNameLen = firstName.trim().length();
         int lastNameLen = lastName.trim().length();
         //Разбор строки, если в параметрах запроса только один составной параметр - firstName
         if ((firstNameLen>0) && (lastNameLen==0)) {
             namesToSearch = obtainStringsForSearch(firstName);
-            visaVersa = true;
         }
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
 
         List<Person> personList = new ArrayList<Person>();
-        Page<Person> personPageList;
-
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
             if (namesToSearch != null) {
                 if (!namesToSearch.get("lastName").equals("")){
-                    personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("firstName"), namesToSearch.get("lastName"), pageable);
+                    Page<Person> personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("firstName"), namesToSearch.get("lastName"), pageable);
                     personList.addAll(personPageList.getContent());
                     personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("lastName"), namesToSearch.get("firstName"), pageable);
+                    personList.addAll(personPageList.getContent());
+                } else {
+                    Page<Person> personPageList = personRepository.findByFirstName(namesToSearch.get("firstName"), pageable);
                     personList.addAll(personPageList.getContent());
                 }
             }
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstNameAndLastName(firstName.trim(), lastName.trim(), pageable);
+            Page<Person> personPageList = personRepository.findByFirstNameAndLastName(firstName.trim(), lastName.trim(), pageable);
             personList.addAll(personPageList.getContent());
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstNameAndLastNameAndCountry(firstName, lastName, country, pageable);
+            Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountry(firstName, lastName, country, pageable);
             personList.addAll(personPageList.getContent());
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen > 0)){
-            personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
+            Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
                     firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
             personList.addAll(personPageList.getContent());
         }
