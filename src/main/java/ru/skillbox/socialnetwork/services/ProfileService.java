@@ -156,7 +156,7 @@ public class ProfileService {
                 } else {
                     Page<Person> personPageList = personRepository.findByFirstName(namesToSearch.get("firstName"), pageable);
                     personList.addAll(personPageList.getContent());
-                    personPageList = personRepository.findByLastName(namesToSearch.get("lastName"), pageable);
+                    personPageList = personRepository.findByLastName(namesToSearch.get("firstName"), pageable);
                     personList.addAll(personPageList.getContent());
                 }
             }
