@@ -138,11 +138,16 @@ public class ProfileService {
         Page<Person> personPageList = null;
         String[] names = firstName.trim().split(" ");
         String searchFirstName = names[0];
-        names[0] = "";
-        String searchLastName = Arrays.stream(names).collect(Collectors.joining());
-
+        //names[0] = "";
+        //String searchLastName = Arrays.stream(names).collect(Collectors.joining());
+        String searchLastName = names[1];
         int firstNameLen = searchFirstName.trim().length();
-        int lastNameLen = searchLastName.trim().length();
+        int lastNameLen = 0;
+        if (lastName.trim().length()>0) {
+            lastNameLen = lastName.trim().length();
+        } else {
+            lastNameLen = searchLastName.trim().length();
+        }
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
 
