@@ -95,8 +95,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         authorization.setPhone(person.getPhone());
         authorization.setPhoto(person.getPhoto());
         authorization.setAbout(person.getAbout());
-        authorization.setCity(new City(1, "Moscow")); //TODO: update after adding city & country dictionaries
-        authorization.setCountry(new Country(1, "Russia")); //TODO: update after adding city & country dictionaries
+        authorization.setCity(person.getCity());
+        authorization.setCountry(person.getCountry());
         authorization.setMessagesPermission(MessagePermission.ALL);
         authorization.setLastOnlineTime(new Date().getTime());
         authorization.setBlocked(person.getBlocked());
@@ -112,6 +112,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader("Authorization", "Bearer" + token);
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");
+
         writer.print(jsonString);
         writer.flush();
     }

@@ -3,6 +3,7 @@ package ru.skillbox.socialnetwork.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.skillbox.socialnetwork.api.requests.Email;
 import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.services.AccountService;
@@ -24,7 +25,7 @@ public class AccountController {
   }
 
   @PutMapping("/password/recovery")
-  public Response passwordRecovery(String email) throws UnsupportedEncodingException, MessagingException {
+  public Response passwordRecovery(@RequestBody Email email) throws UnsupportedEncodingException, MessagingException {
 
     return accountService.recovery(email);
   }

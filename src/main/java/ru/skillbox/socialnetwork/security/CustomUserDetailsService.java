@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -34,6 +36,27 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         throw new UsernameNotFoundException("Username with " + email + " not found");
+    }
+
+    public void setAccountOnline(Person person, Boolean onLine) throws  UsernameNotFoundException {
+        person.setOnline(onLine);
+        changeUser(person);
+    }
+
+    public void setAccountLastOnlineTime(Person person) throws  UsernameNotFoundException{
+        long timeNow = Calendar.getInstance().getTimeInMillis();
+        Timestamp tm = new Timestamp(timeNow);
+        person.setLastOnlineTime(tm);
+        person.setOnline(false);
+        changeUser(person);
+    }
+
+    private void changeUser(Person person){
+        personRepository.save(person);
+    }
+
+    public Person findPerson(String email){
+        return personRepository.findByEMail(email);
     }
 
     private void saveThreadLocal(Person person) {

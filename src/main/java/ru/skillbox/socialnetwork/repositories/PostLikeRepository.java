@@ -14,6 +14,6 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Integer> {
     @Query("SELECT l FROM PostLike l JOIN l.person JOIN l.post WHERE l.person=:person_id AND l.post=:post_id")
     List<PostLike> findByPersonIdAndPostId(@Param("person_id") Integer personId, @Param("post_id") Integer postId);
 
-    @Query("SELECT l FROM PostLike l JOIN l.post WHERE l.post=:post_id")
+    @Query("SELECT l FROM PostLike l JOIN l.post WHERE l.id=:post_id")
     List<PostLike> findByPostId(@Param("post_id") Integer postId);
 }

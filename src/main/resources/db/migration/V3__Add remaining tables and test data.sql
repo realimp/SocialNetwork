@@ -16,7 +16,7 @@ PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS friendship (
-id INTEGER,
+id INTEGER AUTO_INCREMENT,
 src_person_id INTEGER NOT NULL,
 dst_person_id INTEGER NOT NULL,
 code VARCHAR(50),
@@ -40,7 +40,7 @@ PRIMARY KEY (id, invite_code)
 );
 
 CREATE TABLE IF NOT EXISTS tag (
-id INTEGER,
+id INTEGER AUTO_INCREMENT,
 tag VARCHAR(50),
 PRIMARY KEY (id)
 );
@@ -157,7 +157,7 @@ INSERT INTO person (id, first_name, last_name, reg_date, birth_date, e_mail, pho
 DELETE FROM friendship;
 INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (1, 1, 2, 'REQUEST');
 INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (2, 1, 3, 'FRIEND');
-INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (3, 1, 2, 'BLOCKED');
+INSERT INTO friendship (id, src_person_id, dst_person_id, code) values (3, 2, 1, 'BLOCKED');
 
 -- Dialog
 DELETE FROM dialog;
@@ -261,7 +261,7 @@ INSERT INTO post2tag (id, post_id, tag_id) values (3, 2, 30);
 
 -- Test data
 insert into person(id, first_name, last_name, reg_date, birth_date, e_mail, phone, password,  city, country, is_approved, messages_permission, is_blocked, is_online, is_deleted)
-values (4, 'testName', 'testLastName', '2011-02-02 23:59:00', '1992-12-23 00:00:00', 'test@email.com', '+7800200600', 
+values (4, 'testName', 'testLastName', '2011-02-02 23:59:00', '1992-12-23 00:00:00', 'test@email.com', '+7800200600',
         '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi', 'Moscow', 'Russia', 1, 'ALL', 0, 0, 0);
 
-UPDATE `social_network`.`person` SET `password` = '$2a$12$s4R4bdgxvqm4TOV3zdqypOaf0c59sHPDuwC/eN52VOarnmt/rCMAi';
+UPDATE person SET `password` = '$2a$12$cAWrX/TEdZrY0WzFz8XGsOUWDYMHob62JJ0AcKMnyiLJAp7LZ4YJC';

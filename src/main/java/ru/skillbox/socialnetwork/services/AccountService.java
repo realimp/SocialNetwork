@@ -1,19 +1,21 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.requests.Email;
 import ru.skillbox.socialnetwork.api.requests.Register;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
-
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.Random;
 
 @Service
 @Transactional
@@ -34,7 +36,6 @@ public class AccountService {
 
         MessageResponse message = new MessageResponse();
 
-        // нажо так же проверять что пароли не пустые
         if (!register.getPasswd1().equals(register.getPasswd2())
                 || register.getPasswd1().isEmpty()) {
             message.setMessage("Пароли не идентичны!");
@@ -42,6 +43,13 @@ public class AccountService {
             String error = "Error by registry";
             long timestamp = new Date().getTime();
 
+            return new Response(error, timestamp, message);
+        }
+
+        if (personRepository.findByEMail(register.getEmail()) != null) {
+            message.setMessage("Указанный email уже существует!");
+            String error = "Error by registry";
+            long timestamp = new Date().getTime();
             return new Response(error, timestamp, message);
         }
 
@@ -66,33 +74,43 @@ public class AccountService {
         return response;
     }
 
-    public Response recovery(String email) throws UnsupportedEncodingException, MessagingException {
-        long timestamp = new Date().getTime();
-
-        int count = (int) (Math.random() * 5) + 6;
-        StringBuilder newPas = new StringBuilder();
-
-        for (int i = 0; i < count; i++)
-            newPas.append(ABC.charAt((int) (Math.random() * ABC.length())));
-
-        Person person = getCurrentUser();
-
-        //String mailText = "You password has been changed to " + newPas.toString();
-        String mailText = "You password has been changed to ";
+    public Response recovery(Email email) throws UnsupportedEncodingException, MessagingException {
 
         MessageResponse message = new MessageResponse();
-        if (eMailService.sendEmail("JavaPro2.SkillBox@mail.ru",
-                email, "recoveryPassword", mailText)) {
+        long timestamp = new Date().getTime();
 
-            person.setPassword(passwordEncoder.encode(newPas.toString()));
-            personRepository.save(person);
+        Person person = personRepository.findByEMail(email.getEmail());
 
-            Response response = new Response(message);
-            response.setTimestamp(timestamp);
-            message.setMessage("ok");
-            return response;
-        } else {
-            String error = "Error by recovery";
+        if(person != null) {
+
+            int count = (int) (Math.random() * 10) + 6;
+            StringBuilder newPas = new StringBuilder();
+
+            Random random = new Random();
+            for (int i = 0; i < count; i++)
+                newPas.append(ABC.charAt((int) (Math.random() * ABC.length()))).append(random.nextInt(100));
+
+            String mailText = "You password has been changed to " + newPas.toString();
+            //String mailText = "You password has been changed to ";
+
+            if (eMailService.sendEmail(email.getEmail(),
+                    "recovery Password", "recoveryPassword", mailText)) {
+
+                person.setPassword(passwordEncoder.encode(newPas.toString()));
+                personRepository.save(person);
+
+                Response response = new Response(message);
+                response.setTimestamp(timestamp);
+                message.setMessage("ok");
+                return response;
+            } else {
+                String error = "Error by recovery";
+                message.setMessage(error);
+                return new Response(error, timestamp, message);
+            }
+        }
+        else {
+            String error = "Wrong e-Mail";
             message.setMessage(error);
             return new Response(error, timestamp, message);
         }

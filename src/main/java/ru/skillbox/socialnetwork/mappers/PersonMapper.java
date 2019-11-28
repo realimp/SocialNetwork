@@ -21,8 +21,8 @@ public class PersonMapper {
         personResponse.setPhone(person.getPhone());
         personResponse.setPhoto(person.getPhoto());
         personResponse.setAbout(person.getAbout());
-        personResponse.setCity(new City(1, person.getCity()));
-        personResponse.setCountry(new Country(1, person.getCountry()));
+        personResponse.setCity(person.getCity());
+        personResponse.setCountry(person.getCountry());
         personResponse.setMessagesPermission(MessagePermission.valueOf(person.getMessagesPermission() != null ?
                 person.getMessagesPermission() : "ALL"));
         personResponse.setLastOnlineTime(person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null);
