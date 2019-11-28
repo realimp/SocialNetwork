@@ -86,11 +86,11 @@ public class ProfileController {
 
     //user Search
     @GetMapping("/search")
-    public ResponseList<List<PersonResponse>> getUserSearch(@RequestParam(required = false) String first_Name, @RequestParam(required = false) String lastName,
+    public ResponseList<List<PersonResponse>> getUserSearch(@RequestParam(required = false) String first_name, @RequestParam(required = false) String lastName,
                                                             @RequestParam(required = false) Integer ageFrom, @RequestParam(required = false) Integer ageTo,
                                                             @RequestParam(required = false) String country, @RequestParam(required = false) String city,
                                                             @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
-        String firstNameQuery = first_Name != null ? first_Name : "";
+        String firstNameQuery = first_name != null ? first_name : "";
         String lastNameQuery = lastName != null ? lastName : "";
         int ageSearchFrom = ageFrom != null ? ageFrom : 0;
         int ageSearchTo = ageTo != null ? ageTo : Integer.MAX_VALUE;
