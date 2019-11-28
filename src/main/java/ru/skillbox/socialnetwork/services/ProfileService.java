@@ -207,7 +207,10 @@ public class ProfileService {
         pString = pString.trim().replaceAll("( )+", " ");
         String[] names = pString.split(" ");
         String searchFirstName = names[0];
-        String searchLastName = names[1].length()>0?names[1]:"";
+        String searchLastName = "";
+        if (names.length>1) {
+            searchLastName = names[1].trim();
+        }
         if (searchFirstName.length()>0){
             searchMap.put("firstName", searchFirstName);
         } else {
