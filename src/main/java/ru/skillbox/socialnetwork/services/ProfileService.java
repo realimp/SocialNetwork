@@ -22,6 +22,7 @@ import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -139,6 +140,13 @@ public class ProfileService {
         int lastNameLen = lastName.trim().length();
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
+
+        String[] names = firstName.trim().split(" ");
+
+        String searchFirstName = names[0];
+        names[0] = "";
+        String searchLastName = Arrays.stream(names).collect(Collectors.joining());
+
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
             personPageList = personRepository.findByFirstName(firstName, pageable);
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
