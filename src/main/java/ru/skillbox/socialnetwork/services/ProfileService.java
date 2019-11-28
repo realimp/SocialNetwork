@@ -136,7 +136,7 @@ public class ProfileService {
 
 
         boolean visaVersa = false;
-        HashMap<String, String> namesToSearch = null;
+        HashMap<String, String> namesToSearch = new HashMap<>();
         int firstNameLen = firstName.trim().length();
         int lastNameLen = lastName.trim().length();
         //Разбор строки, если в параметрах запроса только один составной параметр - firstName
@@ -201,7 +201,7 @@ public class ProfileService {
     }
 
     private HashMap<String,String> obtainStringsForSearch(String pString){
-        HashMap searchMap = null;
+        HashMap searchMap = new HashMap();
         pString = pString.trim().replaceAll("( )+", " ");
         String[] names = pString.split(" ");
         String searchFirstName = names[0];
