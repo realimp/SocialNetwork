@@ -21,6 +21,7 @@ import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -147,8 +148,9 @@ public class ProfileService {
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
 
-        List<Person> personList = null;
-        Page<Person> personPageList = null;
+        List<Person> personList = new ArrayList<Person>();
+        Page<Person> personPageList;
+
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
             if (namesToSearch != null) {
                 if (!namesToSearch.get("lastName").equals("")){
