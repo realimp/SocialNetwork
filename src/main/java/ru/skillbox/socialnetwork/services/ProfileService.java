@@ -136,11 +136,12 @@ public class ProfileService {
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
         //Разбор строки, если в параметрах запроса только один многосложный параметр - firstName
-        String[] names = firstName.trim().split(" ");
+        firstName = firstName.trim().replaceAll("( )+"," ");
+        String[] names = firstName.split(" ");
         String searchFirstName = names[0];
         String searchLastName = names[1];
 
-        int firstNameLen = searchFirstName.trim().length();
+        int firstNameLen = searchFirstName.length();
         int lastNameLen = 0;
 
         //если в параметрах запроса присутствует второй параметр - lastName то его содержимое будет участвовать в запросе поиска
@@ -148,7 +149,7 @@ public class ProfileService {
             lastNameLen = lastName.trim().length();
             searchLastName = lastName;
         } else {
-            lastNameLen = searchLastName.trim().length();
+            lastNameLen = searchLastName.length();
         }
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
@@ -156,6 +157,7 @@ public class ProfileService {
         Page<Person> personPageList = null;
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
             personPageList = personRepository.findByFirstName(searchFirstName, pageable);
+
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
             personPageList = personRepository.findByFirstNameAndLastName(searchFirstName, searchLastName, pageable);
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen == 0)){
