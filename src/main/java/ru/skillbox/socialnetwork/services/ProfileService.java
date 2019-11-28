@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
-import ru.skillbox.socialnetwork.api.responses.PersonsWallPost;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Post;
@@ -135,39 +134,42 @@ public class ProfileService {
         Date birthDateTo = calendar.getTime();
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
-        //Разбор строки, если в параметрах запроса только один многосложный параметр - firstName
-        firstName = firstName.trim().replaceAll("( )+"," ");
-        String[] names = firstName.split(" ");
-        String searchFirstName = names[0];
-        String searchLastName = names[1];
 
-        int firstNameLen = searchFirstName.length();
-        int lastNameLen = 0;
-
-        //если в параметрах запроса присутствует второй параметр - lastName то его содержимое будет участвовать в запросе поиска
-        if (lastName.trim().length()>0) {
-            lastNameLen = lastName.trim().length();
-            searchLastName = lastName;
-        } else {
-            lastNameLen = searchLastName.length();
+        boolean visaVersa = false;
+        HashMap<String, String> namesToSearch = null;
+        int firstNameLen = firstName.trim().length();
+        int lastNameLen = lastName.trim().length();
+        //Разбор строки, если в параметрах запроса только один составной параметр - firstName
+        if ((firstNameLen>0) && (lastNameLen==0)) {
+            namesToSearch = obtainStringsForSearch(firstName);
+            visaVersa = true;
         }
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
 
+        List<Person> personList = null;
         Page<Person> personPageList = null;
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstName(searchFirstName, pageable);
-
+            if (namesToSearch != null) {
+                if (!namesToSearch.get("lastName").equals("")){
+                    personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("firstName"), namesToSearch.get("lastName"), pageable);
+                    personList.addAll(personPageList.getContent());
+                    personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("lastName"), namesToSearch.get("firstName"), pageable);
+                    personList.addAll(personPageList.getContent());
+                }
+            }
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstNameAndLastName(searchFirstName, searchLastName, pageable);
+            personPageList = personRepository.findByFirstNameAndLastName(firstName.trim(), lastName.trim(), pageable);
+            personList.addAll(personPageList.getContent());
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstNameAndLastNameAndCountry(searchFirstName, searchLastName, country, pageable);
+            personPageList = personRepository.findByFirstNameAndLastNameAndCountry(firstName, lastName, country, pageable);
+            personList.addAll(personPageList.getContent());
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen > 0)){
             personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
-                    searchFirstName, searchLastName, country, city, birthDateFrom, birthDateTo, pageable);
+                    firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
+            personList.addAll(personPageList.getContent());
         }
 
-        List<Person> personList = personPageList.getContent();
         List<PersonResponse> personResponseList = new ArrayList<>();
 
         for (Person person : personList) {
@@ -176,6 +178,7 @@ public class ProfileService {
 
         return personResponseList;
     }
+
 
     public MessageResponse blockPersonById(Integer id) {
         Person person = personRepository.getOne(id);
@@ -196,4 +199,24 @@ public class ProfileService {
         messageResponse.setMessage("User with id: "+id+" has been successfully unblocked!");
         return messageResponse;
     }
+
+    private HashMap<String,String> obtainStringsForSearch(String pString){
+        HashMap searchMap = null;
+        pString = pString.trim().replaceAll("( )+", " ");
+        String[] names = pString.split(" ");
+        String searchFirstName = names[0];
+        String searchLastName = names[1];
+        if (searchFirstName.length()>0){
+            searchMap.put("firstName", searchFirstName);
+        } else {
+            searchMap.put("firstName", "");
+        }
+        if (searchLastName.length()>0){
+            searchMap.put("lastName", searchLastName);
+        } else {
+            searchMap.put("lastName", "");
+        }
+        return searchMap;
+    }
+
 }
