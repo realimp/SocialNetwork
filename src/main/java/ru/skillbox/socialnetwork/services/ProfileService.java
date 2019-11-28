@@ -135,31 +135,34 @@ public class ProfileService {
         Date birthDateTo = calendar.getTime();
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
-        Page<Person> personPageList = null;
+        //Разбор строки, если в параметрах запроса только один многосложный параметр - firstName
         String[] names = firstName.trim().split(" ");
         String searchFirstName = names[0];
-        //names[0] = "";
-        //String searchLastName = Arrays.stream(names).collect(Collectors.joining());
         String searchLastName = names[1];
+
         int firstNameLen = searchFirstName.trim().length();
         int lastNameLen = 0;
+
+        //если в параметрах запроса присутствует второй параметр - lastName то его содержимое будет участвовать в запросе поиска
         if (lastName.trim().length()>0) {
             lastNameLen = lastName.trim().length();
+            searchLastName = lastName;
         } else {
             lastNameLen = searchLastName.trim().length();
         }
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
 
+        Page<Person> personPageList = null;
         if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstName(firstName, pageable);
+            personPageList = personRepository.findByFirstName(searchFirstName, pageable);
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstNameAndLastName(firstName, lastName, pageable);
+            personPageList = personRepository.findByFirstNameAndLastName(searchFirstName, searchLastName, pageable);
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen == 0)){
-            personPageList = personRepository.findByFirstNameAndLastNameAndCountry(firstName, lastName, country, pageable);
+            personPageList = personRepository.findByFirstNameAndLastNameAndCountry(searchFirstName, searchLastName, country, pageable);
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen > 0)){
             personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
-                    firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
+                    searchFirstName, searchLastName, country, city, birthDateFrom, birthDateTo, pageable);
         }
 
         List<Person> personList = personPageList.getContent();
