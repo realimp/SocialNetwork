@@ -86,7 +86,7 @@ public class PersonRepositoryTest {
         person.setDeleted(false);
         personRepository.save(person);
         Pageable firstPage = PageRequest.of(0, 20);
-        assertEquals(1, personRepository.findByFirstNameAndLastName("TestPersonFirstName", "TestPersonLastName"));
+        assertEquals(1, personRepository.findByFirstNameAndLastName("TestPersonFirstName", "TestPersonLastName", firstPage));
     }
 
     @Test
