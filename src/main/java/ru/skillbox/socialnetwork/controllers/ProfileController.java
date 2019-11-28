@@ -99,8 +99,7 @@ public class ProfileController {
         int pageOffset = offset != null ? offset : 0;
         int itemsPerPage = itemPerPage != null ? itemPerPage : 20;
 
-        List<PersonResponse> personResponseList = profileService.searchPerson(firstNameQuery, lastNameQuery, ageSearchFrom, ageSearchTo,
-                countryQuery, cityQuery, pageOffset, itemsPerPage);
+        List<PersonResponse> personResponseList = profileService.searchPerson(firstNameQuery, lastNameQuery, ageSearchFrom, ageSearchTo, countryQuery, cityQuery, pageOffset, itemsPerPage);
         return new ResponseList<>(personResponseList);
     }
 

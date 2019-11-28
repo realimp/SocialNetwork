@@ -125,6 +125,8 @@ public class ProfileService {
 
     public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
                                           String country, String city, Integer offset, Integer itemPerPage) {
+
+
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, -ageTo);
         Date birthDateFrom = calendar.getTime();
@@ -132,8 +134,21 @@ public class ProfileService {
         Date birthDateTo = calendar.getTime();
         Pageable pageable = PageRequest.of(offset, itemPerPage);
 
-        Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
-                firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
+        Page<Person> personPageList = null;
+        int firstNameLen = firstName.trim().length();
+        int lastNameLen = lastName.trim().length();
+        int countryLen = country.trim().length();
+        int cityLen = city.trim().length();
+        if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
+            personPageList = personRepository.findByFirstName(firstName, pageable);
+        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
+            personPageList = personRepository.findByFirstNameAndLastName(firstName, lastName, pageable);
+        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen == 0)){
+            personPageList = personRepository.findByFirstNameAndLastNameAndCountry(firstName, lastName, country, pageable);
+        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen > 0)){
+            personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
+                    firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
+        }
 
         List<Person> personList = personPageList.getContent();
         List<PersonResponse> personResponseList = new ArrayList<>();

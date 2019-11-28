@@ -13,9 +13,9 @@ public interface PersonRepository extends JpaRepository<Person, Integer> {
 
     Person findByEMail(String email);
 
-    Person findByFirstName(String firstName);
+    Page<Person> findByFirstName(String firstName, Pageable pageable);
 
-    Person findByFirstNameAndLastName(String firstName, String lastName);
+    Page<Person> findByFirstNameAndLastName(String firstName, String lastName, Pageable pageable);
 
     Page<Person> findByFirstNameAndLastNameAndBirthDateBetween(String firstName, String lastName, Date birthDateFrom, Date birthDateTo, Pageable pageable);
 
