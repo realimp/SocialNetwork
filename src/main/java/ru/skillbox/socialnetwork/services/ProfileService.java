@@ -156,6 +156,8 @@ public class ProfileService {
                 } else {
                     Page<Person> personPageList = personRepository.findByFirstName(namesToSearch.get("firstName"), pageable);
                     personList.addAll(personPageList.getContent());
+                    personPageList = personRepository.findByLastName(namesToSearch.get("lastName"), pageable);
+                    personList.addAll(personPageList.getContent());
                 }
             }
         } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
@@ -205,7 +207,7 @@ public class ProfileService {
         pString = pString.trim().replaceAll("( )+", " ");
         String[] names = pString.split(" ");
         String searchFirstName = names[0];
-        String searchLastName = names[1];
+        String searchLastName = names[1].length()>0?names[1]:"";
         if (searchFirstName.length()>0){
             searchMap.put("firstName", searchFirstName);
         } else {
