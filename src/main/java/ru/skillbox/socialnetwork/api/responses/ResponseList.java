@@ -6,6 +6,9 @@ public class ResponseList<T> extends Response<T> {
     private long offset;
     private long perPage;
 
+    public ResponseList() {
+    }
+
     public ResponseList(T data) {
         super(data);
     }
