@@ -27,6 +27,17 @@ public class FriendsService {
     @Autowired
     private PersonRepository personRepository;
 
+    public ResponseList<List<PersonResponse>> getFriends(Person person) {
+        if (person == null)
+            return new ResponseList<>("Не удалось определить пользователя с идентификатором null", null);
+        logger.info("Получение друзей пользователя {}", person.getEMail());
+        List<Friendship> friends = friendshipRepository.findByFriends(person);
+        logger.info("Количество друзей пользователя {} - {}", person.getEMail(), friends.size());
+        List<PersonResponse> friendsResponse = new ArrayList<>();
+        friends.forEach(f -> friendsResponse.add(PersonMapper.getMapping(f.getSrcPerson())));
+        return new ResponseList<>(friendsResponse, friendsResponse.size());
+    }
+
     public ResponseList<List<PersonResponse>> getFriends(Person person, FriendshipStatus friendshipStatus) {
         if (person == null)
             return new ResponseList<>("Не удалось определить пользователя с идентификатором null", null);
@@ -49,28 +60,28 @@ public class FriendsService {
         return new ResponseList<>(recommendationsResponse, recommendationsResponse.size());
     }
 
-    public String deleteFriends(Person user, int friendId) {
+    public String deleteFriends(Person user, Person friend) {
         if (user == null) return "Не удалось определить пользователя с идентификатором null";
-        Optional<Person> friend = personRepository.findById(friendId);
-        if (!friend.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
-        Person fPerson = friend.get();
-        Friendship friendship = friendshipRepository.findByFriend(user, fPerson);
+        Friendship friendship = friendshipRepository.findByFriend(user, friend);
         if (friendship == null)
-            return "Пользователь " + fPerson.getEMail() + " не является другом для пользователя " + user.getEMail();
+            return "Пользователь " + friend.getEMail() + " не является другом для пользователя " + user.getEMail();
         friendshipRepository.deleteById(friendship.getId());
         return null;
     }
 
-    public String addFriends(Person user, int friendId) {
+    public String addFriends(Person user, Person friend) {
         if (user == null) return "Не удалось определить пользователя с идентификатором null";
-        Optional<Person> person = personRepository.findById(friendId);
-        if (!person.isPresent()) return "Не удалось определить пользователя с идентификатором " + friendId;
-        Person friend = person.get();
         Friendship existFriendship = friendshipRepository.findByFriend(user, friend);
-        if (existFriendship != null)
-            return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();
+        if (existFriendship != null) {
+            if (existFriendship.getCode().equals(FriendshipStatus.REQUEST)) {
+                existFriendship.setCode(FriendshipStatus.FRIEND);
+                friendshipRepository.saveAndFlush(existFriendship);
+                return null;
+            } else
+                return "Пользователь " + friend.getEMail() + " уже является другом для пользователя " + user.getEMail();
+        }
         if (user.equals(friend)) return "Пользователь " + friend.getEMail() + " не может быть сам себе другом";
-        Friendship friendship = new Friendship(user, friend, FriendshipStatus.FRIEND);
+        Friendship friendship = new Friendship(user, friend, FriendshipStatus.REQUEST);
         friendship = friendshipRepository.saveAndFlush(friendship);
         if (friendship.getId() == null)
             return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();

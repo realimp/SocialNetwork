@@ -28,4 +28,6 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
     @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person AND f.srcPerson=:friend")
     Friendship findByFriend(@Param("person") Person person, @Param("friend") Person friend);
 
+    @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person")
+    List<Friendship> findByFriends(@Param("person") Person person);
 }
