@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/account/register",
                             "/account/password/recovery",
+                            "/platform/languages",
                             jwtConfig.getLogoutUrl()).permitAll()
                 .and()
                 .authorizeRequests()
