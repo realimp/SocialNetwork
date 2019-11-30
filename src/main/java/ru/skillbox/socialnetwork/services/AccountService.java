@@ -1,17 +1,13 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import ru.skillbox.socialnetwork.api.requests.Email;
+import ru.skillbox.socialnetwork.api.requests.NotificationTypeRequest;
 import ru.skillbox.socialnetwork.api.requests.Register;
-import ru.skillbox.socialnetwork.api.responses.MessageResponse;
-import ru.skillbox.socialnetwork.api.responses.NotificationParameter;
-import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
-import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.NotificationSettings;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.NotificationSettingsRepository;
@@ -78,6 +74,11 @@ public class AccountService {
         person.setPhone("");
         personRepository.save(person);
         message.setMessage("ok");
+
+        NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
+        for (NotificationTypeCode typeCode : typeCodes) {
+            notificationSettingsRepository.save(new NotificationSettings(person, typeCode, true));
+        }
 
         long timestamp = new Date().getTime();
         Response response = new Response(message);
@@ -180,10 +181,6 @@ public class AccountService {
         Person person = getCurrentUser();
 
         List<NotificationSettings> notificationSettingsList = notificationSettingsRepository.findByPersonId(person);
-        System.out.println("notificationSettingsList");
-        for (NotificationSettings notificationSettings : notificationSettingsList) {
-            System.out.println(notificationSettings.getNotificationTypeCode() + " - " + notificationSettings.getEnable());
-        }
 
         NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
 
@@ -200,64 +197,38 @@ public class AccountService {
                     break;
                 }
             }
-            if (!isAdded){
+            if (!isAdded) {
+                notificationSettingsRepository.save(new NotificationSettings(person, notificationTypeCode, true));
                 notificationParameters.add(new NotificationParameter
                         (NotificationTypeCode.valueOf(notificationTypeCode.name()),
-                                false));
+                                true));
             }
         }
 
-        System.out.println("NotificationParameter");
-        for (NotificationParameter notificationParameter: notificationParameters){
-            System.out.println(notificationParameter.getType().name() + " - " + notificationParameter.isEnable());
-        }
+        NotificationSettingsResponse notificationSettings = new NotificationSettingsResponse();
+        notificationSettings.setNotificationSettings(notificationParameters);
 
-        response.setData(notificationParameters);
+        response.setData(notificationSettings);
         return response;
     }
 
-    public Response setNotification(NotificationParameter notificationParameter) {
+    public Response setNotification(NotificationTypeRequest notificationCode) {
         long timestamp = new Date().getTime();
         MessageResponse message = new MessageResponse();
+        message.setMessage("ok");
         Response response = new Response(message);
         response.setTimestamp(timestamp);
 
         Person person = getCurrentUser();
 
-        List<NotificationSettings> notificationSettingsList = notificationSettingsRepository.findByPersonId(person);
-        System.out.println("notificationSettingsList");
-        for (NotificationSettings notificationSettings : notificationSettingsList) {
-            System.out.println(notificationSettings.getNotificationTypeCode() + " - " + notificationSettings.getEnable());
-        }
+        NotificationTypeCode notificationTypeCode = NotificationTypeCode.valueOf(notificationCode.getType());
+        NotificationSettings notificationSettings = notificationSettingsRepository.findByPersonIdAndSettingCode(person, notificationTypeCode.getCode());
+        notificationSettings.setEnable(notificationCode.isEnable());
 
-        NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
+        notificationSettingsRepository.save(notificationSettings);
 
-        List<NotificationParameter> notificationParameters = new ArrayList<>();
+        //System.out.println("NEW notificationSettings " + notificationSettings.getNotificationTypeCode() + " - " + notificationSettings.getEnable());
 
-        for (NotificationTypeCode notificationTypeCode : typeCodes) {
-            boolean isAdded = false;
-            for (int i = 0; i < notificationSettingsList.size(); i++) {
-                if (notificationSettingsList.get(i).getNotificationTypeCode().equals(notificationTypeCode)) {
-                    notificationParameters.add(new NotificationParameter
-                            (NotificationTypeCode.valueOf(notificationTypeCode.name()),
-                                    notificationSettingsList.get(i).getEnable()));
-                    isAdded = true;
-                    break;
-                }
-            }
-            if (!isAdded){
-                notificationParameters.add(new NotificationParameter
-                        (NotificationTypeCode.valueOf(notificationTypeCode.name()),
-                                false));
-            }
-        }
-
-        System.out.println("NotificationParameter");
-        for (NotificationParameter notif: notificationParameters){
-            System.out.println(notif.getType().name() + " - " + notif.isEnable());
-        }
-
-        response.setData(notificationParameters);
         return response;
     }
 

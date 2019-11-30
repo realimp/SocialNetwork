@@ -28,6 +28,12 @@ public class NotificationSettings {
     public NotificationSettings() {
     }
 
+    public NotificationSettings(@NotNull Person person, @NotNull NotificationTypeCode notificationTypeCode, Boolean enable) {
+        this.person = person;
+        this.notificationTypeCode = notificationTypeCode;
+        this.enable = enable;
+    }
+
     public Integer getId() {
         return id;
     }
