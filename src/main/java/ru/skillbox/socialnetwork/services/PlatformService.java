@@ -22,11 +22,11 @@ import java.util.List;
 public class PlatformService {
 
     @Autowired
-    LanguageRepository languageRepository;
+    private LanguageRepository languageRepository;
     @Autowired
-    CityRepository cityRepository;
+    private CityRepository cityRepository;
     @Autowired
-    CountryRepository countryRepository;
+    private CountryRepository countryRepository;
 
     public List<LanguageResponse> getLanguages(String searchString, Integer offset, Integer itemPerPage) {
         Sort sort = new Sort(Sort.Direction.ASC, "id");

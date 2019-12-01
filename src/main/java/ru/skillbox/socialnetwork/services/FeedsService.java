@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 public class FeedsService {
 
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    PostLikeRepository postLikeRepository;
+    private PostLikeRepository postLikeRepository;
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
         Sort sort = new Sort(Sort.Direction.DESC, "date");
