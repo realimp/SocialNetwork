@@ -28,7 +28,6 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
 //    List<Post> findByDateTo(@Param("time") Date fromDate);
 
     Page<Post> findByAuthor(Person author, Pageable pageable);
-
     @Query(nativeQuery = true,
             value = "SELECT p FROM post p WHERE p.author_id IN :ids ORDER BY time")
     Page<Post> findByManyAuthors(@Param("ids") List<Integer> ids, Pageable pageable);
