@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.FriendshipStatus;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.FriendsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping
@@ -21,6 +23,8 @@ public class FriendsController {
     private FriendsService friendsService;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private PersonRepository personRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -28,7 +32,7 @@ public class FriendsController {
     public ResponseList<List<PersonResponse>> getFriends() {
         Person currentUser = accountService.getCurrentUser();
         if (currentUser == null) return new ResponseList<>("Не удалось определить текущего пользователя", null);
-        return friendsService.getFriends(currentUser, FriendshipStatus.FRIEND);
+        return friendsService.getFriends(currentUser);
     }
 
     @GetMapping("/friends/recommendations")
@@ -50,9 +54,15 @@ public class FriendsController {
         if (id == null) return new Response<>("Передан пустой параметр", null);
         Person currentUser = accountService.getCurrentUser();
         if (currentUser == null) return new Response<>("Не удалось определить текущего пользователя", null);
-        String result = friendsService.deleteFriends(currentUser, id);
-        if (result == null) return new Response<>(new MessageResponse("ok"));
-        else return new Response<>(result, null);
+        Optional<Person> friend = personRepository.findById(id);
+        if (!friend.isPresent())
+            return new Response<>("Не удалось определить пользователя с идентификатором " + id, null);
+        Person fPerson = friend.get();
+        String result = friendsService.deleteFriends(currentUser, fPerson);
+        if (result != null) return new Response<>(result, null);
+        result = friendsService.deleteFriends(fPerson, currentUser);
+        if (result != null) return new Response<>(result, null);
+        return new Response<>(new MessageResponse("ok"));
     }
 
     @PostMapping("/friends/{id}")
@@ -60,9 +70,15 @@ public class FriendsController {
         if (id == null) return new Response<>("Передан пустой параметр", null);
         Person currentUser = accountService.getCurrentUser();
         if (currentUser == null) return new Response<>("Не удалось определить текущего пользователя", null);
-        String result = friendsService.addFriends(currentUser, id);
-        if (result == null) return new Response<>(new MessageResponse("ok"));
-        else return new Response<>(result, null);
+        Optional<Person> person = personRepository.findById(id);
+        if (!person.isPresent())
+            return new Response<>("Не удалось определить пользователя с идентификатором " + id, null);
+        Person friend = person.get();
+        String result = friendsService.addFriends(currentUser, friend);
+        if (result != null) return new Response<>(result, null);
+        result = friendsService.addFriends(friend, currentUser);
+        if (result != null) return new Response<>(result, null);
+        return new Response<>(new MessageResponse("ok"));
     }
 
     @PostMapping("/is/friends")

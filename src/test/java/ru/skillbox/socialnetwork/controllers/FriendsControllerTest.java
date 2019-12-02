@@ -192,8 +192,13 @@ public class FriendsControllerTest {
                 .contentType(APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk()).andReturn();
-        JSONAssert.assertEquals("{\"data\":[" + getPersonData(addedPerson.get(0)) + ","
-                        + getPersonData(addedPerson.get(9)) + "],\"total\":2,\"offset\":0,\"perPage\":0}",
+        JSONAssert.assertEquals("{\"data\":[" +
+                        getPersonData(addedPerson.get(0)) + "," +
+                        getPersonData(addedPerson.get(5)) + "," +
+                        getPersonData(addedPerson.get(6)) + "," +
+                        getPersonData(addedPerson.get(7)) + "," +
+                        getPersonData(addedPerson.get(8)) + "," +
+                        getPersonData(addedPerson.get(9)) + "],\"total\":6,\"offset\":0,\"perPage\":0}",
                 mvcResult.getResponse().getContentAsString(), false);
     }
 
