@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface PostCommentRepository extends JpaRepository<PostComment, Integer> {
-    
+
     @Query("SELECT p FROM PostComment p WHERE p.post.id=:id and p.parentComment = null and p.isDeleted = false")
     List<PostComment> findByPostId(@Param("id") int id);
 
