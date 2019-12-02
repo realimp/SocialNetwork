@@ -17,4 +17,5 @@ public interface PostCommentRepository extends JpaRepository<PostComment, Intege
 
     @Query("SELECT p FROM PostComment p WHERE p.post.id=:id and p.parentComment.id = :parent_id and p.isDeleted = false")
     List<PostComment> findByPostIdByParentId(@Param("id") int id, @Param("parent_id") int parentId);
+
 }
