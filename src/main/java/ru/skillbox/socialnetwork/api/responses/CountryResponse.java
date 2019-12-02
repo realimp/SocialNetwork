@@ -1,13 +1,13 @@
-package ru.skillbox.socialnetwork.api;
+package ru.skillbox.socialnetwork.api.responses;
 
-public class City {
+public class CountryResponse {
 
     private Integer id;
     private String title;
 
-    public City() {}
+    public CountryResponse() {}
 
-    public City(Integer id, String title) {
+    public CountryResponse(Integer id, String title) {
         this.id = id;
         this.title = title;
     }

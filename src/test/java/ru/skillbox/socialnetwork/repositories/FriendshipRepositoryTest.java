@@ -82,7 +82,9 @@ public class FriendshipRepositoryTest {
 
     @Test
     public void updateFriendshipTest() {
-        Friendship friendshipToUpdate = friendshipRepository.findAll().get(1);
+        Person person = addPerson("POlegka", "SPetrovskii", "8881112269", "POleGka@mail.ru");
+        Person friend = addPerson("POlegkah", "SPetrovskii", "8881112259", "POleGkah@mail.ru");
+        Friendship friendshipToUpdate = addAndAssert(null, person, friend, FriendshipStatus.REQUEST);
         Person oldSrcPerson = friendshipToUpdate.getSrcPerson();
         Person oldDstPerson = friendshipToUpdate.getDstPerson();
         FriendshipStatus status = friendshipToUpdate.getCode();

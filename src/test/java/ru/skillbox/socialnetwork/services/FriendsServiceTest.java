@@ -191,20 +191,17 @@ public class FriendsServiceTest {
     @Test
     @Transactional
     public void deleteFriendsTest() {
-        String response = friendsService.deleteFriends(null, 1000);
+        String response = friendsService.deleteFriends(null, addedPerson.get(2));
         assertEquals("Не удалось определить пользователя с идентификатором null", response);
 
-        response = friendsService.deleteFriends(addedPerson.get(1), 1000);
-        assertEquals("Не удалось определить пользователя с идентификатором 1000", response);
-
-        response = friendsService.deleteFriends(addedPerson.get(1), addedPerson.get(2).getId());
+        response = friendsService.deleteFriends(addedPerson.get(1), addedPerson.get(2));
         assertEquals("Пользователь " + addedPerson.get(2).getEMail() + " не является другом для пользователя "
                 + addedPerson.get(1).getEMail(), response);
 
-        response = friendsService.deleteFriends(addedPerson.get(1), addedPerson.get(0).getId());
+        response = friendsService.deleteFriends(addedPerson.get(1), addedPerson.get(0));
         assertNull(response);
 
-        response = friendsService.deleteFriends(addedPerson.get(1), addedPerson.get(0).getId());
+        response = friendsService.deleteFriends(addedPerson.get(1), addedPerson.get(0));
         assertEquals("Пользователь " + addedPerson.get(0).getEMail() + " не является другом для пользователя "
                 + addedPerson.get(1).getEMail(), response);
     }
@@ -212,24 +209,24 @@ public class FriendsServiceTest {
     @Test
     @Transactional
     public void addFriendsTest() {
-        String response = friendsService.addFriends(null, 1000);
+        String response = friendsService.addFriends(null, addedPerson.get(0));
         assertEquals("Не удалось определить пользователя с идентификатором null", response);
 
-        response = friendsService.addFriends(addedPerson.get(1), 1000);
-        assertEquals("Не удалось определить пользователя с идентификатором 1000", response);
-
-        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(0).getId());
+        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(0));
         assertEquals("Пользователь " + addedPerson.get(0).getEMail() + " уже является другом для пользователя "
                 + addedPerson.get(1).getEMail(), response);
 
-        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(1).getId());
+        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(1));
         assertEquals("Пользователь " + addedPerson.get(1).getEMail() + " не может быть сам себе другом"
                 , response);
 
-        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(2).getId());
+        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(2));
         assertNull(response);
 
-        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(2).getId());
+        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(2));
+        assertNull(response);
+
+        response = friendsService.addFriends(addedPerson.get(1), addedPerson.get(2));
         assertEquals("Пользователь " + addedPerson.get(2).getEMail() + " уже является другом для пользователя "
                 + addedPerson.get(1).getEMail(), response);
     }

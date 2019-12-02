@@ -64,10 +64,11 @@ public class PostService {
     public Post postEditing(Integer postId, CreatePostRequest createPostRequest) {
 
         Optional<Post> post = postRepository.findById(postId);
-        post.get().setTitle(createPostRequest.getTitle());
-        post.get().setText(createPostRequest.getPostText());
-        postRepository.save(post.get());
-
+        if (accountService.getCurrentUser().getId() == post.get().getAuthor().getId()) {
+            post.get().setTitle(createPostRequest.getTitle());
+            post.get().setText(createPostRequest.getPostText());
+            postRepository.save(post.get());
+        }
         return post.get();
     }
 

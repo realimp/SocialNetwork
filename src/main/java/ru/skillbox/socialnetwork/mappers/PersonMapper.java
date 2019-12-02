@@ -1,7 +1,5 @@
 package ru.skillbox.socialnetwork.mappers;
 
-import ru.skillbox.socialnetwork.api.City;
-import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.entities.MessagePermission;
 import ru.skillbox.socialnetwork.entities.Person;
