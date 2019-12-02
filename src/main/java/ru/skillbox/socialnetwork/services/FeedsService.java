@@ -36,6 +36,7 @@ public class FeedsService {
     private PostCommentRepository postCommentRepository;
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
+
         Pageable pageable = PageRequest.of(offset, itemsPerPage);
 //        Sort sort = new Sort(Sort.Direction.DESC, "date");
 //        Pageable pageable = PageRequest.of(offset, itemsPerPage, sort);
@@ -79,6 +80,7 @@ public class FeedsService {
 //            prList.add(postResponse);
 //        });
         return new Feeds(postsList);//new Feeds(prList);
+
     }
 
     private PostResponse getPostResponseFromPost(Post p, Person me){
