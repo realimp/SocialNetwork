@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface PostCommentRepository extends JpaRepository<PostComment, Integer> {
 
-    @Query("SELECT p FROM post_comment p WHERE p.post_id =:post_id ")
+    @Query(nativeQuery = true,
+            value = "SELECT p FROM post_comment p WHERE p.post_id =:post_id ")
     List<PostComment> findByPostId(@Param("post_id") Integer postId);
 }

@@ -31,21 +31,20 @@ public class FeedsService {
     @Autowired
     private AccountService accountService;
     @Autowired
-    private FriendsService friendsService;
-    @Autowired
     private FriendshipRepository friendshipRepository;
     @Autowired
     private PostCommentRepository postCommentRepository;
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
-        Sort sort = new Sort(Sort.Direction.DESC, "date");
-        Pageable pageable = PageRequest.of(offset, itemsPerPage, sort);
-        Page<Post> postPage = postRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(offset, itemsPerPage);
+//        Sort sort = new Sort(Sort.Direction.DESC, "date");
+//        Pageable pageable = PageRequest.of(offset, itemsPerPage, sort);
+//        Page<Post> postPage = postRepository.findAll(pageable);
         Person me = accountService.getCurrentUser();
         List<Friendship> friends = friendshipRepository.findByFriends(me, FriendshipStatus.FRIEND);
         List<Integer> friendsId  = friends.stream().map((f) -> f.getSrcPerson().getId()).collect(Collectors.toList());
         friendsId.add(me.getId());
-        Page <Post> pagePosts = postRepository.findByManyAuthors(friendsId);
+        Page <Post> pagePosts = postRepository.findByManyAuthors(friendsId, pageable);
         List<PostResponse> postsList = new ArrayList<>();
         pagePosts.forEach((p -> {
             postsList.add(getPostResponseFromPost(p, me));
