@@ -67,7 +67,7 @@ public class ProfileController {
 
     //adding a post to a user's wall
     @PostMapping("/{id}/wall")
-    public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestParam(required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
+    public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestParam(name = "publish_date", required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
         Date date = new Date();
         List<Tag> tagsList = new ArrayList<>();
         if (publishDate != null) {
