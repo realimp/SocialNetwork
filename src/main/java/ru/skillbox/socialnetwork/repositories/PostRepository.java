@@ -7,6 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.Tag;
 
 /*
     @Query("SELECT l FROM CommentLike l JOIN l.comment WHERE l.comment=:comment_id")
@@ -25,4 +26,5 @@ public interface PostRepository extends PagingAndSortingRepository<Post, Integer
 
     Page<Post> findByAuthor(Person author, Pageable pageable);
 
+    Page<Post> findByTag(String tag, Pageable resultsPage);
 }
