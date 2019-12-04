@@ -47,7 +47,9 @@ public class AccountController {
   @GetMapping("/notifications")
   public Response notifications() {
 
-    return accountService.getNotification();
+    Response response = accountService.getNotification();
+    response.setError("");
+    return response;
   }
 
   @PutMapping("/notifications")
