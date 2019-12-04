@@ -9,15 +9,16 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
-import ru.skillbox.socialnetwork.api.responses.MessageResponse;
-import ru.skillbox.socialnetwork.api.responses.PersonResponse;
-import ru.skillbox.socialnetwork.api.responses.PostResponse;
+import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.PostType;
 import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
+import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
+import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import java.util.*;
@@ -42,6 +43,12 @@ public class ProfileService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     public PersonResponse getPerson() {
         Person person = accountService.getCurrentUser();
@@ -95,15 +102,33 @@ public class ProfileService {
         return PersonMapper.getMapping(person);
     }
 
-    public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
+    public List<PersonsWallPost> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
         Pageable pageable = PageRequest.of(offset, itemPerPage);
-        Page<Post> postPageList = postRepository.findByAuthor(personRepository.getOne(id), pageable);
+        Person author = personRepository.findById(id).get();
+        Page<Post> postPageList = postRepository.findByAuthor(author, pageable);
 
-        List<Post> postList = postPageList.getContent();
-        List<PostResponse> postResponseList = new ArrayList<>();
+        List<PersonsWallPost> postResponseList = new ArrayList<>();
 
-        for (Post post : postList) {
-            postResponseList.add(PostMapper.getPostResponse(post));
+        if (!postPageList.isEmpty()) {
+            for (Post post : postPageList) {
+                PersonsWallPost wallPost = new PersonsWallPost();
+                wallPost.setId(post.getId());
+                wallPost.setTime(post.getDate().getTime());
+                PersonResponse postAuthor = PersonMapper.getMapping(author);
+                wallPost.setAuthor(postAuthor);
+                wallPost.setTitle(post.getTitle());
+                wallPost.setPostText(post.getText());
+                wallPost.setBlocked(post.isBlocked());
+                wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
+                wallPost.setComments(postCommentRepository.findByPostId(post.getId()));
+                if (post.getDate().before(new Date())) {
+                    wallPost.setType(PostType.POSTED);
+                } else {
+                    wallPost.setType(PostType.QUEUED);
+                }
+
+                postResponseList.add(wallPost);
+            }
         }
         return postResponseList;
     }
