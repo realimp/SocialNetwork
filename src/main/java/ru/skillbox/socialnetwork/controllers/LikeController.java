@@ -29,7 +29,7 @@ public class LikeController {
 
     @PutMapping("/likes")
     public Response putLike(@RequestBody LikeRequest likeRequest) {
-        return likeService.putLike(LikeType.valueOf(likeRequest.getType().trim().toUpperCase()), likeRequest.getItem_id());
+        return likeService.putLike(likeRequest.getType(), likeRequest.getPostId());
     }
 
     @DeleteMapping("/likes")

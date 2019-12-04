@@ -58,7 +58,16 @@ public class LikeService {
         return null;
     }
 
-    public Response putLike(LikeType type, Integer itemId) {
+    public Response putLike(String type, Integer itemId) {
+
+        if (type == null || itemId == null) {
+            return new Response(new Error());
+        }
+
+        LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
+        if (likeType == null) {
+            return new Response(new Error());
+        }
 
         Response response = new Response();
 
