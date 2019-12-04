@@ -20,18 +20,15 @@ import java.util.Optional;
 public class LikeService {
 
     @Autowired
-    CommentLikeRepository clRepository;
-
+    private CommentLikeRepository clRepository;
     @Autowired
-    PostLikeRepository plRepository;
-
+    private PostLikeRepository plRepository;
     @Autowired
-    PostRepository postRepository;
-
+    private PostRepository postRepository;
     @Autowired
-    PostCommentRepository pcRepository;
-
-    AccountService accountService = new AccountService();
+    private PostCommentRepository pcRepository;
+    @Autowired
+    private AccountService accountService;
 
     public Response isLiked(LikeType type, Integer itemId, Integer userId) {
         boolean isLiked = false;
@@ -63,7 +60,7 @@ public class LikeService {
 
     public Response putLike(LikeType type, Integer itemId) {
 
-        Response response = null;
+        Response response = new Response();
 
         if (type.equals(LikeType.POST)) {
             PostLike like = new PostLike();
@@ -91,8 +88,9 @@ public class LikeService {
             response.setData(true);
         }
 
-        return response;
+        response.setTimestamp(System.currentTimeMillis());
 
+        return response;
     }
 
     public Response deleteLike(LikeType type, Integer itemId){

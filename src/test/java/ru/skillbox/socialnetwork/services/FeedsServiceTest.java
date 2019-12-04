@@ -18,9 +18,6 @@ public class FeedsServiceTest {
     @Test
     public void getFeedsTest() {
         Feeds feeds = feedsService.getFeeds("",0,10);
-        feeds.getFeeds().forEach(f->{
-            System.out.println(f.toString());
-        });
         Assert.assertNotNull(feeds);
     }
 
