@@ -71,7 +71,7 @@ public class LikeService {
 
         Response response = new Response();
 
-        if (type.equals(LikeType.POST)) {
+        if (likeType.equals(LikeType.POST)) {
             PostLike like = new PostLike();
             Optional<Post> optional = postRepository.findById(itemId);
             if (!optional.isPresent())
@@ -84,7 +84,7 @@ public class LikeService {
             response.setData(true);
         }
 
-        if (type.equals(LikeType.COMMENT)) {
+        if (likeType.equals(LikeType.COMMENT)) {
             CommentLike like = new CommentLike();
             Optional<PostComment> optional = pcRepository.findById(itemId);
             if (!optional.isPresent())
