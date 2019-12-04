@@ -18,7 +18,7 @@ import java.util.List;
 public class PlatformController {
 
     @Autowired
-    PlatformService platformService;
+    private PlatformService platformService;
     private final Integer itemPerPageDefault = 20;
     private final Integer offsetDefault = 0;
     private final String searchStringDefault = "";

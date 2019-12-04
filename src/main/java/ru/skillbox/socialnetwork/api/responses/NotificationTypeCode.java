@@ -1,7 +1,7 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 public enum NotificationTypeCode {
-    COMMENT_COMMENT(1), FRIEND_REQUEST(2), MESSAGE(3), POST(4), POST_COMMENT(5);
+    POST_COMMENT(1), COMMENT_COMMENT(2), FRIEND_REQUEST(3), MESSAGE(4), FRIEND_BIRTHDAY(5);
 
     private Integer code;
 
