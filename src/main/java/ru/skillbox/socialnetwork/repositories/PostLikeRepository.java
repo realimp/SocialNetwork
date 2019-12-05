@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface PostLikeRepository extends JpaRepository<PostLike, Integer> {
 
-    @Query("SELECT l FROM PostLike l WHERE l.person=:person_id AND l.post=:post_id")
+    @Query("SELECT l FROM PostLike l WHERE l.person.id=:person_id AND l.post.id=:post_id")
     List<PostLike> findByPersonIdAndPostId(@Param("person_id") Integer personId, @Param("post_id") Integer postId);
 
-    @Query("SELECT l FROM PostLike l WHERE l.id=:post_id")
+    @Query("SELECT l FROM PostLike l WHERE l.post.id=:post_id")
     List<PostLike> findByPostId(@Param("post_id") Integer postId);
 }
