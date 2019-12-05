@@ -33,7 +33,7 @@ public class LikeController {
     }
 
     @DeleteMapping("/likes")
-    public Response deleteLike(@RequestParam LikeType type, @RequestParam Integer itemId) {
+    public Response deleteLike(@RequestParam String type, @RequestParam(name = "item_id") Integer itemId) {
         return likeService.deleteLike(type, itemId);
     }
 
