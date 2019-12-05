@@ -208,7 +208,7 @@ public class AccountService {
         NotificationSettingsResponse notificationSettings = new NotificationSettingsResponse();
         notificationSettings.setNotificationSettings(notificationParameters);
 
-        response.setData(notificationSettings);
+        response.setData(notificationSettings.getNotificationSettings());
         return response;
     }
 
