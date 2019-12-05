@@ -128,11 +128,12 @@ public class DialogController {
         List<Dialog> dialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
         if (dialogs.size() > 0) {
             for (Dialog dialog : dialogs) {
-                count += dialog.getUnreadCount();
+                if (dialog.getUnreadCount() == null) count +=0;
+                else count += dialog.getUnreadCount();
             }
         }
         UnreadCount responseData = new UnreadCount(count);
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
@@ -146,7 +147,7 @@ public class DialogController {
         dialogRepository.saveAndFlush(dialog);
         DialogResponse responseData = new DialogResponse();
         responseData.setId(id);
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;

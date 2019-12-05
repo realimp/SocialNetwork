@@ -62,7 +62,7 @@ public class ProfileController {
             itemsPerPage = itemPerPage;
         }
         List<PersonsWallPost> personsWallPostList = profileService.getWallPostsById(id, pageOffset, itemsPerPage);
-        ResponseList responseList = new ResponseList(personsWallPostList);
+        ResponseList<List<PersonsWallPost>> responseList = new ResponseList<>(personsWallPostList, personsWallPostList.size());
         responseList.setError("");
         return  responseList;
     }
