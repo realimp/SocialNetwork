@@ -61,8 +61,10 @@ public class ProfileController {
         if (itemPerPage != null) {
             itemsPerPage = itemPerPage;
         }
-        List<PostResponse> personsWallPostList = profileService.getWallPostsById(id, pageOffset, itemsPerPage);
-        return new ResponseList(personsWallPostList);
+        List<PersonsWallPost> personsWallPostList = profileService.getWallPostsById(id, pageOffset, itemsPerPage);
+        ResponseList responseList = new ResponseList(personsWallPostList);
+        responseList.setError("");
+        return  responseList;
     }
 
     //adding a post to a user's wall
