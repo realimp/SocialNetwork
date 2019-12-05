@@ -71,7 +71,7 @@ public class LikeService {
 
         Response response = new Response();
 
-        if (type.equals(LikeType.POST)) {
+        if (likeType.equals(LikeType.POST)) {
             PostLike like = new PostLike();
             Optional<Post> optional = postRepository.findById(itemId);
             if (!optional.isPresent())
@@ -84,7 +84,7 @@ public class LikeService {
             response.setData(true);
         }
 
-        if (type.equals(LikeType.COMMENT)) {
+        if (likeType.equals(LikeType.COMMENT)) {
             CommentLike like = new CommentLike();
             Optional<PostComment> optional = pcRepository.findById(itemId);
             if (!optional.isPresent())
@@ -102,14 +102,19 @@ public class LikeService {
         return response;
     }
 
-    public Response deleteLike(LikeType type, Integer itemId){
+    public Response deleteLike(String type, Integer itemId){
+        LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
+        if (likeType == null) {
+            return new Response(new Error());
+        }
+
         Integer userId = accountService.getCurrentUser().getId();
-        if (type.equals(LikeType.POST)) {
+        if (likeType.equals(LikeType.POST)) {
             List<PostLike> list = plRepository.findByPersonIdAndPostId(userId, itemId);
             if (list.isEmpty()) return new Response(new Error("Post not found"));
             plRepository.delete(list.get(0));
         }
-        if (type.equals(LikeType.COMMENT)) {
+        if (likeType.equals(LikeType.COMMENT)) {
             List<CommentLike> commentLikes = clRepository.findByPersonIdAndCommentId(userId, itemId);
             if (commentLikes.isEmpty()) return new Response(new Error("Comment not found"));
             clRepository.delete(commentLikes.get(0));

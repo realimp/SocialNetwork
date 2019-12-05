@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
+import ru.skillbox.socialnetwork.api.responses.PersonsWallPost;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Tag;
@@ -49,7 +50,7 @@ public class ProfileServiceTest {
 
     @Test
     public void getWallPostByIdTest() {
-        List<PostResponse> list = profileService.getWallPostsById(2, 0, 10);
+        List<PersonsWallPost> list = profileService.getWallPostsById(2, 0, 10);
         System.out.println(list.get(0).toString());
         org.junit.Assert.assertTrue(list.size() == 1);
     }
@@ -60,7 +61,7 @@ public class ProfileServiceTest {
         Date date = dateFormat.parse("19.11.2019");
         List<Tag> tags = new ArrayList<>();
         profileService.addWallPostById(90901, date, "POST TITLE", "POST TEXT", tags);
-        List<PostResponse> list = profileService.getWallPostsById(90901, 0, 10);
+        List<PersonsWallPost> list = profileService.getWallPostsById(90901, 0, 10);
         org.junit.Assert.assertTrue(list.size() == 1);
     }
 

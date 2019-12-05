@@ -36,7 +36,7 @@ public class ResponsesTest {
     public void responseListPersonsWallPost() throws JsonProcessingException, JSONException {
         List<PersonsWallPost> personsWallPostList = new ArrayList<>();
         PersonsWallPost personWallPost = new PersonsWallPost();
-        personWallPost.setAuthor(new BasicPerson());
+        personWallPost.setAuthor(new PersonResponse());
         List<String> tags = new ArrayList<>();
         tags.add("tag1");
         personWallPost.setTags(tags);
