@@ -2,10 +2,7 @@ package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.DialogInvite;
 import ru.skillbox.socialnetwork.api.requests.MessageText;
@@ -51,54 +48,57 @@ public class DialogController {
         } else {
             resultsPage = PageRequest.of(0, 20);
         }
-        Page<Dialog> results =  dialogRepository.findByOwnerId(accountService.getCurrentUser().getId(), resultsPage);
-
         ArrayList<DialogResponse> dialogResponses = new ArrayList<>();
-
-        if (results.getTotalElements() > 0) {
-
-            //TODO: implement query search
-
+        ResponseList response = new ResponseList();
+        if (isExistDialogs()) {
+            Page<Dialog> results = new PageImpl<Dialog>(allExistsDialog, resultsPage, allExistsDialog.size());
             for (Dialog result : results) {
                 Pageable sortByDate = PageRequest.of(0, 1, Sort.by("time"));
                 Page<Message> lastMessagePage = messageRepository.findByDialogId(result.getId(), sortByDate);
-                if (lastMessagePage.getTotalElements() > 0) {
+                DialogMessage message = new DialogMessage();
+                if (lastMessagePage.stream().count() > 0) {
                     Message lastMessage = lastMessagePage.getContent().get(0);
-                    DialogResponse dialogResponse = new DialogResponse();
-                    dialogResponse.setId(result.getId());
-                    dialogResponse.setUnreadCount(result.getUnreadCount());
-
-                    DialogMessage message = new DialogMessage();
                     message.setId(lastMessage.getId());
                     message.setTime(lastMessage.getTime().getTime());
-
                     BasicPerson authorResponse = new BasicPerson();
                     Person author = lastMessage.getAuthor();
                     authorResponse.setId(author.getId());
                     authorResponse.setFirstName(author.getFirstName());
                     authorResponse.setLastName(author.getLastName());
                     authorResponse.setPhoto(author.getPhoto());
-                    authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
-
+                    Date lOnlinetime = author.getLastOnlineTime();
+                    if (lOnlinetime != null){
+                        authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
+                    }
                     message.setAuthor(authorResponse);
                     message.setRecipientId(lastMessage.getRecipient().getId());
                     message.setText(lastMessage.getMessageText());
                     message.setReadStatus(ReadStatus.valueOf(lastMessage.getReadStatus()));
-
-                    dialogResponse.setLastMessage(message);
-                    dialogResponses.add(dialogResponse);
+                } else {
+                    List<Person> recipientsPersons = result.getRecipients();
+                    for (Person curPerson : recipientsPersons) {
+                        message.setRecipientId(curPerson.getId());
+                        message.setText("");
+                        message.setReadStatus(ReadStatus.SENT);
+                    }
                 }
+                DialogResponse dialogResponse = new DialogResponse();
+                dialogResponse.setId(result.getId());
+                dialogResponse.setUnreadCount(result.getUnreadCount());
+                dialogResponse.setLastMessage(message);
+                dialogResponses.add(dialogResponse);
             }
+            response.setData(dialogResponses);
+            response.setTotal(results.getTotalElements());
+        } else {
+            response.setData(new ArrayList<>());
+            response.setTotal(0);
         }
-
-        ResponseList response = new ResponseList(dialogResponses);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        response.setTotal(results.getTotalElements());
         response.setOffset(resultsPage.getOffset());
         response.setPerPage(resultsPage.getPageSize());
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-
         return response;
     }
 
