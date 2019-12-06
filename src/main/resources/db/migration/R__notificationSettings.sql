@@ -19,3 +19,8 @@ UPDATE social_network.notification_type SET name = 'COMMENT_COMMENT' WHERE id = 
 UPDATE social_network.notification_type SET name = 'FRIEND_REQUEST' WHERE id = 3;
 INSERT INTO social_network.notification_type (id, code, name) values (4, 40, 'MESSAGE');
 INSERT INTO social_network.notification_type (id, code, name) values (5, 50, 'FRIEND_BIRTHDAY');
+
+-- Post_comment
+ALTER TABLE `social_network`.`post_comment`
+CHANGE COLUMN `parent_id` `parent_id` INT(11) NULL ;
+INSERT INTO social_network.post_comment (id, time, post_id, author_id, comment_text, is_blocked, is_deleted) VALUES ('4', '2019-10-22 14:02:00', '3', '3', 'rggfdgd', b'0', b'0');
