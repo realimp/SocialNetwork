@@ -1,6 +1,13 @@
 -- CREATING FOREIGN KEYS notification_settings
 ALTER TABLE notification_settings ADD FOREIGN KEY (person_id) REFERENCES person(id);
 
+-- Notification
+ALTER TABLE social_network.notification ADD recipient_id INTEGER NOT NULL;
+UPDATE social_network.notification SET recipient_id = 3 WHERE id = 1;
+UPDATE social_network.notification SET recipient_id = 3 WHERE id = 2;
+UPDATE social_network.notification SET recipient_id = 1 WHERE id = 3;
+ALTER TABLE notification ADD FOREIGN KEY (recipient_id) REFERENCES person(id);
+
 -- Notification_type
 ALTER TABLE `social_network`.`notification_settings`
 CHANGE COLUMN `enable` `enable` BIT;

@@ -93,7 +93,7 @@ public class FriendsService {
         friendship = friendshipRepository.saveAndFlush(friendship);
 
         Notification notification = new Notification(NotificationTypeCode.FRIEND_REQUEST, new Date(),
-                friend, 1, user.getEMail());
+                friend, user, 1, user.getEMail());
         notificationRepository.save(notification);
 
         if (friendship.getId() == null)

@@ -70,7 +70,8 @@ public class ScheduledTasks {
                         System.out.println("friend " + friend.getLastName());
                         Notification notification = new Notification();
                         notification.setTypeId(NotificationTypeCode.FRIEND_BIRTHDAY);
-                        notification.setAuthor(person);
+                        notification.setAuthor(friend);
+                        notification.setRecipient(person);
                         notification.setEntityId(1);
                         notification.setContact(friend.getEMail());
                         notification.setViewed(false);
