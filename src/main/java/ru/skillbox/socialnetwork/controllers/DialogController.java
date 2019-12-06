@@ -19,10 +19,7 @@ import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/dialogs")
@@ -43,6 +40,8 @@ public class DialogController {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+    private HashSet<Integer> setRecipients = new HashSet<Integer>();
+    private List<Dialog> allExistsDialog = new ArrayList<Dialog>();
 
     @GetMapping
     public ResponseList getDialogs(@RequestParam(required = false) String query, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemsPerPage) {
