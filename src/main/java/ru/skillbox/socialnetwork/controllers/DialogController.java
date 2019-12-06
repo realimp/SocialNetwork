@@ -139,7 +139,6 @@ public class DialogController {
             for (int id : users_ids.getIds()) {
                 if (!setRecipients.contains(id)) {
                     listRecipients.add(personRepository.findById(id).get());
-                    //smessage.setRecipient(personRepository.findById(id).get());
                 }
             }
         } else if (users_ids.getIds().length>0) {
@@ -148,6 +147,13 @@ public class DialogController {
             }
         }
         return listRecipients;
+    }
+
+    private Dialog makeDialog(List<Person> rEcipients, Person oWner){
+        Dialog dialog = new Dialog();
+        dialog.setOwner(oWner);
+        dialog.setRecipients(rEcipients);
+        return dialogRepository.saveAndFlush(dialog);
     }
 
     @GetMapping("/unreaded")
