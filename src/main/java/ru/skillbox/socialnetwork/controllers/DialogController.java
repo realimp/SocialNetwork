@@ -122,6 +122,40 @@ public class DialogController {
         return response;
     }
 
+    private boolean isExistDialogs(){
+        List<Dialog> allUserDialogs = new ArrayList<>();
+        allUserDialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
+        //localDialogResponses = allUserDialogs;
+        if (!allUserDialogs.isEmpty()) {
+            allExistsDialog = allUserDialogs;
+            for (Dialog curDialog : allUserDialogs){
+                List<Person> recipientsDialog = new ArrayList<Person>();
+                recipientsDialog = curDialog.getRecipients();
+                for (Person curRecipient : recipientsDialog){
+                    setRecipients.add(curRecipient.getId());
+                }
+            }
+        }
+        return !allUserDialogs.isEmpty();
+    }
+
+    private List<Person> newRecipients(UserIds users_ids){
+        List<Person> listRecipients = new ArrayList<>();
+        if (!isExistDialogs()) {
+            for (int id : users_ids.getIds()) {
+                if (!setRecipients.contains(id)) {
+                    listRecipients.add(personRepository.findById(id).get());
+                    //smessage.setRecipient(personRepository.findById(id).get());
+                }
+            }
+        } else if (users_ids.getIds().length>0) {
+            for (int id : users_ids.getIds()) {
+                listRecipients.add(personRepository.findById(id).get());
+            }
+        }
+        return listRecipients;
+    }
+
     @GetMapping("/unreaded")
     public Response unreadCount() {
         int count = 0;
