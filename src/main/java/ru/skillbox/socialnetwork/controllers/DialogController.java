@@ -119,7 +119,6 @@ public class DialogController {
     private boolean isExistDialogs(){
         List<Dialog> allUserDialogs = new ArrayList<>();
         allUserDialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
-        //localDialogResponses = allUserDialogs;
         if (!allUserDialogs.isEmpty()) {
             allExistsDialog = allUserDialogs;
             for (Dialog curDialog : allUserDialogs){
