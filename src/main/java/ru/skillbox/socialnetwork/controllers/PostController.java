@@ -1,6 +1,6 @@
 package ru.skillbox.socialnetwork.controllers;
 
-import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -53,8 +53,8 @@ public class PostController {
     }
 
     @GetMapping("/{id}/comments") //Getting post comments
-    public ResponseList<Comment> postGetComments(@PathVariable int id, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
-        return new ResponseList<>(new Comment());
+    public ResponseList<List<Comment>> postGetComments(@PathVariable int id, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
+        return postService.getComments(id);
     }
 
     @PostMapping("/{id}/comments") //Post comment

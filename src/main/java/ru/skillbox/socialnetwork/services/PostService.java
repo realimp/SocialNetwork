@@ -7,17 +7,19 @@ import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.api.responses.ResponseList;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.entities.PostComment;
-import ru.skillbox.socialnetwork.mappers.PersonToBasicPersonMapper;
 import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -116,5 +118,12 @@ public class PostService {
         postComment.setDeleted(false);
         postCommentRepository.saveAndFlush(postComment);
         return new Response<>(PostCommentMapper.getComment(postComment));
+    }
+
+    public ResponseList<List<Comment>> getComments(int id) {
+        List<PostComment> postComments = postCommentRepository.findByPostId(id);
+        List<Comment> comments = new ArrayList<>();
+        postComments.forEach(c-> comments.add(PostCommentMapper.getComment(c)));
+        return new ResponseList<>(comments, comments.size());
     }
 }
