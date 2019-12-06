@@ -4,6 +4,7 @@ ALTER TABLE notification_settings ADD FOREIGN KEY (person_id) REFERENCES person(
 -- Notification_type
 ALTER TABLE `social_network`.`notification_settings`
 CHANGE COLUMN `enable` `enable` BIT;
+ALTER TABLE social_network.notification ADD is_deleted BIT(1) NOT NULL DEFAULT 0;
 
 -- Notification_type
 UPDATE social_network.notification_type SET name = 'POST_COMMENT' WHERE id = 1;

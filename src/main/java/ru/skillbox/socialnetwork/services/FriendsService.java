@@ -4,16 +4,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.responses.FriendStatus;
+import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
 import ru.skillbox.socialnetwork.entities.Friendship;
 import ru.skillbox.socialnetwork.entities.FriendshipStatus;
+import ru.skillbox.socialnetwork.entities.Notification;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
 import ru.skillbox.socialnetwork.repositories.FriendshipRepository;
+import ru.skillbox.socialnetwork.repositories.NotificationRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +28,9 @@ public class FriendsService {
 
     @Autowired
     private FriendshipRepository friendshipRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Autowired
     private PersonRepository personRepository;
@@ -83,6 +91,11 @@ public class FriendsService {
         if (user.equals(friend)) return "Пользователь " + friend.getEMail() + " не может быть сам себе другом";
         Friendship friendship = new Friendship(user, friend, FriendshipStatus.REQUEST);
         friendship = friendshipRepository.saveAndFlush(friendship);
+
+        Notification notification = new Notification(NotificationTypeCode.FRIEND_REQUEST, new Date(),
+                friend, 1, user.getEMail());
+        notificationRepository.save(notification);
+
         if (friendship.getId() == null)
             return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
         return null;
