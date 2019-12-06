@@ -16,9 +16,11 @@ public class PostCommentMapper {
         comment.setBlocked(postComment.isBlocked());
         comment.setCommentText(postComment.getCommentText());
         comment.setId(postComment.getId());
-        comment.setParentId(postComment.getParentComment().getId());
+        if (postComment.getParentComment() != null)
+            comment.setParentId(postComment.getParentComment().getId());
         comment.setPostId(postComment.getPost().getId().toString());
-        comment.setTime(postComment.getDate().getTime());
+        if (postComment.getDate() != null)
+            comment.setTime(postComment.getDate().getTime());
         return comment;
     }
 

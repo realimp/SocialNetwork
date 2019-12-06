@@ -97,7 +97,10 @@ public class PostService {
         } else postComment.setAuthor(accountService.getCurrentUser());
         postComment.setBlocked(commentRequest.isBlocked());
         postComment.setCommentText(commentRequest.getCommentText());
-        postComment.setDate(commentRequest.getTime());
+        if (commentRequest.getTime() == null)
+            postComment.setDate(new Date());
+        else
+            postComment.setDate(commentRequest.getTime());
         if (commentRequest.getId() != 0)
             postComment.setId(commentRequest.getId());
         if (commentRequest.getParentId() != null) {
