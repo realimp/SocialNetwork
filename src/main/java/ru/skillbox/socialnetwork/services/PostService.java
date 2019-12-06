@@ -2,9 +2,18 @@ package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
+import ru.skillbox.socialnetwork.api.responses.Comment;
+import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.PostComment;
+import ru.skillbox.socialnetwork.mappers.PersonToBasicPersonMapper;
+import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
+import ru.skillbox.socialnetwork.repositories.PersonRepository;
+import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import javax.transaction.Transactional;
@@ -17,6 +26,12 @@ public class PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     @Autowired
     private AccountService accountService;
@@ -72,4 +87,31 @@ public class PostService {
         return post.get();
     }
 
+    public Response<Comment> addPostComment(int id, CommentRequest commentRequest) {
+        PostComment postComment = new PostComment();
+        if (commentRequest.getAuthor() != null) {
+            Optional<Person> personOptional = personRepository.findById(commentRequest.getAuthor().getId());
+            if (!personOptional.isPresent())
+                return new Response<>("Не найден пользователь с идентификатором " + commentRequest.getAuthor().getId(), null);
+            postComment.setAuthor(personOptional.get());
+        } else postComment.setAuthor(accountService.getCurrentUser());
+        postComment.setBlocked(commentRequest.isBlocked());
+        postComment.setCommentText(commentRequest.getCommentText());
+        postComment.setDate(commentRequest.getTime());
+        if (commentRequest.getId() != 0)
+            postComment.setId(commentRequest.getId());
+        if (commentRequest.getParentId() != null) {
+            Optional<PostComment> parentPostComment = postCommentRepository.findById(commentRequest.getParentId());
+            if (!parentPostComment.isPresent())
+                return new Response<>("Не найден комментарий с идентификатором " + id, null);
+            postComment.setParentComment(parentPostComment.get());
+        }
+        Optional<Post> postOptional = postRepository.findById(id);
+        if (!postOptional.isPresent())
+            return new Response<>("Не найден пост с идентификатором " + id, null);
+        postComment.setPost(postOptional.get());
+        postComment.setDeleted(false);
+        postCommentRepository.saveAndFlush(postComment);
+        return new Response<>(PostCommentMapper.getComment(postComment));
+    }
 }

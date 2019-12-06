@@ -8,7 +8,7 @@ import ru.skillbox.socialnetwork.entities.Person;
 public class PersonToBasicPersonMapper {
     private PersonToBasicPersonMapper(){}
 
-    public static BasicPerson getMapping(Person person){
+    public static BasicPerson getBasicPerson(Person person){
         BasicPerson basicPerson = new BasicPerson();
 
         basicPerson.setId(person.getId());
@@ -18,4 +18,5 @@ public class PersonToBasicPersonMapper {
         basicPerson.setLastOnlineTime(person.getLastOnlineTime() != null ? person.getLastOnlineTime().getTime() : null);
         return basicPerson;
     }
+
 }

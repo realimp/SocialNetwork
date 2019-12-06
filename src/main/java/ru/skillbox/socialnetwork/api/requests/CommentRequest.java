@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class CommentRequest {
     @JsonProperty("parent_id")
-    private int parentId;
+    private Integer parentId;
     @JsonProperty("comment_text")
     private String commentText;
     private int id;
@@ -19,11 +19,11 @@ public class CommentRequest {
     public CommentRequest() {
     }
 
-    public int getParentId() {
+    public Integer getParentId() {
         return parentId;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(Integer parentId) {
         this.parentId = parentId;
     }
 

@@ -34,7 +34,7 @@ public class PostComment {
     private Post post;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", nullable = false)
+    @JoinColumn(name = "parent_id")
     private PostComment parentComment;
 
     public PostComment() {}

@@ -1,13 +1,19 @@
 package ru.skillbox.socialnetwork.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.entities.PostComment;
 
 import java.util.List;
 
 @Repository
 public interface PostCommentRepository extends JpaRepository<PostComment, Integer> {
-    List<PostComment> findByPostId(int id);
+
+    @Query("SELECT p FROM PostComment p WHERE p.id=:id and p.parentComment = null")
+    List<PostComment> findByPostId(@Param("id") int id);
+
+    @Query("SELECT p FROM PostComment p WHERE p.id=:id and p.parentComment.id = :parent_id")
+    List<PostComment> findByPostIdByParentId(@Param("id") int id, @Param("parent_id") int parentId);
 }
