@@ -104,18 +104,13 @@ public class DialogController {
     }
 
     @PostMapping
-    public Response startDialog(@RequestBody UserIds userIds) {
-        Dialog dialog = new Dialog();
-        dialog.setOwner(accountService.getCurrentUser());
-        List<Person> recipients = new ArrayList<>();
-        for (int id : userIds.getIds()) {
-            recipients.add(personRepository.findById(id).get());
-        }
-        dialog.setRecipients(recipients);
-        Dialog savedDialog = dialogRepository.saveAndFlush(dialog);
-
+    public Response startDialog(@RequestBody UserIds users_ids) {
         DialogResponse responseData = new DialogResponse();
-        responseData.setId(savedDialog.getId());
+        List<Person> recipients = newRecipients(users_ids);
+        if (!recipients.isEmpty()){
+            Dialog savedDialog = makeDialog(recipients, accountService.getCurrentUser());
+            responseData.setId(savedDialog.getId());
+        }
         Response response = new Response(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         response.setError("");
