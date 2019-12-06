@@ -3,7 +3,7 @@ package ru.skillbox.socialnetwork.api.responses;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserIds {
-    @JsonProperty("user_ids")
+    @JsonProperty("users_ids")
     private int[] ids;
 
     public int[] getIds() {
