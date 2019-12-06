@@ -21,6 +21,19 @@ INSERT INTO social_network.notification_type (id, code, name) values (4, 40, 'ME
 INSERT INTO social_network.notification_type (id, code, name) values (5, 50, 'FRIEND_BIRTHDAY');
 
 -- Post_comment
+ALTER TABLE block_history DROP FOREIGN KEY block_history_ibfk_3;
+ALTER TABLE comment_like DROP FOREIGN KEY comment_like_ibfk_2;
+ALTER TABLE notification DROP FOREIGN KEY notification_ibfk_6;
+ALTER TABLE post2tag DROP FOREIGN KEY post2tag_ibfk_1;
+ALTER TABLE post_comment DROP FOREIGN KEY post_comment_ibfk_3;
+
+ALTER TABLE `social_network`.`post_comment` CHANGE COLUMN `id` `id` INT(11) AUTO_INCREMENT ;
+
+ALTER TABLE block_history ADD FOREIGN KEY (comment_id) REFERENCES post_comment(id);
+ALTER TABLE comment_like ADD FOREIGN KEY (comment_id) REFERENCES post_comment(id);
+ALTER TABLE notification ADD FOREIGN KEY (entity_id) REFERENCES post_comment(id);
+ALTER TABLE post2tag ADD FOREIGN KEY (post_id) REFERENCES post_comment(id);
+ALTER TABLE post_comment ADD FOREIGN KEY (parent_id) REFERENCES post_comment(id);
+
 ALTER TABLE `social_network`.`post_comment`
 CHANGE COLUMN `parent_id` `parent_id` INT(11) NULL ;
-INSERT INTO social_network.post_comment (id, time, post_id, author_id, comment_text, is_blocked, is_deleted) VALUES ('4', '2019-10-22 14:02:00', '3', '3', 'rggfdgd', b'0', b'0');
