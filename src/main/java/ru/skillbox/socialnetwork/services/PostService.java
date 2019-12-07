@@ -139,4 +139,16 @@ public class PostService {
         postCommentRepository.saveAndFlush(postComment);
         return new Response<>(new IdResponse(postComment.getId()));
     }
+
+    public Response<List<Comment>> recoveryPostComment(int id, int comment_id) {
+        Optional<PostComment> optionalPostComment = postCommentRepository.findById(comment_id);
+        if (!optionalPostComment.isPresent())
+            return new Response<>("Не найден комментарий с идентификатором " + comment_id, null);
+        PostComment postComment = optionalPostComment.get();
+        if (postComment.getPost() == null || postComment.getPost().getId() != id)
+            return new Response<>("Идентификатор поста не соответствует идентификатору поста комментария", null);
+        postComment.setDeleted(false);
+        postCommentRepository.saveAndFlush(postComment);
+        return getComments(id);
+    }
 }

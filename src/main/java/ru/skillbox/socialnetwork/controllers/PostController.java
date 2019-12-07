@@ -70,8 +70,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}/comments/{comment_id}/recover") //Comment recovery
-    public Response<PostResponse> postCommentsRecovery(@PathVariable int id, @PathVariable int comment_id) {
-        return new Response<>(new PostResponse());
+    public Response<List<Comment>> postCommentsRecovery(@PathVariable int id, @PathVariable int comment_id) {
+        return postService.recoveryPostComment(id, comment_id);
     }
 
     @PostMapping("/{id}/report") //Post a complaint
