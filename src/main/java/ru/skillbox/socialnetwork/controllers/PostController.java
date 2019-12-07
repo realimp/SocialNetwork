@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
-import ru.skillbox.socialnetwork.api.responses.Comment;
-import ru.skillbox.socialnetwork.api.responses.PostResponse;
-import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.api.responses.ResponseList;
+import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.services.PostService;
 
@@ -68,8 +65,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}/comments/{comment_id}") //Removing a post comment
-    public Response<PostResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
-        return new Response<>(new PostResponse());
+    public Response<IdResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
+        return postService.deletePostComment(id, comment_id);
     }
 
     @PutMapping("/{id}/comments/{comment_id}/recover") //Comment recovery

@@ -6,6 +6,7 @@ import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.Comment;
+import ru.skillbox.socialnetwork.api.responses.IdResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
 import ru.skillbox.socialnetwork.entities.Person;
@@ -125,5 +126,17 @@ public class PostService {
         List<Comment> comments = new ArrayList<>();
         postComments.forEach(c-> comments.add(PostCommentMapper.getComment(c)));
         return new ResponseList<>(comments, comments.size());
+    }
+
+    public Response<IdResponse> deletePostComment(int id, int comment_id) {
+        Optional<PostComment> optionalPostComment = postCommentRepository.findById(comment_id);
+        if (!optionalPostComment.isPresent())
+            return new Response<>("Не найден комментарий с идентификатором " + comment_id, null);
+        PostComment postComment = optionalPostComment.get();
+        if (postComment.getPost() == null || postComment.getPost().getId() != id)
+            return new Response<>("Идентификатор поста не соответствует идентификатору поста комментария", null);
+        postComment.setDeleted(true);
+        postCommentRepository.saveAndFlush(postComment);
+        return new Response<>(new IdResponse(postComment.getId()));
     }
 }
