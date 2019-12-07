@@ -32,8 +32,8 @@ public class ScheduledTasks {
     @Autowired
     private FriendshipRepository friendshipRepository;
 
-    @Scheduled(cron = "0 0 * * *")//Выполнять ежедневно в полночь
     //@Scheduled(cron = "*/50000 * * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void birthdayNotification() {
         System.out.println("SCHEDULER WORKING birthdayNotification" + new Date());
@@ -52,7 +52,6 @@ public class ScheduledTasks {
         Friendship friendshipPerson;
 
         for (Person person : people) {
-            System.out.println("person " + person.getLastName());
             boolean isEnable = false;
             notificationSettings = notificationSettingsRepository.findByPersonId(person);
 
@@ -62,40 +61,42 @@ public class ScheduledTasks {
                 }
             }
 
-            if(isEnable) {
+            if (isEnable) {
                 for (Person friend : peopleBirthDay) {
-                    friendshipPerson = friendshipRepository.findByFriend(person, friend);
-                    if (friendshipPerson != null && friendshipPerson.getCode().name().equals("FRIEND")){
-                        System.out.println("person " + person.getLastName());
-                        System.out.println("friend " + friend.getLastName());
-                        Notification notification = new Notification();
-                        notification.setTypeId(NotificationTypeCode.FRIEND_BIRTHDAY);
-                        notification.setAuthor(friend);
-                        notification.setRecipient(person);
-                        notification.setEntityId(1);
-                        notification.setContact(friend.getEMail());
-                        notification.setViewed(false);
-                        notification.setSentDate(new Date());
-                        System.out.println("notification " + notification.getSentDate().getTime());
-                        System.out.println("notification " + notification.getContact());
-                        System.out.println("notification " + notification.getAuthor().getLastName());
-                        notificationRepository.save(notification);
+                    if (person.getId() != friend.getId()) {
+                        friendshipPerson = friendshipRepository.findByFriend(person, friend);
+                        if (friendshipPerson != null && friendshipPerson.getCode().name().equals("FRIEND")) {
+
+                            Notification notification = new Notification();
+                            notification.setTypeId(NotificationTypeCode.FRIEND_BIRTHDAY);
+                            notification.setAuthor(friend);
+                            notification.setRecipient(person);
+                            notification.setEntityId(1);
+                            notification.setContact(friend.getEMail());
+                            notification.setViewed(false);
+                            notification.setSentDate(new Date());
+//                            System.out.println("notification " + notification.getSentDate().getTime());
+//                            System.out.println("notification recipient " + notification.getRecipient().getLastName());
+//                            System.out.println("notification author " + notification.getAuthor().getLastName());
+                            notificationRepository.save(notification);
+                        }
                     }
                 }
             }
         }
     }
 
-    @Scheduled(cron = "0 0 * * *")//Выполнять ежедневно в полночь
     //@Scheduled(cron = "*/50000 * * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void removeOldNotification() {
+        System.out.println("SCHEDULER WORKING removeOldNotification" + new Date());
         List<Notification> notifications = notificationRepository.findAll();
 
         if (notifications.size() > 1) {
             for (Notification notification : notifications) {
                 //86_400_000 msec in day
-                if ((new Date().getTime() - notification.getSentDate().getTime()) >= 10 * 86_400_000) {
+                if ((new Date().getTime() - notification.getSentDate().getTime()) >= 5 * 86_400_000) {
                     notification.setDeleted(true);
                 }
             }
