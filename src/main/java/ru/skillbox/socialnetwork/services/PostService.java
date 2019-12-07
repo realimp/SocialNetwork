@@ -89,7 +89,7 @@ public class PostService {
         return post.get();
     }
 
-    public Response<Comment> addPostComment(int id, CommentRequest commentRequest) {
+    public Response<Comment> savePostComment(int id, Integer comment_id, CommentRequest commentRequest) {
         PostComment postComment = new PostComment();
         if (commentRequest.getAuthor() != null) {
             Optional<Person> personOptional = personRepository.findById(commentRequest.getAuthor().getId());
@@ -103,8 +103,8 @@ public class PostService {
             postComment.setDate(new Date());
         else
             postComment.setDate(commentRequest.getTime());
-        if (commentRequest.getId() != 0)
-            postComment.setId(commentRequest.getId());
+        if (comment_id != null)
+            postComment.setId(comment_id);
         if (commentRequest.getParentId() != null) {
             Optional<PostComment> parentPostComment = postCommentRepository.findById(commentRequest.getParentId());
             if (!parentPostComment.isPresent())

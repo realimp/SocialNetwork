@@ -59,12 +59,12 @@ public class PostController {
 
     @PostMapping("/{id}/comments") //Post comment
     public Response<Comment> postComments(@PathVariable int id, @RequestBody CommentRequest commentRequest) { //@RequestBody
-        return postService.addPostComment(id, commentRequest);
+        return postService.savePostComment(id, null, commentRequest);
     }
 
     @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
-    public Response<PostResponse> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id, @RequestBody CommentRequest commentRequest) {//@RequestBody
-        return new Response<>(new PostResponse());
+    public Response<Comment> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id, @RequestBody CommentRequest commentRequest) {//@RequestBody
+        return postService.savePostComment(id, comment_id, commentRequest);
     }
 
     @DeleteMapping("/{id}/comments/{comment_id}") //Removing a post comment
