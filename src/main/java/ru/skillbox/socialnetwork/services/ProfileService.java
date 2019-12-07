@@ -120,10 +120,12 @@ public class ProfileService {
                 wallPost.setPostText(post.getText());
                 wallPost.setBlocked(post.isBlocked());
                 wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
-                List<Comment> comments = PostCommentMapper.getComments(postCommentRepository.findByPostId(post.getId()));
-                comments.forEach(c -> c.setSubComments(PostCommentMapper.getComments(
-                        postCommentRepository.findByPostIdByParentId(post.getId(), c.getId()))));
-                wallPost.setComments(comments);
+                List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
+                Map<Integer, List<PostComment>> childComments = postcomments.stream()
+                        .collect(Collectors.toMap(PostComment::getId, comment ->
+                                postCommentRepository.findByPostIdByParentId(post.getId(), comment.getId())
+                        ));
+                wallPost.setComments(PostCommentMapper.getRootComments(postcomments, childComments));
                 if (post.getDate().before(new Date())) {
                     wallPost.setType(PostType.POSTED);
                 } else {

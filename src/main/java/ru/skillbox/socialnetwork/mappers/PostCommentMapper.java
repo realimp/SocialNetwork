@@ -5,6 +5,7 @@ import ru.skillbox.socialnetwork.entities.PostComment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PostCommentMapper {
     private PostCommentMapper(){}
@@ -24,9 +25,15 @@ public class PostCommentMapper {
         return comment;
     }
 
-    public static List<Comment> getComments(List<PostComment> postComments) {
+    private static List<Comment> getComments(List<PostComment> postComments) {
         List<Comment> comments = new ArrayList<>();
         postComments.forEach(c -> comments.add(PostCommentMapper.getComment(c)));
+        return comments;
+    }
+
+    public static List<Comment> getRootComments(List<PostComment> postComments, Map<Integer, List<PostComment>> childComments) {
+        List<Comment> comments = PostCommentMapper.getComments(postComments);
+        comments.forEach(c -> c.setSubComments(PostCommentMapper.getComments(childComments.get(c.getId()))));
         return comments;
     }
 }
