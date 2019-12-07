@@ -77,17 +77,18 @@ public class DialogController {
                 } else {
                     List<Person> recipientsPersons = result.getRecipients();
                     for (Person curPerson : recipientsPersons) {
-                        BasicPerson authorResponse = new BasicPerson();
-                        Person author = accountService.getCurrentUser();
-                        authorResponse.setId(author.getId());
-                        authorResponse.setFirstName(author.getFirstName());
-                        authorResponse.setLastName(author.getLastName());
-                        authorResponse.setPhoto(author.getPhoto());
-                        Date lOnlinetime = author.getLastOnlineTime();
-                        if (lOnlinetime != null){
-                            authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
-                        }
-                        message.setAuthor(authorResponse);
+//                        //временное решение - чтобы увидеть как отображаются сообщения
+//                        BasicPerson authorResponse = new BasicPerson();
+//                        Person author = accountService.getCurrentUser();
+//                        authorResponse.setId(author.getId());
+//                        authorResponse.setFirstName(author.getFirstName());
+//                        authorResponse.setLastName(author.getLastName());
+//                        authorResponse.setPhoto(author.getPhoto());
+//                        Date lOnlinetime = author.getLastOnlineTime();
+//                        if (lOnlinetime != null){
+//                            authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
+//                        }
+//                        message.setAuthor(authorResponse);
 
                         message.setRecipientId(curPerson.getId());
                         message.setText("");
