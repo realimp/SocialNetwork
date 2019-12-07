@@ -147,7 +147,7 @@ public class DialogController {
 
     private List<Person> newRecipients(UserIds users_ids){
         List<Person> listRecipients = new ArrayList<>();
-        if (!isExistDialogs()) {
+        if (isExistDialogs()) {
             for (int id : users_ids.getIds()) {
                 if (!setRecipients.contains(id)) {
                     listRecipients.add(personRepository.findById(id).get());
