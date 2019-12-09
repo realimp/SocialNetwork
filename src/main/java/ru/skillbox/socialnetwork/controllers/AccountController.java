@@ -1,10 +1,12 @@
 package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.Email;
+import ru.skillbox.socialnetwork.api.requests.NotificationTypeRequest;
 import ru.skillbox.socialnetwork.api.requests.Register;
+import ru.skillbox.socialnetwork.api.responses.NotificationParameter;
+import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.services.AccountService;
 
@@ -43,12 +45,16 @@ public class AccountController {
   }
 
   @GetMapping("/notifications")
-  public String notifications() {
-    return "notifications";
+  public Response notifications() {
+
+    Response response = accountService.getNotification();
+    response.setError("");
+    return response;
   }
 
   @PutMapping("/notifications")
-  public String notifications(Model model) {
-    return "putNotifications";
+  public Response notifications(@RequestBody NotificationTypeRequest notificationTypeRequest) {
+
+    return accountService.setNotification(notificationTypeRequest);
   }
 }

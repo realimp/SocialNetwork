@@ -1,8 +1,6 @@
 package ru.skillbox.socialnetwork.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.skillbox.socialnetwork.api.City;
-import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.entities.MessagePermission;
 
 public class PersonResponse {

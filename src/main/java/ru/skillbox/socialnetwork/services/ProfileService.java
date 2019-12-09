@@ -1,4 +1,6 @@
-/** @Author Savva */
+/**
+ * @Author Savva
+ */
 package ru.skillbox.socialnetwork.services;
 
 import org.slf4j.Logger;
@@ -9,15 +11,14 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
-import ru.skillbox.socialnetwork.api.responses.MessageResponse;
-import ru.skillbox.socialnetwork.api.responses.PersonResponse;
-import ru.skillbox.socialnetwork.api.responses.PostResponse;
-import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.entities.Post;
-import ru.skillbox.socialnetwork.entities.Tag;
+import ru.skillbox.socialnetwork.api.responses.*;
+import ru.skillbox.socialnetwork.entities.*;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
+import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
+import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
+import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import java.util.*;
@@ -42,6 +43,12 @@ public class ProfileService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private PostLikeRepository postLikeRepository;
+
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     public PersonResponse getPerson() {
         Person person = accountService.getCurrentUser();
@@ -95,15 +102,38 @@ public class ProfileService {
         return PersonMapper.getMapping(person);
     }
 
-    public List<PostResponse> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
+    public List<PersonsWallPost> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
         Pageable pageable = PageRequest.of(offset, itemPerPage);
-        Page<Post> postPageList = postRepository.findByAuthor(personRepository.getOne(id), pageable);
+        Person author = personRepository.findById(id).get();
+        Page<Post> postPageList = postRepository.findByAuthor(author, pageable);
 
-        List<Post> postList = postPageList.getContent();
-        List<PostResponse> postResponseList = new ArrayList<>();
+        List<PersonsWallPost> postResponseList = new ArrayList<>();
 
-        for (Post post : postList) {
-            postResponseList.add(PostMapper.getPostResponse(post));
+        if (!postPageList.isEmpty()) {
+            for (Post post : postPageList) {
+                PersonsWallPost wallPost = new PersonsWallPost();
+                wallPost.setId(post.getId());
+                wallPost.setTime(post.getDate().getTime());
+                PersonResponse postAuthor = PersonMapper.getMapping(author);
+                wallPost.setAuthor(postAuthor);
+                wallPost.setTitle(post.getTitle());
+                wallPost.setPostText(post.getText());
+                wallPost.setBlocked(post.isBlocked());
+                wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
+                List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
+                Map<Integer, List<PostComment>> childComments = postcomments.stream()
+                        .collect(Collectors.toMap(PostComment::getId, comment ->
+                                postCommentRepository.findByPostIdByParentId(post.getId(), comment.getId())
+                        ));
+                wallPost.setComments(PostCommentMapper.getRootComments(postcomments, childComments));
+                if (post.getDate().before(new Date())) {
+                    wallPost.setType(PostType.POSTED);
+                } else {
+                    wallPost.setType(PostType.QUEUED);
+                }
+
+                postResponseList.add(wallPost);
+            }
         }
         return postResponseList;
     }
@@ -125,7 +155,7 @@ public class ProfileService {
     }
 
     public List<PersonResponse> searchPerson(String firstName, String lastName, Integer ageFrom, Integer ageTo,
-                                          String country, String city, Integer offset, Integer itemPerPage) {
+                                             String country, String city, Integer offset, Integer itemPerPage) {
 
 
         Calendar calendar = Calendar.getInstance();
@@ -139,16 +169,16 @@ public class ProfileService {
         int firstNameLen = firstName.trim().length();
         int lastNameLen = lastName.trim().length();
         //Разбор строки, если в параметрах запроса только один составной параметр - firstName
-        if ((firstNameLen>0) && (lastNameLen==0)) {
+        if ((firstNameLen > 0) && (lastNameLen == 0)) {
             namesToSearch = obtainStringsForSearch(firstName);
         }
         int countryLen = country.trim().length();
         int cityLen = city.trim().length();
 
         List<Person> personList = new ArrayList<Person>();
-        if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0)  && (cityLen == 0)){
+        if ((firstNameLen > 0) && (lastNameLen == 0) && (countryLen == 0) && (cityLen == 0)) {
             if (namesToSearch != null) {
-                if (!namesToSearch.get("lastName").equals("")){
+                if (!namesToSearch.get("lastName").equals("")) {
                     Page<Person> personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("firstName"), namesToSearch.get("lastName"), pageable);
                     personList.addAll(personPageList.getContent());
                     personPageList = personRepository.findByFirstNameAndLastName(namesToSearch.get("lastName"), namesToSearch.get("firstName"), pageable);
@@ -160,13 +190,13 @@ public class ProfileService {
                     personList.addAll(personPageList.getContent());
                 }
             }
-        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0)  && (cityLen == 0)){
+        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen == 0) && (cityLen == 0)) {
             Page<Person> personPageList = personRepository.findByFirstNameAndLastName(firstName.trim(), lastName.trim(), pageable);
             personList.addAll(personPageList.getContent());
-        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen == 0)){
+        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0) && (cityLen == 0)) {
             Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountry(firstName, lastName, country, pageable);
             personList.addAll(personPageList.getContent());
-        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0)  && (cityLen > 0)){
+        } else if ((firstNameLen > 0) && (lastNameLen > 0) && (countryLen > 0) && (cityLen > 0)) {
             Page<Person> personPageList = personRepository.findByFirstNameAndLastNameAndCountryAndCityAndBirthDateBetween(
                     firstName, lastName, country, city, birthDateFrom, birthDateTo, pageable);
             personList.addAll(personPageList.getContent());
@@ -188,7 +218,7 @@ public class ProfileService {
         personRepository.saveAndFlush(person);
 
         MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("User with id: "+id+" has been successfully blocked!");
+        messageResponse.setMessage("User with id: " + id + " has been successfully blocked!");
         return messageResponse;
     }
 
@@ -198,25 +228,25 @@ public class ProfileService {
         personRepository.saveAndFlush(person);
 
         MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("User with id: "+id+" has been successfully unblocked!");
+        messageResponse.setMessage("User with id: " + id + " has been successfully unblocked!");
         return messageResponse;
     }
 
-    private HashMap<String,String> obtainStringsForSearch(String pString){
+    private HashMap<String, String> obtainStringsForSearch(String pString) {
         HashMap searchMap = new HashMap();
         pString = pString.trim().replaceAll("( )+", " ");
         String[] names = pString.split(" ");
         String searchFirstName = names[0];
         String searchLastName = "";
-        if (names.length>1) {
+        if (names.length > 1) {
             searchLastName = names[1].trim();
         }
-        if (searchFirstName.length()>0){
+        if (searchFirstName.length() > 0) {
             searchMap.put("firstName", searchFirstName);
         } else {
             searchMap.put("firstName", "");
         }
-        if (searchLastName.length()>0){
+        if (searchLastName.length() > 0) {
             searchMap.put("lastName", searchLastName);
         } else {
             searchMap.put("lastName", "");

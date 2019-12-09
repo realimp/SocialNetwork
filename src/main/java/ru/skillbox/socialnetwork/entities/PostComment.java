@@ -1,8 +1,11 @@
 package ru.skillbox.socialnetwork.entities;
 
+import ru.skillbox.socialnetwork.api.responses.Comment;
+
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -31,7 +34,7 @@ public class PostComment {
     private Post post;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", nullable = false)
+    @JoinColumn(name = "parent_id")
     private PostComment parentComment;
 
     public PostComment() {}

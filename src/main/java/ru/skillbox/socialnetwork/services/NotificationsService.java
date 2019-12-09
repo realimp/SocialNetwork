@@ -21,7 +21,7 @@ public class NotificationsService {
     @Autowired
     private AccountService accountService;
 
-    public List<NotificationBase> notificationsForCurrentUser(){
+    public List<NotificationBase> notificationsForCurrentUser() {
 
         Person person = accountService.getCurrentUser();
 
@@ -29,9 +29,9 @@ public class NotificationsService {
 
         List<Notification> notifications = notificationRepository.findByPersonId(person);
 
-        for (Notification notification : notifications){
+        for (Notification notification : notifications) {
 
-            if(!notification.isViewed()) {
+            if (!notification.isViewed() && !notification.isDeleted()) {
                 notificationBaseList.add(getNotificationBase(notification));
             }
         }
@@ -39,10 +39,9 @@ public class NotificationsService {
         return notificationBaseList;
     }
 
-    public List<NotificationBase> notificationsMarkAsRead(Integer id, Boolean all){
-
+    public List<NotificationBase> notificationsMarkAsRead(Integer id, Boolean all) {
         id = id != null ? id : 0;
-        all = all != null ? all : false;
+        all = all != null ? all : true;
 
         Person person = accountService.getCurrentUser();
 
@@ -50,16 +49,17 @@ public class NotificationsService {
 
         List<Notification> notifications = notificationRepository.findByPersonId(person);
 
-        for (Notification notification : notifications){
-
-            notificationBaseList.add(getNotificationBaseMarkAsRead(notification, id, all));
+        for (Notification notification : notifications) {
+            if (!notification.isViewed() && !notification.isDeleted()) {
+                notificationBaseList.add(getNotificationBaseMarkAsRead(notification, id, all));
+            }
         }
 
         return notificationBaseList;
     }
 
     //mapping Notification to NotificationBase
-    public NotificationBase getNotificationBase(Notification notification){
+    public NotificationBase getNotificationBase(Notification notification) {
 
         NotificationBase notificationBase = new NotificationBase();
         BasicPerson basicPerson = new BasicPerson();
@@ -72,8 +72,9 @@ public class NotificationsService {
         basicPerson.setId(notification.getAuthor().getId());
         basicPerson.setFirstName(notification.getAuthor().getFirstName());
         basicPerson.setLastName(notification.getAuthor().getLastName());
-        basicPerson.setPhoto(notification.getAuthor().getPhoto());
-        if(notification.getAuthor().getLastOnlineTime() != null) {
+        String photo = notification.getAuthor().getPhoto() != null ? notification.getAuthor().getPhoto() : "";
+        basicPerson.setPhoto(photo);
+        if (notification.getAuthor().getLastOnlineTime() != null) {
             basicPerson.setLastOnlineTime(notification.getAuthor().getLastOnlineTime().getTime());
         }
         notificationBase.setEntityAuthor(basicPerson);
@@ -83,7 +84,7 @@ public class NotificationsService {
     }
 
     //mapping Notification to NotificationBase with mark as read
-    public NotificationBase getNotificationBaseMarkAsRead(Notification notification, Integer id, boolean all){
+    public NotificationBase getNotificationBaseMarkAsRead(Notification notification, Integer id, boolean all) {
 
         NotificationBase notificationBase = new NotificationBase();
         BasicPerson basicPerson = new BasicPerson();
@@ -96,19 +97,19 @@ public class NotificationsService {
         basicPerson.setId(notification.getAuthor().getId());
         basicPerson.setFirstName(notification.getAuthor().getFirstName());
         basicPerson.setLastName(notification.getAuthor().getLastName());
-        basicPerson.setPhoto(notification.getAuthor().getPhoto());
-        if(notification.getAuthor().getLastOnlineTime() != null) {
+        String photo = notification.getAuthor().getPhoto() != null ? notification.getAuthor().getPhoto() : "";
+        basicPerson.setPhoto(photo);
+        if (notification.getAuthor().getLastOnlineTime() != null) {
             basicPerson.setLastOnlineTime(notification.getAuthor().getLastOnlineTime().getTime());
         }
 
         notificationBase.setEntityAuthor(basicPerson);
         notificationBase.setInfo(notification.getContact());
 
-        if (all){
+        if (all) {
             notification.setViewed(true);
             notificationRepository.save(notification);
-        }
-        else{
+        } else {
             if (notification.getId() == id) {
                 notification.setViewed(true);
                 notificationRepository.save(notification);

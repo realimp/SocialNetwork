@@ -31,8 +31,8 @@ public class Dialog {
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "person2dialog",
-        joinColumns = {@JoinColumn(name = "person_id")},
-        inverseJoinColumns = {@JoinColumn(name = "dialog_id")})
+        joinColumns = {@JoinColumn(name = "dialog_id")},
+        inverseJoinColumns = {@JoinColumn(name = "person_id")})
     private List<Person> recipients;
 
     public Dialog() {

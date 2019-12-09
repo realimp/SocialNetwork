@@ -6,17 +6,20 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.Feeds;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.PostComment;
 import ru.skillbox.socialnetwork.entities.PostLike;
+import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
+import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
 import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,11 +27,13 @@ import java.util.stream.Collectors;
 public class FeedsService {
 
     @Autowired
-    PostRepository postRepository;
+    private PostRepository postRepository;
     @Autowired
-    PostLikeRepository postLikeRepository;
+    private PostLikeRepository postLikeRepository;
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
+    @Autowired
+    private PostCommentRepository postCommentRepository;
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
         Sort sort = new Sort(Sort.Direction.DESC, "date");
@@ -57,8 +62,12 @@ public class FeedsService {
             postResponse.setTags(new ArrayList<String>(){{
                 add("Backend hasn't have entity for post tag");
             }});
-            //ToDo Add post comments
-            postResponse.setComments(new ArrayList<Comment>(){{add(new Comment());}});
+            List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
+            Map<Integer, List<PostComment>> childComments = postcomments.stream()
+                    .collect(Collectors.toMap(PostComment::getId, comment ->
+                            postCommentRepository.findByPostIdByParentId(post.getId(), comment.getId())
+                    ));
+            postResponse.setComments(PostCommentMapper.getRootComments(postcomments, childComments));
             prList.add(postResponse);
         });
         return new Feeds(prList);

@@ -8,7 +8,7 @@ public class PersonsWallPost {
 
     private Integer id;
     private Long time;
-    private BasicPerson author;
+    private PersonResponse author;
     private String title;
     @JsonProperty("post_text")
     private String postText;
@@ -52,11 +52,11 @@ public class PersonsWallPost {
         this.time = time;
     }
 
-    public BasicPerson getAuthor() {
+    public PersonResponse getAuthor() {
         return author;
     }
 
-    public void setAuthor(BasicPerson author) {
+    public void setAuthor(PersonResponse author) {
         this.author = author;
     }
 

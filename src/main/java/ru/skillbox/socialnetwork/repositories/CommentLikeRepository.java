@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface CommentLikeRepository extends JpaRepository<CommentLike, Integer> {
 
-    @Query("SELECT l FROM CommentLike l JOIN l.person JOIN l.comment WHERE l.person=:person_id AND l.comment=:comment_id")
+    @Query("SELECT l FROM CommentLike l WHERE l.person.id=:person_id AND l.comment.id=:comment_id")
     List<CommentLike> findByPersonIdAndCommentId(@Param("person_id") Integer personId, @Param("comment_id") Integer commentId);
 
-    @Query("SELECT l FROM CommentLike l JOIN l.comment WHERE l.comment=:comment_id")
+    @Query("SELECT l FROM CommentLike l WHERE l.comment.id=:comment_id")
     List<CommentLike> findByCommentId(@Param("comment_id") Integer commentId);
 }

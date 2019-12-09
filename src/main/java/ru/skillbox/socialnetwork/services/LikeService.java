@@ -20,18 +20,15 @@ import java.util.Optional;
 public class LikeService {
 
     @Autowired
-    CommentLikeRepository clRepository;
-
+    private CommentLikeRepository clRepository;
     @Autowired
-    PostLikeRepository plRepository;
-
+    private PostLikeRepository plRepository;
     @Autowired
-    PostRepository postRepository;
-
+    private PostRepository postRepository;
     @Autowired
-    PostCommentRepository pcRepository;
-
-    AccountService accountService = new AccountService();
+    private PostCommentRepository pcRepository;
+    @Autowired
+    private AccountService accountService;
 
     public Response isLiked(LikeType type, Integer itemId, Integer userId) {
         boolean isLiked = false;
@@ -61,11 +58,20 @@ public class LikeService {
         return null;
     }
 
-    public Response putLike(LikeType type, Integer itemId) {
+    public Response putLike(String type, Integer itemId) {
 
-        Response response = null;
+        if (type == null || itemId == null) {
+            return new Response(new Error());
+        }
 
-        if (type.equals(LikeType.POST)) {
+        LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
+        if (likeType == null) {
+            return new Response(new Error());
+        }
+
+        Response response = new Response();
+
+        if (likeType.equals(LikeType.POST)) {
             PostLike like = new PostLike();
             Optional<Post> optional = postRepository.findById(itemId);
             if (!optional.isPresent())
@@ -78,7 +84,7 @@ public class LikeService {
             response.setData(true);
         }
 
-        if (type.equals(LikeType.COMMENT)) {
+        if (likeType.equals(LikeType.COMMENT)) {
             CommentLike like = new CommentLike();
             Optional<PostComment> optional = pcRepository.findById(itemId);
             if (!optional.isPresent())
@@ -91,18 +97,24 @@ public class LikeService {
             response.setData(true);
         }
 
-        return response;
+        response.setTimestamp(System.currentTimeMillis());
 
+        return response;
     }
 
-    public Response deleteLike(LikeType type, Integer itemId){
+    public Response deleteLike(String type, Integer itemId){
+        LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
+        if (likeType == null) {
+            return new Response(new Error());
+        }
+
         Integer userId = accountService.getCurrentUser().getId();
-        if (type.equals(LikeType.POST)) {
+        if (likeType.equals(LikeType.POST)) {
             List<PostLike> list = plRepository.findByPersonIdAndPostId(userId, itemId);
             if (list.isEmpty()) return new Response(new Error("Post not found"));
             plRepository.delete(list.get(0));
         }
-        if (type.equals(LikeType.COMMENT)) {
+        if (likeType.equals(LikeType.COMMENT)) {
             List<CommentLike> commentLikes = clRepository.findByPersonIdAndCommentId(userId, itemId);
             if (commentLikes.isEmpty()) return new Response(new Error("Comment not found"));
             clRepository.delete(commentLikes.get(0));

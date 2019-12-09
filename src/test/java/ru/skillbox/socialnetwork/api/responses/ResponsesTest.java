@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import ru.skillbox.socialnetwork.api.City;
-import ru.skillbox.socialnetwork.api.Country;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +14,8 @@ public class ResponsesTest {
     @Test
     public void responsePersonTest() throws JsonProcessingException, JSONException {
         PersonResponse person = new PersonResponse();
-        person.setCity(new City().getTitle());
-        person.setCountry(new Country().getTitle());
+        person.setCity(new CityResponse().getTitle());
+        person.setCountry(new CountryResponse().getTitle());
         Response<PersonResponse> response = new Response<>(person);
         response.setTimestamp(0);
         JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}",
@@ -38,7 +36,7 @@ public class ResponsesTest {
     public void responseListPersonsWallPost() throws JsonProcessingException, JSONException {
         List<PersonsWallPost> personsWallPostList = new ArrayList<>();
         PersonsWallPost personWallPost = new PersonsWallPost();
-        personWallPost.setAuthor(new BasicPerson());
+        personWallPost.setAuthor(new PersonResponse());
         List<String> tags = new ArrayList<>();
         tags.add("tag1");
         personWallPost.setTags(tags);
@@ -88,8 +86,8 @@ public class ResponsesTest {
     public void responseListPersonsTest() throws JsonProcessingException, JSONException {
         List<PersonResponse> personList = new ArrayList<>();
         PersonResponse person = new PersonResponse();
-        person.setCity(new City().getTitle());
-        person.setCountry(new Country().getTitle());
+        person.setCity(new CityResponse().getTitle());
+        person.setCountry(new CountryResponse().getTitle());
         personList.add(person);
         ResponseList<List<PersonResponse>> persons = new ResponseList<>(personList);
         persons.setTimestamp(0);

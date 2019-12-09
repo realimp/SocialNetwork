@@ -12,8 +12,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.skillbox.socialnetwork.api.City;
-import ru.skillbox.socialnetwork.api.Country;
 import ru.skillbox.socialnetwork.api.responses.Error;
 import ru.skillbox.socialnetwork.api.responses.ErrorDescription;
 import ru.skillbox.socialnetwork.api.responses.Response;

@@ -4,13 +4,13 @@ import ru.skillbox.socialnetwork.api.responses.NotificationParameter;
 
 import java.util.List;
 
-public class NotificationSettings {
+public class NotificationSettingsResponse {
 
     private List<NotificationParameter> notificationSettings;
 
-    public NotificationSettings() {}
+    public NotificationSettingsResponse() {}
 
-    public NotificationSettings(List<NotificationParameter> notificationSettings) {
+    public NotificationSettingsResponse(List<NotificationParameter> notificationSettings) {
         this.notificationSettings = notificationSettings;
     }
 
