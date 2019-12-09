@@ -18,7 +18,7 @@ public class PostController {
     private PostService postService;
 
     @GetMapping("") //Post search
-    public ResponseList<PostResponse> postSearch(@RequestParam(required = false) String text, @RequestParam(required = false) Long dateFrom, @RequestParam(required = false) Long dateTo, @RequestParam(required = false) Integer offset, @RequestParam Integer itemPerPage) {
+    public ResponseList<PostResponse> postSearch(@RequestParam(required = false) String text, @RequestParam(required = false) Long dateFrom, @RequestParam(required = false) Long dateTo, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
         return new ResponseList<>(new PostResponse());
     }
 
