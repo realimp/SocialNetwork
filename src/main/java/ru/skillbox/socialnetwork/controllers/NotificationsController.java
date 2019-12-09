@@ -18,7 +18,10 @@ public class NotificationsController {
     private NotificationsService notificationsService;
 
     @GetMapping
-    public ResponseList<List<NotificationBase>> notificationsForCurrentUser(Integer offset, Integer itemPerPage) {
+    public ResponseList<List<NotificationBase>> notificationsForCurrentUser(@RequestParam(required = false) Integer offset,
+                                                                            @RequestParam(required = false) Integer itemPerPage) {
+        int pageOffset = offset == null ? 0 : offset;
+        int itemsPerPage = itemPerPage == null ? 20 : itemPerPage;
 
         List<NotificationBase> notificationBaseList = notificationsService.notificationsForCurrentUser();
 
@@ -26,15 +29,13 @@ public class NotificationsController {
         message.setMessage("ok");
 
         ResponseList responseList = new ResponseList(message);
+        responseList.setError("");
         long timestamp = new Date().getTime();
         responseList.setTimestamp(timestamp);
         responseList.setData(notificationBaseList);
-        if(offset != null) {
-            responseList.setOffset(offset);
-        }
-        if(itemPerPage != null) {
-            responseList.setPerPage(itemPerPage);
-        }
+
+        responseList.setOffset(pageOffset);
+        responseList.setPerPage(itemsPerPage);
 
         return responseList;
     }
