@@ -2,10 +2,7 @@ package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.DialogInvite;
 import ru.skillbox.socialnetwork.api.requests.MessageText;
@@ -19,10 +16,7 @@ import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/dialogs")
@@ -43,6 +37,8 @@ public class DialogController {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+    private HashSet<Integer> setRecipients = new HashSet<Integer>();
+    private List<Dialog> allExistsDialog = new ArrayList<Dialog>();
 
     @GetMapping
     public ResponseList getDialogs(@RequestParam(required = false) String query, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemsPerPage) {
@@ -52,74 +48,124 @@ public class DialogController {
         } else {
             resultsPage = PageRequest.of(0, 20);
         }
-        Page<Dialog> results =  dialogRepository.findByOwnerId(accountService.getCurrentUser().getId(), resultsPage);
-
         ArrayList<DialogResponse> dialogResponses = new ArrayList<>();
-
-        if (results.getTotalElements() > 0) {
-
-            //TODO: implement query search
-
+        ResponseList response = new ResponseList();
+        if (isExistDialogs()) {
+            Page<Dialog> results = new PageImpl<Dialog>(allExistsDialog, resultsPage, allExistsDialog.size());
             for (Dialog result : results) {
                 Pageable sortByDate = PageRequest.of(0, 1, Sort.by("time"));
                 Page<Message> lastMessagePage = messageRepository.findByDialogId(result.getId(), sortByDate);
-                if (lastMessagePage.getTotalElements() > 0) {
+                DialogMessage message = new DialogMessage();
+                if (lastMessagePage.stream().count() > 0) {
                     Message lastMessage = lastMessagePage.getContent().get(0);
-                    DialogResponse dialogResponse = new DialogResponse();
-                    dialogResponse.setId(result.getId());
-                    dialogResponse.setUnreadCount(result.getUnreadCount());
-
-                    DialogMessage message = new DialogMessage();
                     message.setId(lastMessage.getId());
                     message.setTime(lastMessage.getTime().getTime());
-
                     BasicPerson authorResponse = new BasicPerson();
                     Person author = lastMessage.getAuthor();
                     authorResponse.setId(author.getId());
                     authorResponse.setFirstName(author.getFirstName());
                     authorResponse.setLastName(author.getLastName());
                     authorResponse.setPhoto(author.getPhoto());
-                    authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
-
+                    Date lOnlinetime = author.getLastOnlineTime();
+                    if (lOnlinetime != null){
+                        authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
+                    }
                     message.setAuthor(authorResponse);
                     message.setRecipientId(lastMessage.getRecipient().getId());
                     message.setText(lastMessage.getMessageText());
                     message.setReadStatus(ReadStatus.valueOf(lastMessage.getReadStatus()));
+                } else {
+                    List<Person> recipientsPersons = result.getRecipients();
+                    for (Person curPerson : recipientsPersons) {
+//                        //временное решение - чтобы увидеть как отображаются сообщения
+//                        BasicPerson authorResponse = new BasicPerson();
+//                        Person author = accountService.getCurrentUser();
+//                        authorResponse.setId(author.getId());
+//                        authorResponse.setFirstName(author.getFirstName());
+//                        authorResponse.setLastName(author.getLastName());
+//                        authorResponse.setPhoto(author.getPhoto());
+//                        Date lOnlinetime = author.getLastOnlineTime();
+//                        if (lOnlinetime != null){
+//                            authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
+//                        }
+//                        message.setAuthor(authorResponse);
 
-                    dialogResponse.setLastMessage(message);
-                    dialogResponses.add(dialogResponse);
+                        message.setRecipientId(curPerson.getId());
+                        message.setText("");
+                        message.setReadStatus(ReadStatus.SENT);
+                    }
                 }
+                DialogResponse dialogResponse = new DialogResponse();
+                dialogResponse.setId(result.getId());
+                dialogResponse.setUnreadCount(result.getUnreadCount());
+                dialogResponse.setLastMessage(message);
+                dialogResponses.add(dialogResponse);
             }
+            response.setData(dialogResponses);
+            response.setTotal(results.getTotalElements());
+        } else {
+            response.setData(new ArrayList<>());
+            response.setTotal(0);
         }
-
-        ResponseList response = new ResponseList(dialogResponses);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        response.setTotal(results.getTotalElements());
         response.setOffset(resultsPage.getOffset());
         response.setPerPage(resultsPage.getPageSize());
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-
         return response;
     }
 
     @PostMapping
-    public Response startDialog(@RequestBody UserIds userIds) {
-        Dialog dialog = new Dialog();
-        dialog.setOwner(accountService.getCurrentUser());
-        List<Person> recipients = new ArrayList<>();
-        for (int id : userIds.getIds()) {
-            recipients.add(personRepository.findById(id).get());
-        }
-        dialog.setRecipients(recipients);
-        Dialog savedDialog = dialogRepository.saveAndFlush(dialog);
-
+    public Response startDialog(@RequestBody UserIds users_ids) {
         DialogResponse responseData = new DialogResponse();
-        responseData.setId(savedDialog.getId());
+        List<Person> recipients = newRecipients(users_ids);
+        if (!recipients.isEmpty()){
+            Dialog savedDialog = makeDialog(recipients, accountService.getCurrentUser());
+            responseData.setId(savedDialog.getId());
+        }
         Response response = new Response(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         response.setError("");
         return response;
+    }
+
+    private boolean isExistDialogs(){
+        List<Dialog> allUserDialogs = new ArrayList<>();
+        allUserDialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
+        if (!allUserDialogs.isEmpty()) {
+            allExistsDialog = allUserDialogs;
+            for (Dialog curDialog : allUserDialogs){
+                List<Person> recipientsDialog = new ArrayList<Person>();
+                recipientsDialog = curDialog.getRecipients();
+                for (Person curRecipient : recipientsDialog){
+                    setRecipients.add(curRecipient.getId());
+                }
+            }
+        }
+        return !allUserDialogs.isEmpty();
+    }
+
+    private List<Person> newRecipients(UserIds users_ids){
+        List<Person> listRecipients = new ArrayList<>();
+        if (isExistDialogs()) {
+            for (int id : users_ids.getIds()) {
+                if (!setRecipients.contains(id)) {
+                    listRecipients.add(personRepository.findById(id).get());
+                }
+            }
+        } else if (users_ids.getIds().length>0) {
+            for (int id : users_ids.getIds()) {
+                listRecipients.add(personRepository.findById(id).get());
+            }
+        }
+        return listRecipients;
+    }
+
+    private Dialog makeDialog(List<Person> rEcipients, Person oWner){
+        Dialog dialog = new Dialog();
+        dialog.setOwner(oWner);
+        dialog.setRecipients(rEcipients);
+        return dialogRepository.saveAndFlush(dialog);
     }
 
     @GetMapping("/unreaded")
@@ -128,11 +174,12 @@ public class DialogController {
         List<Dialog> dialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
         if (dialogs.size() > 0) {
             for (Dialog dialog : dialogs) {
-                count += dialog.getUnreadCount();
+                if (dialog.getUnreadCount() == null) count +=0;
+                else count += dialog.getUnreadCount();
             }
         }
         UnreadCount responseData = new UnreadCount(count);
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
@@ -146,7 +193,7 @@ public class DialogController {
         dialogRepository.saveAndFlush(dialog);
         DialogResponse responseData = new DialogResponse();
         responseData.setId(id);
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;

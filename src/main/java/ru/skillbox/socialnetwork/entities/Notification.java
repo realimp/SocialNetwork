@@ -29,6 +29,11 @@ public class Notification {
     @JoinColumn(name = "person_id", nullable = false)
     private Person author;
 
+    @NotNull
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private Person recipient;
+
     @Column(name="entity_id")
     @NotNull
     private Integer entityId;
@@ -39,6 +44,27 @@ public class Notification {
 
     @Column(name = "is_readed")
     private boolean isViewed;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    public Notification() {
+        this.isViewed = false;
+        this.isDeleted = false;
+    }
+
+    public Notification(NotificationTypeCode typeId, @NotNull Date sentDate,
+                        @NotNull Person author, @NotNull Person recipient, @NotNull Integer entityId,
+                        @Size(max = 80) String contact) {
+        this.typeId = typeId;
+        this.sentDate = sentDate;
+        this.author = author;
+        this.recipient = recipient;
+        this.entityId = entityId;
+        this.contact = contact;
+        this.isViewed = false;
+        this.isDeleted = false;
+    }
 
     public Integer getId() {
         return id;
@@ -94,5 +120,21 @@ public class Notification {
 
     public void setViewed(boolean viewed) {
         isViewed = viewed;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Person getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(Person recipient) {
+        this.recipient = recipient;
     }
 }
