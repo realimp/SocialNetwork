@@ -5,17 +5,10 @@ import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.PostRequest;
-import ru.skillbox.socialnetwork.api.responses.Comment;
-import ru.skillbox.socialnetwork.api.responses.IdResponse;
-import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.api.responses.ResponseList;
-import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.entities.Post;
-import ru.skillbox.socialnetwork.entities.PostComment;
+import ru.skillbox.socialnetwork.api.responses.*;
+import ru.skillbox.socialnetwork.entities.*;
 import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
-import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
-import ru.skillbox.socialnetwork.repositories.PostRepository;
+import ru.skillbox.socialnetwork.repositories.*;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -38,6 +31,12 @@ public class PostService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationSettingsRepository notificationSettingsRepository;
 
     public Post getOnePostById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
@@ -118,6 +117,22 @@ public class PostService {
         postComment.setPost(postOptional.get());
         postComment.setDeleted(false);
         postCommentRepository.saveAndFlush(postComment);
+
+        Person person = accountService.getCurrentUser();
+        boolean isEnable = false;
+        List<NotificationSettings> notificationSettings = notificationSettingsRepository.findByPersonId(person);
+
+        for (NotificationSettings settings : notificationSettings) {
+            if (settings.getNotificationTypeCode().name().equals("POST_COMMENT")) {
+                isEnable = settings.getEnable();
+            }
+        }
+        if (isEnable) {
+            Notification notification = new Notification(NotificationTypeCode.POST_COMMENT, new Date(),
+                    person, getOnePostById(id).getAuthor(), 1, person.getEMail());
+            notificationRepository.save(notification);
+        }
+
         return new Response<>(PostCommentMapper.getComment(postComment));
     }
 
