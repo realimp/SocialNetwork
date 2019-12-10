@@ -119,16 +119,27 @@ public class PostService {
         postCommentRepository.saveAndFlush(postComment);
 
         Person person = accountService.getCurrentUser();
-        boolean isEnable = false;
+        boolean isEnablePOST_COMMENT = false;
+        boolean isEnableCOMMENT_COMMENT = false;
         List<NotificationSettings> notificationSettings = notificationSettingsRepository.findByPersonId(person);
 
         for (NotificationSettings settings : notificationSettings) {
             if (settings.getNotificationTypeCode().name().equals("POST_COMMENT")) {
-                isEnable = settings.getEnable();
+                isEnablePOST_COMMENT = settings.getEnable();
+            }
+            if (settings.getNotificationTypeCode().name().equals("COMMENT_COMMENT")) {
+                isEnableCOMMENT_COMMENT = settings.getEnable();
             }
         }
-        if (isEnable) {
+
+        if (isEnablePOST_COMMENT && person.getId() != getOnePostById(id).getAuthor().getId()) {
             Notification notification = new Notification(NotificationTypeCode.POST_COMMENT, new Date(),
+                    person, getOnePostById(id).getAuthor(), 1, person.getEMail());
+            notificationRepository.save(notification);
+        }
+
+        if (isEnableCOMMENT_COMMENT && person.getId() != getOnePostById(id).getAuthor().getId()) {
+            Notification notification = new Notification(NotificationTypeCode.COMMENT_COMMENT, new Date(),
                     person, getOnePostById(id).getAuthor(), 1, person.getEMail());
             notificationRepository.save(notification);
         }
