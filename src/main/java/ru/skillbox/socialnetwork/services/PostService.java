@@ -132,13 +132,17 @@ public class PostService {
             }
         }
 
-        if (isEnablePOST_COMMENT && person.getId() != getOnePostById(id).getAuthor().getId()) {
+        if (isEnablePOST_COMMENT && person.getId()
+                != getOnePostById(id).getAuthor().getId()
+                && commentRequest.getParentId() == null) {
             Notification notification = new Notification(NotificationTypeCode.POST_COMMENT, new Date(),
                     person, getOnePostById(id).getAuthor(), 1, person.getEMail());
             notificationRepository.save(notification);
         }
 
-        if (isEnableCOMMENT_COMMENT && person.getId() != getOnePostById(id).getAuthor().getId()) {
+        if (isEnableCOMMENT_COMMENT && person.getId()
+                != getOnePostById(id).getAuthor().getId()
+                && commentRequest.getParentId() != null) {
             Notification notification = new Notification(NotificationTypeCode.COMMENT_COMMENT, new Date(),
                     person, getOnePostById(id).getAuthor(), 1, person.getEMail());
             notificationRepository.save(notification);
