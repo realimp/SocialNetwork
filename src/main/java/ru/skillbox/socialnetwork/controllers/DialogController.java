@@ -10,6 +10,7 @@ import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.Dialog;
 import ru.skillbox.socialnetwork.entities.Message;
 import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.mappers.DialogMapper;
 import ru.skillbox.socialnetwork.repositories.DialogRepository;
 import ru.skillbox.socialnetwork.repositories.MessageRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
@@ -24,16 +25,16 @@ public class DialogController {
     //TODO: check method names after Dialog entity and DialogRepository are implemented
 
     @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     @Autowired
     private DialogRepository dialogRepository;
 
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
 
     @Autowired
-    MessageRepository messageRepository;
+    private MessageRepository messageRepository;
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
@@ -49,7 +50,6 @@ public class DialogController {
             resultsPage = PageRequest.of(0, 20);
         }
         ArrayList<DialogResponse> dialogResponses = new ArrayList<>();
-        ResponseList response = new ResponseList();
         if (isExistDialogs()) {
             Page<Dialog> results = new PageImpl<Dialog>(allExistsDialog, resultsPage, allExistsDialog.size());
             for (Dialog result : results) {
@@ -57,69 +57,39 @@ public class DialogController {
                 Page<Message> lastMessagePage = messageRepository.findByDialogId(result.getId(), sortByDate);
                 DialogMessage message = new DialogMessage();
                 if (lastMessagePage.stream().count() > 0) {
-                    Message lastMessage = lastMessagePage.getContent().get(0);
-                    message.setId(lastMessage.getId());
-                    message.setTime(lastMessage.getTime().getTime());
-                    BasicPerson authorResponse = new BasicPerson();
-                    Person author = lastMessage.getAuthor();
-                    authorResponse.setId(author.getId());
-                    authorResponse.setFirstName(author.getFirstName());
-                    authorResponse.setLastName(author.getLastName());
-                    authorResponse.setPhoto(author.getPhoto());
-                    Date lOnlinetime = author.getLastOnlineTime();
-                    if (lOnlinetime != null){
-                        authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
-                    }
-                    message.setAuthor(authorResponse);
-                    message.setRecipientId(lastMessage.getRecipient().getId());
-                    message.setText(lastMessage.getMessageText());
-                    message.setReadStatus(ReadStatus.valueOf(lastMessage.getReadStatus()));
+                    message = DialogMapper.getDialogMessage(lastMessagePage.getContent().get(0));
                 } else {
                     List<Person> recipientsPersons = result.getRecipients();
                     for (Person curPerson : recipientsPersons) {
-//                        //временное решение - чтобы увидеть как отображаются сообщения
-//                        BasicPerson authorResponse = new BasicPerson();
-//                        Person author = accountService.getCurrentUser();
-//                        authorResponse.setId(author.getId());
-//                        authorResponse.setFirstName(author.getFirstName());
-//                        authorResponse.setLastName(author.getLastName());
-//                        authorResponse.setPhoto(author.getPhoto());
-//                        Date lOnlinetime = author.getLastOnlineTime();
-//                        if (lOnlinetime != null){
-//                            authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
-//                        }
-//                        message.setAuthor(authorResponse);
-
+////                        //временное решение - чтобы увидеть как отображаются сообщения
+////                        BasicPerson authorResponse = new BasicPerson();
+////                        Person author = accountService.getCurrentUser();
+////                        authorResponse.setId(author.getId());
+////                        authorResponse.setFirstName(author.getFirstName());
+////                        authorResponse.setLastName(author.getLastName());
+////                        authorResponse.setPhoto(author.getPhoto());
+////                        Date lOnlinetime = author.getLastOnlineTime();
+////                        if (lOnlinetime != null){
+////                            authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
+////                        }
+////                        message.setAuthor(authorResponse);
+//
                         message.setRecipientId(curPerson.getId());
                         message.setText("");
                         message.setReadStatus(ReadStatus.SENT);
                     }
                 }
-                DialogResponse dialogResponse = new DialogResponse();
-                dialogResponse.setId(result.getId());
-                dialogResponse.setUnreadCount(result.getUnreadCount());
-                dialogResponse.setLastMessage(message);
-                dialogResponses.add(dialogResponse);
+                dialogResponses.add(DialogMapper.getDialogResponse(result, message));
             }
-            response.setData(dialogResponses);
-            response.setTotal(results.getTotalElements());
-        } else {
-            response.setData(new ArrayList<>());
-            response.setTotal(0);
         }
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        response.setOffset(resultsPage.getOffset());
-        response.setPerPage(resultsPage.getPageSize());
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new ResponseList<>(dialogResponses, dialogResponses.size());
     }
 
     @PostMapping
     public Response startDialog(@RequestBody UserIds users_ids) {
         DialogResponse responseData = new DialogResponse();
         List<Person> recipients = newRecipients(users_ids);
-        if (!recipients.isEmpty()){
+        if (!recipients.isEmpty()) {
             Dialog savedDialog = makeDialog(recipients, accountService.getCurrentUser());
             responseData.setId(savedDialog.getId());
         }
@@ -129,15 +99,14 @@ public class DialogController {
         return response;
     }
 
-    private boolean isExistDialogs(){
-        List<Dialog> allUserDialogs = new ArrayList<>();
-        allUserDialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
+    private boolean isExistDialogs() {
+        List<Dialog> allUserDialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
         if (!allUserDialogs.isEmpty()) {
             allExistsDialog = allUserDialogs;
-            for (Dialog curDialog : allUserDialogs){
+            for (Dialog curDialog : allUserDialogs) {
                 List<Person> recipientsDialog = new ArrayList<Person>();
                 recipientsDialog = curDialog.getRecipients();
-                for (Person curRecipient : recipientsDialog){
+                for (Person curRecipient : recipientsDialog) {
                     setRecipients.add(curRecipient.getId());
                 }
             }
@@ -145,7 +114,7 @@ public class DialogController {
         return !allUserDialogs.isEmpty();
     }
 
-    private List<Person> newRecipients(UserIds users_ids){
+    private List<Person> newRecipients(UserIds users_ids) {
         List<Person> listRecipients = new ArrayList<>();
         if (isExistDialogs()) {
             for (int id : users_ids.getIds()) {
@@ -153,7 +122,7 @@ public class DialogController {
                     listRecipients.add(personRepository.findById(id).get());
                 }
             }
-        } else if (users_ids.getIds().length>0) {
+        } else if (users_ids.getIds().length > 0) {
             for (int id : users_ids.getIds()) {
                 listRecipients.add(personRepository.findById(id).get());
             }
@@ -161,7 +130,7 @@ public class DialogController {
         return listRecipients;
     }
 
-    private Dialog makeDialog(List<Person> rEcipients, Person oWner){
+    private Dialog makeDialog(List<Person> rEcipients, Person oWner) {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
@@ -174,7 +143,7 @@ public class DialogController {
         List<Dialog> dialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
         if (dialogs.size() > 0) {
             for (Dialog dialog : dialogs) {
-                if (dialog.getUnreadCount() == null) count +=0;
+                if (dialog.getUnreadCount() == null) count += 0;
                 else count += dialog.getUnreadCount();
             }
         }
@@ -282,9 +251,12 @@ public class DialogController {
         } else {
             pageable = PageRequest.of(0, 20);
         }
-        Page<Message> results = messageRepository.findByDialogIdAndMessageText(id, query, pageable);
-
-        DialogMessageList responseData = new DialogMessageList();
+        Page<Message> results;
+        if (query != null && !"".equals(query))
+            results = messageRepository.findByDialogIdAndMessageText(id, query, pageable);
+        else
+            results = messageRepository.findByDialogId(id, pageable);
+        List<DialogMessage> responseData = new ArrayList<>();
 
         for (Message message : results) {
             DialogMessage messageResponse = new DialogMessage();
@@ -297,21 +269,19 @@ public class DialogController {
             author.setFirstName(messageAuthor.getFirstName());
             author.setLastName(messageAuthor.getLastName());
             author.setPhoto(messageAuthor.getPhoto());
-            author.setLastOnlineTime(messageAuthor.getLastOnlineTime().getTime());
+            if (messageAuthor.getLastOnlineTime() != null)
+                author.setLastOnlineTime(messageAuthor.getLastOnlineTime().getTime());
 
             messageResponse.setAuthor(author);
             messageResponse.setRecipientId(message.getRecipient().getId());
             messageResponse.setText(message.getMessageText());
             messageResponse.setReadStatus(ReadStatus.valueOf(message.getReadStatus()));
-            responseData.addMessage(messageResponse);
+            responseData.add(messageResponse);
         }
 
-        ResponseList response = new ResponseList(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        response.setTotal(messageRepository.findByDialogIdAndMessageText(id, query).size());
-        response.setOffset(pageable.getOffset());
-        response.setPerPage(pageable.getPageSize());
+        ResponseList response = new ResponseList<>(responseData, messageRepository.findByDialogId(id).size()); //TODO:
+//        response.setOffset(pageable.getOffset());
+//        response.setPerPage(pageable.getPageSize());
         return response;
     }
 
