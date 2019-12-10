@@ -20,6 +20,7 @@ import ru.skillbox.socialnetwork.repositories.FriendshipRepository;
 import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
 import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
+
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +44,11 @@ public class FeedsService {
 
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
         Pageable pageable = PageRequest.of(offset, itemsPerPage);
-//        Sort sort = new Sort(Sort.Direction.DESC, "date");
-//        Pageable pageable = PageRequest.of(offset, itemsPerPage, sort);
-//        Page<Post> postPage = postRepository.findAll(pageable);
         Person me = accountService.getCurrentUser();
         List<Friendship> friends = friendshipRepository.findByFriends(me, FriendshipStatus.FRIEND);
-        List<Integer> friendsId  = friends.stream().map((f) -> f.getSrcPerson().getId()).collect(Collectors.toList());
+        List<Integer> friendsId = friends.stream().map((f) -> f.getSrcPerson().getId()).collect(Collectors.toList());
         friendsId.add(me.getId());
-        Page <Post> pagePosts = postRepository.findByManyAuthors(friendsId, pageable);
+        Page<Post> pagePosts = postRepository.findByManyAuthors(friendsId, pageable);
         List<PostResponse> postsList = new ArrayList<>();
         pagePosts.forEach((p -> {
             postsList.add(getPostResponseFromPost(p, me));
@@ -58,7 +56,7 @@ public class FeedsService {
         return new Feeds(postsList);
     }
 
-    private PostResponse getPostResponseFromPost(Post p, Person me){
+    private PostResponse getPostResponseFromPost(Post p, Person me) {
         PostResponse postResponse = PostMapper.getPostResponse(p);
         List<PostLike> likes = postLikeRepository.findByPostId(postResponse.getId());
         int likeCount = likes != null ? likes.size() : 0;
@@ -78,7 +76,7 @@ public class FeedsService {
         return tags;
     }
 
-    private List<Comment> getCommentByPost(Post post){
+    private List<Comment> getCommentByPost(Post post) {
         List<PostComment> comments = postCommentRepository.findByPostId(post.getId());
         return comments.stream().
                 map(PostCommentMapper::getComment).collect(Collectors.toList());
