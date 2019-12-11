@@ -8,13 +8,11 @@ import ru.skillbox.socialnetwork.api.responses.FriendStatus;
 import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;
-import ru.skillbox.socialnetwork.entities.Friendship;
-import ru.skillbox.socialnetwork.entities.FriendshipStatus;
-import ru.skillbox.socialnetwork.entities.Notification;
-import ru.skillbox.socialnetwork.entities.Person;
+import ru.skillbox.socialnetwork.entities.*;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
 import ru.skillbox.socialnetwork.repositories.FriendshipRepository;
 import ru.skillbox.socialnetwork.repositories.NotificationRepository;
+import ru.skillbox.socialnetwork.repositories.NotificationSettingsRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import java.util.ArrayList;
@@ -31,6 +29,9 @@ public class FriendsService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationSettingsRepository notificationSettingsRepository;
 
     @Autowired
     private PersonRepository personRepository;
@@ -92,9 +93,19 @@ public class FriendsService {
         Friendship friendship = new Friendship(user, friend, FriendshipStatus.REQUEST);
         friendship = friendshipRepository.saveAndFlush(friendship);
 
-        Notification notification = new Notification(NotificationTypeCode.FRIEND_REQUEST, new Date(),
-                friend, user, 1, user.getEMail());
-        notificationRepository.save(notification);
+        boolean isEnable = false;
+        List<NotificationSettings> notificationSettings = notificationSettingsRepository.findByPersonId(user);
+
+        for (NotificationSettings settings : notificationSettings) {
+            if (settings.getNotificationTypeCode().name().equals("FRIEND_REQUEST")) {
+                isEnable = settings.getEnable();
+            }
+        }
+        if (isEnable) {
+            Notification notification = new Notification(NotificationTypeCode.FRIEND_REQUEST, new Date(),
+                    friend, user, 1, user.getEMail());
+            notificationRepository.save(notification);
+        }
 
         if (friendship.getId() == null)
             return "Пользователь " + friend.getEMail() + " не добавлен другом для пользователя " + user.getEMail();
