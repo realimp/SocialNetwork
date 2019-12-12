@@ -42,6 +42,9 @@ public class FeedsService {
     @Autowired
     private PostCommentRepository postCommentRepository;
 
+    @Autowired
+    private PostService postService;
+
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
         Pageable pageable = PageRequest.of(offset, itemsPerPage);
         Person me = accountService.getCurrentUser();
@@ -50,9 +53,7 @@ public class FeedsService {
         friendsId.add(me.getId());
         Page<Post> pagePosts = postRepository.findByManyAuthors(friendsId, pageable);
         List<PostResponse> postsList = new ArrayList<>();
-        pagePosts.forEach((p -> {
-            postsList.add(getPostResponseFromPost(p, me));
-        }));
+        pagePosts.forEach((p -> postsList.add(getPostResponseFromPost(p, me))));
         return new Feeds(postsList);
     }
 
@@ -60,8 +61,7 @@ public class FeedsService {
         PostResponse postResponse = PostMapper.getPostResponse(p);
         List<PostLike> likes = postLikeRepository.findByPostId(postResponse.getId());
         int likeCount = likes != null ? likes.size() : 0;
-        boolean myLike = likes.stream().filter(like -> like.getPerson().equals(me)).
-                collect(Collectors.toList()).size() == 1;
+        boolean myLike = likes != null && likes.stream().filter(like -> like.getPerson().equals(me)).count() == 1;
 
         postResponse.setMyLike(myLike);
         postResponse.setLikes(likeCount);
@@ -78,8 +78,6 @@ public class FeedsService {
 
     private List<Comment> getCommentByPost(Post post) {
         List<PostComment> comments = postCommentRepository.findByPostId(post.getId());
-        return comments.stream().
-                map(PostCommentMapper::getComment).collect(Collectors.toList());
+        return PostCommentMapper.getRootComments(comments, postService.getChildComments(post.getId(), comments));
     }
-
 }

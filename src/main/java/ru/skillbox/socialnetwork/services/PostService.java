@@ -11,10 +11,8 @@ import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
 import ru.skillbox.socialnetwork.repositories.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -180,5 +178,12 @@ public class PostService {
         postComment.setDeleted(false);
         postCommentRepository.saveAndFlush(postComment);
         return getComments(id);
+    }
+
+    public Map<Integer, List<PostComment>> getChildComments(Integer postId, List<PostComment> postcomments) {
+        return postcomments.stream()
+                .collect(Collectors.toMap(PostComment::getId, comment ->
+                        postCommentRepository.findByPostIdByParentId(postId, comment.getId())
+                ));
     }
 }
