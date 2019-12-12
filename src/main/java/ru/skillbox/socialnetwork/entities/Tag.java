@@ -17,6 +17,10 @@ public class Tag {
 
     public Tag() {}
 
+    public Tag(String text)
+    {
+        setText(text);
+    }
     public void setId(Integer id) {
         this.id = id;
     }
