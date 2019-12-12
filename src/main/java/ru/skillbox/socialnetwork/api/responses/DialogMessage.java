@@ -7,8 +7,8 @@ public class DialogMessage {
     private Integer id;
     private Long time;
     private BasicPerson author;
-    @JsonProperty("recipient_id")
-    private Integer recipientId;
+    @JsonProperty("recipient")
+    private BasicPerson recipient;
     @JsonProperty("message_text")
     private String text;
     @JsonProperty("read_status")
@@ -40,14 +40,6 @@ public class DialogMessage {
         this.author = author;
     }
 
-    public Integer getRecipientId() {
-        return recipientId;
-    }
-
-    public void setRecipientId(Integer recipientId) {
-        this.recipientId = recipientId;
-    }
-
     public String getText() {
         return text;
     }
@@ -64,4 +56,11 @@ public class DialogMessage {
         this.readStatus = readStatus;
     }
 
+    public BasicPerson getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(BasicPerson recipient) {
+        this.recipient = recipient;
+    }
 }

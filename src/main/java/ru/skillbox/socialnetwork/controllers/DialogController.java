@@ -11,6 +11,7 @@ import ru.skillbox.socialnetwork.entities.Dialog;
 import ru.skillbox.socialnetwork.entities.Message;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.mappers.DialogMapper;
+import ru.skillbox.socialnetwork.mappers.PersonToBasicPersonMapper;
 import ru.skillbox.socialnetwork.repositories.DialogRepository;
 import ru.skillbox.socialnetwork.repositories.MessageRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
@@ -51,33 +52,13 @@ public class DialogController {
         }
         ArrayList<DialogResponse> dialogResponses = new ArrayList<>();
         if (isExistDialogs()) {
-            Page<Dialog> results = new PageImpl<Dialog>(allExistsDialog, resultsPage, allExistsDialog.size());
+            Page<Dialog> results = new PageImpl<>(allExistsDialog, resultsPage, allExistsDialog.size());
             for (Dialog result : results) {
                 Pageable sortByDate = PageRequest.of(0, 1, Sort.by("time"));
                 Page<Message> lastMessagePage = messageRepository.findByDialogId(result.getId(), sortByDate);
                 DialogMessage message = new DialogMessage();
                 if (lastMessagePage.stream().count() > 0) {
                     message = DialogMapper.getDialogMessage(lastMessagePage.getContent().get(0));
-                } else {
-                    List<Person> recipientsPersons = result.getRecipients();
-                    for (Person curPerson : recipientsPersons) {
-////                        //временное решение - чтобы увидеть как отображаются сообщения
-////                        BasicPerson authorResponse = new BasicPerson();
-////                        Person author = accountService.getCurrentUser();
-////                        authorResponse.setId(author.getId());
-////                        authorResponse.setFirstName(author.getFirstName());
-////                        authorResponse.setLastName(author.getLastName());
-////                        authorResponse.setPhoto(author.getPhoto());
-////                        Date lOnlinetime = author.getLastOnlineTime();
-////                        if (lOnlinetime != null){
-////                            authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
-////                        }
-////                        message.setAuthor(authorResponse);
-//
-                        message.setRecipientId(curPerson.getId());
-                        message.setText("");
-                        message.setReadStatus(ReadStatus.SENT);
-                    }
                 }
                 dialogResponses.add(DialogMapper.getDialogResponse(result, message));
             }
@@ -93,7 +74,7 @@ public class DialogController {
             Dialog savedDialog = makeDialog(recipients, accountService.getCurrentUser());
             responseData.setId(savedDialog.getId());
         }
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         response.setError("");
         return response;
@@ -180,7 +161,7 @@ public class DialogController {
 
         UserIds responseData = new UserIds();
         responseData.setIds(userIds.getIds());
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
@@ -203,7 +184,7 @@ public class DialogController {
 
         UserIds responseData = new UserIds();
         responseData.setIds(ids);
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
@@ -214,7 +195,7 @@ public class DialogController {
         String inviteLink = contextPath + "dialogs/" + id + "/users/join?invite=" + dialogRepository.findById(id).get().getInviteCode();
         InviteLink responseData = new InviteLink();
         responseData.setLink(inviteLink);
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setError("");
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
@@ -237,10 +218,7 @@ public class DialogController {
             recipientIds[i] = updatedRecipients.get(i).getId();
         }
         responseData.setIds(recipientIds);
-        Response response = new Response(recipientIds);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(recipientIds);
     }
 
     @GetMapping("/{id}/messages")
@@ -259,30 +237,10 @@ public class DialogController {
         List<DialogMessage> responseData = new ArrayList<>();
 
         for (Message message : results) {
-            DialogMessage messageResponse = new DialogMessage();
-            messageResponse.setId(message.getId());
-            messageResponse.setTime(message.getTime().getTime());
-
-            BasicPerson author = new BasicPerson();
-            Person messageAuthor = message.getAuthor();
-            author.setId(messageAuthor.getId());
-            author.setFirstName(messageAuthor.getFirstName());
-            author.setLastName(messageAuthor.getLastName());
-            author.setPhoto(messageAuthor.getPhoto());
-            if (messageAuthor.getLastOnlineTime() != null)
-                author.setLastOnlineTime(messageAuthor.getLastOnlineTime().getTime());
-
-            messageResponse.setAuthor(author);
-            messageResponse.setRecipientId(message.getRecipient().getId());
-            messageResponse.setText(message.getMessageText());
-            messageResponse.setReadStatus(ReadStatus.valueOf(message.getReadStatus()));
-            responseData.add(messageResponse);
+            responseData.add(DialogMapper.getDialogMessage(message));
         }
 
-        ResponseList response = new ResponseList<>(responseData, messageRepository.findByDialogId(id).size()); //TODO:
-//        response.setOffset(pageable.getOffset());
-//        response.setPerPage(pageable.getPageSize());
-        return response;
+        return new ResponseList<>(responseData, messageRepository.findByDialogId(id).size());
     }
 
     @PostMapping("/{id}/messages")
@@ -312,14 +270,11 @@ public class DialogController {
             author.setLastOnlineTime(owner.getLastOnlineTime().getTime());
 
             responseData.setAuthor(author);
-            responseData.setRecipientId(savedMessage.getRecipient().getId());
+            responseData.setRecipient(PersonToBasicPersonMapper.getBasicPerson(savedMessage.getRecipient()));
             responseData.setText(messageText.getText());
             responseData.setReadStatus(ReadStatus.valueOf(savedMessage.getReadStatus()));
         }
-        Response response = new Response(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @DeleteMapping("/{dialog_id}/messages/{message_id}")
@@ -330,10 +285,7 @@ public class DialogController {
         }
         DialogMessage responseData = new DialogMessage();
         responseData.setId(messageId);
-        Response response = new Response(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}")
@@ -342,56 +294,20 @@ public class DialogController {
         message.setMessageText(messageText.getText());
         Message editedMessage = messageRepository.saveAndFlush(message);
 
-        DialogMessage responseData = new DialogMessage();
-        responseData.setId(editedMessage.getId());
-        responseData.setTime(editedMessage.getTime().getTime());
-
-        Person messageAuthor = editedMessage.getAuthor();
-        BasicPerson author = new BasicPerson();
-        author.setId(messageAuthor.getId());
-        author.setFirstName(messageAuthor.getFirstName());
-        author.setLastName(messageAuthor.getLastName());
-        author.setPhoto(messageAuthor.getPhoto());
-        author.setLastOnlineTime(messageAuthor.getLastOnlineTime().getTime());
-
-        responseData.setAuthor(author);
-        responseData.setRecipientId(editedMessage.getRecipient().getId());
-        responseData.setReadStatus(ReadStatus.valueOf(editedMessage.getReadStatus()));
-
-        Response response = new Response(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        DialogMessage responseData = DialogMapper.getDialogMessage(editedMessage);
+        return new Response<>(responseData);
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}/recover")
     public Response recoverMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
         Optional<Dialog> dialog = dialogRepository.findById(dialogId);
-        DialogMessage responseData = new DialogMessage();
-        if (dialog.isPresent()) {
-            Message message = messageRepository.findById(messageId).get();
-            message.setDeleted(false);
-            Message recoveredMessage = messageRepository.saveAndFlush(message);
-
-            Person sender = recoveredMessage.getAuthor();
-            BasicPerson author = new BasicPerson();
-            author.setId(sender.getId());
-            author.setFirstName(sender.getFirstName());
-            author.setLastName(sender.getLastName());
-            author.setPhoto(sender.getPhoto());
-            author.setLastOnlineTime(sender.getLastOnlineTime().getTime());
-
-            responseData.setId(recoveredMessage.getId());
-            responseData.setTime(recoveredMessage.getTime().getTime());
-            responseData.setAuthor(author);
-            responseData.setRecipientId(recoveredMessage.getRecipient().getId());
-            responseData.setText(recoveredMessage.getMessageText());
-            responseData.setReadStatus(ReadStatus.valueOf(recoveredMessage.getReadStatus()));
-        }
-        Response response = new Response(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        if (!dialog.isPresent()) return new Response<>("Не найден диалог " + dialogId, null);
+        Optional<Message> messageOptional = messageRepository.findById(messageId);
+        if (!messageOptional.isPresent()) return new Response<>("Не найдено сообщение " + messageId, null);
+        Message message = messageOptional.get();
+        message.setDeleted(false);
+        Message recoveredMessage = messageRepository.saveAndFlush(message);
+        return new Response<>(DialogMapper.getDialogMessage(recoveredMessage));
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}/read")
@@ -401,7 +317,7 @@ public class DialogController {
         dialog.setUnreadCount(dialog.getUnreadCount() - 1);
         MessageResponse responseData = new MessageResponse();
         responseData.setMessage("ok");
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
     }
@@ -412,7 +328,7 @@ public class DialogController {
         Activity responseData = new Activity();
         responseData.setOnline(user.getOnline());
         responseData.setLastActivity(user.getLastOnlineTime().getTime());
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
     }
@@ -422,7 +338,7 @@ public class DialogController {
         //TODO: implement method
         MessageResponse responseData = new MessageResponse();
         responseData.setMessage("ok");
-        Response response = new Response(responseData);
+        Response response = new Response<>(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
         return response;
     }

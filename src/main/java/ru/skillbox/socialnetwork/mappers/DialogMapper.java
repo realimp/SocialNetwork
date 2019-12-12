@@ -26,7 +26,7 @@ public class DialogMapper {
             authorResponse.setLastOnlineTime(author.getLastOnlineTime().getTime());
         }
         dialogMessage.setAuthor(authorResponse);
-        dialogMessage.setRecipientId(message.getRecipient().getId());
+        dialogMessage.setRecipient(PersonToBasicPersonMapper.getBasicPerson(message.getRecipient()));
         dialogMessage.setText(message.getMessageText());
         dialogMessage.setReadStatus(ReadStatus.valueOf(message.getReadStatus()));
         return dialogMessage;
