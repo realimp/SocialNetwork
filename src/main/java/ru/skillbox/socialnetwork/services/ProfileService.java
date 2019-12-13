@@ -50,6 +50,9 @@ public class ProfileService {
     @Autowired
     private PostCommentRepository postCommentRepository;
 
+    @Autowired
+    private PostService postService;
+
     public PersonResponse getPerson() {
         Person person = accountService.getCurrentUser();
         if (person != null) {
@@ -121,11 +124,8 @@ public class ProfileService {
                 wallPost.setBlocked(post.isBlocked());
                 wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
                 List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
-                Map<Integer, List<PostComment>> childComments = postcomments.stream()
-                        .collect(Collectors.toMap(PostComment::getId, comment ->
-                                postCommentRepository.findByPostIdByParentId(post.getId(), comment.getId())
-                        ));
-                wallPost.setComments(PostCommentMapper.getRootComments(postcomments, childComments));
+                wallPost.setComments(PostCommentMapper.getRootComments(postcomments,
+                        postService.getChildComments(post.getId(), postcomments)));
                 if (post.getDate().before(new Date())) {
                     wallPost.setType(PostType.POSTED);
                 } else {

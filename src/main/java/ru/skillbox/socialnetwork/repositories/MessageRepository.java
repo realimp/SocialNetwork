@@ -17,4 +17,6 @@ public interface MessageRepository extends JpaRepository<Message, Integer> {
     List<Message> findByDialogIdAndMessageText(int id, String query);
 
     Page<Message> findByDialogId(Integer id, Pageable sortByDate);
+
+    List<Message> findByDialogId(Integer id);
 }
