@@ -42,14 +42,12 @@ public class PostService {
         return post.orElse(null);
     }
 
-    public Integer deletePostById(int idPost) {
-        Optional<Post> post = postRepository.findById(idPost);
-        if (post.isPresent()) {
-            post.get().setDeleted(true);
-            postRepository.save(post.get());
-            return idPost;
-        }
-        return 1; //ToDo тут нужно что то вернуть если поста для удаления нет.
+    public Response deletePostById(int idPost) {
+        Post post = postRepository.findById(idPost).get();
+        post.setDeleted(true);
+        postRepository.saveAndFlush(post);
+        IdResponse responseData = new IdResponse(post.getId());
+        return new Response(responseData);
     }
 
     public Integer recoveryPostById(int idPost) {

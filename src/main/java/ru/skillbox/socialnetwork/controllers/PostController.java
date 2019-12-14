@@ -39,8 +39,7 @@ public class PostController {
 
     @DeleteMapping("/{id}") //Delete post by ID
     public Response<PostResponse> postDeleteById(@PathVariable int id) {
-        postService.deletePostById(id);
-        return new Response<>(new PostResponse());
+        return postService.deletePostById(id);
     }
 
     @PutMapping("/{id}/recover") //Post recovery by ID

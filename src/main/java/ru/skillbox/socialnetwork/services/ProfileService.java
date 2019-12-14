@@ -22,8 +22,6 @@ import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
 import ru.skillbox.socialnetwork.repositories.PostRepository;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -108,7 +106,7 @@ public class ProfileService {
     public List<PersonsWallPost> getWallPostsById(Integer id, Integer offset, Integer itemPerPage) {
         Pageable pageable = PageRequest.of(offset, itemPerPage);
         Person author = personRepository.findById(id).get();
-        Page<Post> postPageList = postRepository.findByAuthor(author, pageable);
+        Page<Post> postPageList = postRepository.findByAuthorId(author.getId(), pageable);
 
         List<PersonsWallPost> postResponseList = new ArrayList<>();
 
