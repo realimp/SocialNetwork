@@ -73,6 +73,8 @@ public class DialogController {
         if (!recipients.isEmpty()) {
             Dialog savedDialog = makeDialog(recipients, accountService.getCurrentUser());
             responseData.setId(savedDialog.getId());
+        } else {
+            responseData.setId(users_ids.getIds()[0]);
         }
         Response response = new Response<>(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
