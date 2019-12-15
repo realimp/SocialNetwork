@@ -120,7 +120,18 @@ public class DialogController {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
+        Person owner = accountService.getCurrentUser();
+        Message message = new Message();
+        message.setDialog(dialog);
+        message.setAuthor(oWner);
+        //message.setMessageText(messageText.getText());
+        message.setReadStatus(ReadStatus.SENT.toString());
+        message.setTime(new Date());
+        message.setRecipient(dialog.getRecipients().get(0));
+        message.setDeleted(false);
+        Message savedMessage = messageRepository.saveAndFlush(message);
         return dialogRepository.saveAndFlush(dialog);
+
     }
 
     @GetMapping("/unreaded")
