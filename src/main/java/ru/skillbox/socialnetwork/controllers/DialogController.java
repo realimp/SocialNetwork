@@ -59,8 +59,10 @@ public class DialogController {
                 DialogMessage message = new DialogMessage();
                 if (lastMessagePage.stream().count() > 0) {
                     message = DialogMapper.getDialogMessage(lastMessagePage.getContent().get(0));
+                } else {
+                    message.setRecipient(PersonToBasicPersonMapper.getBasicPerson(result.getRecipients().get(0)));
                 }
-                message.setRecipient(PersonToBasicPersonMapper.getBasicPerson(result.getRecipients().get(0)));
+
                 dialogResponses.add(DialogMapper.getDialogResponse(result, message));
             }
         }
