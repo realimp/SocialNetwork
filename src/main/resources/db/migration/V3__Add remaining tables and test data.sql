@@ -167,9 +167,9 @@ INSERT INTO dialog (id, owner_id, unread_count, is_deleted, invite_code) values 
 
 -- Person2dialog
 DELETE FROM person2dialog;
-INSERT INTO person2dialog (id, person_id, dialog_id) values (1, 1, 1);
-INSERT INTO person2dialog (id, person_id, dialog_id) values (2, 1, 2);
-INSERT INTO person2dialog (id, person_id, dialog_id) values (3, 3, 3);
+INSERT INTO person2dialog (id, person_id, dialog_id) values (1, 2, 1);
+INSERT INTO person2dialog (id, person_id, dialog_id) values (2, 3, 2);
+INSERT INTO person2dialog (id, person_id, dialog_id) values (3, 1, 3);
 
 -- Message
 DELETE FROM message;
