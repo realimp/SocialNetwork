@@ -1,19 +1,15 @@
 package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.Objects;
 
-@Entity(name = "Tag")
+@Entity
 @Table (name = "tag")
 public class Tag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "tag")
-    private String text;
+    private String tag;
 
     public Tag() {}
 
@@ -30,10 +26,10 @@ public class Tag {
     }
 
     public String getText() {
-        return text;
+        return tag;
     }
 
     public void setText(String text) {
-        this.text = text;
+        this.tag = text;
     }
 }

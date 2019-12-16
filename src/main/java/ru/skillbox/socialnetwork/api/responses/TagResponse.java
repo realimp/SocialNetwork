@@ -1,11 +1,17 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-
-
 public class TagResponse {
 
-    private Integer id;
+    private int id;
     private String tag;
+
+    public TagResponse() {
+    }
+
+    public TagResponse(int id, String tag) {
+        this.id = id;
+        this.tag = tag;
+    }
 
     public Integer getId() {
         return id;

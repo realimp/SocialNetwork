@@ -1,15 +1,18 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.api.responses.MessageResponse;
+import ru.skillbox.socialnetwork.api.responses.Response;
+import ru.skillbox.socialnetwork.api.responses.ResponseList;
+import ru.skillbox.socialnetwork.api.responses.TagResponse;
 import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.repositories.TagRepository;
-//import ru.skillbox.socialnetwork.repositories.TagRepository;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
+import java.util.ArrayList;
 
 @Service
 @Transactional
@@ -18,13 +21,27 @@ public class TagService {
     @Autowired
     private TagRepository tagRepository;
 
-    public Tag getTagById(Integer id) {
-        Optional<Tag> tag = tagRepository.findById(id);
-        return tag.orElse(null);
+    public ResponseList getTags(String tag, Pageable pageable) {
+        Page<Tag> results = tagRepository.findByTag(tag, pageable);
+        if (results.isEmpty()) {
+            return new ResponseList();
+        }
+        ArrayList<TagResponse> responseData = new ArrayList<>();
+        for (Tag result : results) {
+            responseData.add(new TagResponse(result.getId(), result.getText()));
+        }
+        return new ResponseList();
     }
 
-    public List<Tag> getTagByText(String text) {
-        List<Tag> tags = tagRepository.findByText(text);
-        return tags;
+    public Response createTag(String text) {
+        Tag tag = new Tag();
+        tag.setText(text);
+        Tag savedTag = tagRepository.saveAndFlush(tag);
+        return new Response(new TagResponse(savedTag.getId(), savedTag.getText()));
+    }
+
+    public Response deleteTag(int id) {
+        tagRepository.delete(tagRepository.findById(id).get());
+        return new Response(new MessageResponse("ok"));
     }
 }
