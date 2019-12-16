@@ -119,21 +119,24 @@ public class DialogController {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
-        makeMessage(dialog,oWner);
+        Person owner = accountService.getCurrentUser();
+        MessageText mText = new MessageText("");
+        Message savedMessage = makeMessage(dialog,owner,mText, ReadStatus.SENT);
         return dialogRepository.saveAndFlush(dialog);
     }
 
-    private void makeMessage(Dialog newdialog, Person dOwner){
-        Person owner = accountService.getCurrentUser();
+    private Message makeMessage(Dialog newdialog, Person dOwner, MessageText messagetext, ReadStatus readstatus){
         Message message = new Message();
         message.setDialog(newdialog);
         message.setAuthor(dOwner);
-        //message.setMessageText(messageText.getText());
-        message.setReadStatus(ReadStatus.SENT.toString());
+        if (messagetext.getText().length()>0) {
+            message.setMessageText(messagetext.getText());
+        }
+        message.setReadStatus(readstatus.toString());
         message.setTime(new Date());
         message.setRecipient(newdialog.getRecipients().get(0));
         message.setDeleted(false);
-        Message savedMessage = messageRepository.saveAndFlush(message);
+        return messageRepository.saveAndFlush(message);
     }
 
     @GetMapping("/unreaded")
@@ -264,18 +267,22 @@ public class DialogController {
     @PostMapping("/{id}/messages")
     public Response sendMessage(@PathVariable int id, @RequestBody MessageText messageText) {
         Optional<Dialog> dialog = dialogRepository.findById(id);
+        Person owner = accountService.getCurrentUser();
+        List<Person> recipients = dialog.get().getRecipients();
+        List<Dialog> specularDialogs = new ArrayList<Dialog>();
+        List<Person> owners = new ArrayList<>();
+        owners.add(owner);
+        for (Person recipient: recipients) {
+            List<Dialog> sDialogs = dialogRepository.findByOwnerAndRecipients(recipient, owners);
+            if (!specularDialogs.contains(sDialogs)){
+                specularDialogs.addAll(sDialogs);
+            }
+        }
         DialogMessage responseData = new DialogMessage();
         if (dialog.isPresent()) {
-            Person owner = accountService.getCurrentUser();
-            Message message = new Message();
-            message.setDialog(dialog.get());
-            message.setAuthor(owner);
-            message.setMessageText(messageText.getText());
-            message.setReadStatus(ReadStatus.SENT.toString());
-            message.setTime(new Date());
-            message.setRecipient(dialog.get().getRecipients().get(0));
-            message.setDeleted(false);
-            Message savedMessage = messageRepository.saveAndFlush(message);
+
+            Message savedMessage = makeMessage(dialog.get(), owner, messageText, ReadStatus.SENT);
+            Message specularMessage = makeMessage(specularDialogs.get(0),owner,messageText, ReadStatus.READ);
 
             responseData.setId(savedMessage.getId());
             responseData.setTime(savedMessage.getTime().getTime());
@@ -294,6 +301,8 @@ public class DialogController {
         }
         return new Response<>(responseData);
     }
+
+
 
     @DeleteMapping("/{dialog_id}/messages/{message_id}")
     public Response deleteMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
