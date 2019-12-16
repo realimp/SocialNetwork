@@ -20,6 +20,8 @@ import ru.skillbox.socialnetwork.services.AccountService;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static java.sql.Types.NULL;
+
 @RestController
 @RequestMapping("/dialogs")
 public class DialogController {
@@ -117,6 +119,7 @@ public class DialogController {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
+        dialog.setUnreadCount(NULL);
         Person owner = accountService.getCurrentUser();
         Message message = new Message();
         message.setDialog(dialog);

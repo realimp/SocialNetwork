@@ -39,7 +39,7 @@ public class Dialog {
         byte[] array = new byte[20];
         new Random().nextBytes(array);
         this.inviteCode = new String(array, Charset.forName("UTF-8"));
-        this.unreadCount = 0;
+        //this.unreadCount = 0;
     }
 
     public Integer getId() {
