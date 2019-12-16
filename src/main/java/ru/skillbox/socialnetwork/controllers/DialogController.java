@@ -119,7 +119,6 @@ public class DialogController {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
-        dialog.setUnreadCount(NULL);
         Person owner = accountService.getCurrentUser();
         Message message = new Message();
         message.setDialog(dialog);
