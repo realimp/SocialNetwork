@@ -268,7 +268,6 @@ public class DialogController {
     public Response sendMessage(@PathVariable int id, @RequestBody MessageText messageText) {
         Optional<Dialog> dialog = dialogRepository.findById(id);
         Person owner = accountService.getCurrentUser();
-
         List<Person> recipients = dialog.get().getRecipients();
         List<Dialog> specularDialogs = new ArrayList<Dialog>();
         List<Person> owners = new ArrayList<>();
@@ -281,16 +280,6 @@ public class DialogController {
         }
         DialogMessage responseData = new DialogMessage();
         if (dialog.isPresent()) {
-
-//            Message message = new Message();
-//            message.setDialog(dialog.get());
-//            message.setAuthor(owner);
-//            message.setMessageText(messageText.getText());
-//            message.setReadStatus(ReadStatus.SENT.toString());
-//            message.setTime(new Date());
-//            message.setRecipient(dialog.get().getRecipients().get(0));
-//            message.setDeleted(false);
-//            Message savedMessage = messageRepository.saveAndFlush(message);
 
             Message savedMessage = makeMessage(dialog.get(), owner, messageText, ReadStatus.SENT);
             Message specularMessage = makeMessage(specularDialogs.get(0),owner,messageText, ReadStatus.READ);
