@@ -7,14 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.Post;
+import ru.skillbox.socialnetwork.entities.Tag;
 
 import java.util.List;
 
-/*
-    @Query("SELECT l FROM CommentLike l JOIN l.comment WHERE l.comment=:comment_id")
-    List<CommentLike> findByCommentId(@Param("comment_id") Integer commentId);
-
- */
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
     //List<Post> findByTitleAndText(String searchString);
@@ -32,5 +28,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             value = "SELECT * FROM post p WHERE p.author_id IN :ids AND p.is_deleted=0 ORDER BY time")
     Page<Post> findByManyAuthors(@Param("ids") List<Integer> ids, Pageable pageable);
 
-    //Page<Post> findByTag(String tag, Pageable resultsPage);
+    Page<Post> findByTags(Tag tag, Pageable resultsPage);
 }

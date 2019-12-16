@@ -10,4 +10,8 @@ import ru.skillbox.socialnetwork.entities.Tag;
 public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     Page<Tag> findByTag(String text, Pageable pageable);
+
+    Tag findByTag(String text);
+
+    Boolean existsByTag(String text);
 }

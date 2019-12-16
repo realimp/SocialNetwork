@@ -16,10 +16,7 @@ import ru.skillbox.socialnetwork.entities.*;
 import ru.skillbox.socialnetwork.mappers.PersonMapper;
 import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
-import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
-import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
-import ru.skillbox.socialnetwork.repositories.PostRepository;
+import ru.skillbox.socialnetwork.repositories.*;
 
 import java.util.*;
 
@@ -50,6 +47,9 @@ public class ProfileService {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private TagService tagService;
 
     public PersonResponse getPerson() {
         Person person = accountService.getCurrentUser();
@@ -121,6 +121,7 @@ public class ProfileService {
                 wallPost.setPostText(post.getText());
                 wallPost.setBlocked(post.isBlocked());
                 wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
+                wallPost.setTags(getTagsByPost(post));
                 List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
                 wallPost.setComments(PostCommentMapper.getRootComments(postcomments,
                         postService.getChildComments(post.getId(), postcomments)));
@@ -138,15 +139,17 @@ public class ProfileService {
 
     public PostResponse addWallPostById(Integer id, Date publishDate, String title, String post_text, List<Tag> tags) {
         Post post = new Post();
-
+        List<Tag> postTags = new ArrayList<>();
         post.setAuthor(personRepository.getOne(id));
         post.setDate(publishDate);
         post.setTitle(title);
         post.setText(post_text);
         post.setBlocked(false);
         post.setDeleted(false);
-
-        //TODO: update after adding Tag repository
+        for (Tag tag : tags) {
+            postTags.add(tagService.saveTag(tag));
+        }
+        post.setTags(postTags);
 
         postRepository.save(post);
         return PostMapper.getPostResponse(post);
@@ -250,6 +253,15 @@ public class ProfileService {
             searchMap.put("lastName", "");
         }
         return searchMap;
+
+    }
+
+    private List<String> getTagsByPost(Post p) {
+        List<String> tags = new ArrayList<>();
+        for (Tag tag : p.getTags()) {
+            tags.add(tag.getText());
+        }
+        return tags;
     }
 
 }

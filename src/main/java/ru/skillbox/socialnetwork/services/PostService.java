@@ -1,6 +1,8 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
@@ -8,6 +10,7 @@ import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.*;
 import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
+import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.repositories.*;
 
 import javax.transaction.Transactional;
@@ -29,6 +32,9 @@ public class PostService {
 
     @Autowired
     private AccountService accountService;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -183,5 +189,24 @@ public class PostService {
                 .collect(Collectors.toMap(PostComment::getId, comment ->
                         postCommentRepository.findByPostIdByParentId(postId, comment.getId())
                 ));
+    }
+
+    public ResponseList postSearch(String query, Pageable pageable) {
+        ArrayList<PostResponse> responseData = new ArrayList<>();
+        if (tagRepository.existsByTag(query)) {
+            Page<Post> posts = postRepository.findByTags(tagRepository.findByTag(query), pageable);
+            if (!posts.isEmpty()) {
+                for (Post post : posts) {
+                    responseData.add(PostMapper.getPostResponse(post));
+                }
+            }
+            ResponseList responseList = new ResponseList(responseData);
+            responseList.setTotal(posts.getTotalElements());
+            responseList.setOffset(pageable.getOffset());
+            responseList.setPerPage(pageable.getPageSize());
+
+            return responseList;
+        }
+        return new ResponseList();
     }
 }

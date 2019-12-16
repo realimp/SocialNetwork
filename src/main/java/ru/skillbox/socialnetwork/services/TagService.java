@@ -34,6 +34,9 @@ public class TagService {
     }
 
     public Response createTag(String text) {
+        if (tagRepository.existsByTag(text)) {
+            return new Response();
+        }
         Tag tag = new Tag();
         tag.setText(text);
         Tag savedTag = tagRepository.saveAndFlush(tag);
@@ -43,5 +46,12 @@ public class TagService {
     public Response deleteTag(int id) {
         tagRepository.delete(tagRepository.findById(id).get());
         return new Response(new MessageResponse("ok"));
+    }
+
+    public Tag saveTag(Tag tag) {
+        if (tagRepository.existsByTag(tag.getText())) {
+            return tagRepository.findByTag(tag.getText());
+        }
+        return tagRepository.saveAndFlush(tag);
     }
 }
