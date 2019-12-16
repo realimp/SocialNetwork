@@ -18,5 +18,5 @@ public interface DialogRepository extends JpaRepository<Dialog, Integer> {
 
     Optional<Dialog> findById(int id);
 
-    List<Dialog> findByOwnerAndRecipient(Person owner, List<Person> recipients);
+    List<Dialog> findByOwnerAndRecipients(Person owner, List<Person> recipients);
 }

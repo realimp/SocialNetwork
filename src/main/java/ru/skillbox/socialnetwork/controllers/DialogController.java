@@ -270,7 +270,7 @@ public class DialogController {
         Person owner = accountService.getCurrentUser();
 
         List<Person> recipients = dialog.get().getRecipients();
-        List<Dialog> specularDialogs = dialogRepository.findByOwnerAndRecipient(owner, recipients);
+        List<Dialog> specularDialogs = dialogRepository.findByOwnerAndRecipients(owner, recipients);
         DialogMessage responseData = new DialogMessage();
         if (dialog.isPresent()) {
 
