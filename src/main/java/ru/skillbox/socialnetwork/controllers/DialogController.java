@@ -20,6 +20,8 @@ import ru.skillbox.socialnetwork.services.AccountService;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static java.sql.Types.NULL;
+
 @RestController
 @RequestMapping("/dialogs")
 public class DialogController {
@@ -73,6 +75,8 @@ public class DialogController {
         if (!recipients.isEmpty()) {
             Dialog savedDialog = makeDialog(recipients, accountService.getCurrentUser());
             responseData.setId(savedDialog.getId());
+        } else {
+            responseData.setId(users_ids.getIds()[0]);
         }
         Response response = new Response<>(responseData);
         response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
@@ -115,7 +119,21 @@ public class DialogController {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
+        makeMessage(dialog,oWner);
         return dialogRepository.saveAndFlush(dialog);
+    }
+
+    private void makeMessage(Dialog newdialog, Person dOwner){
+        Person owner = accountService.getCurrentUser();
+        Message message = new Message();
+        message.setDialog(newdialog);
+        message.setAuthor(dOwner);
+        //message.setMessageText(messageText.getText());
+        message.setReadStatus(ReadStatus.SENT.toString());
+        message.setTime(new Date());
+        message.setRecipient(newdialog.getRecipients().get(0));
+        message.setDeleted(false);
+        Message savedMessage = messageRepository.saveAndFlush(message);
     }
 
     @GetMapping("/unreaded")
