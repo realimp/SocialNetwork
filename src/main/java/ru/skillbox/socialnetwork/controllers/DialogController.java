@@ -119,18 +119,21 @@ public class DialogController {
         Dialog dialog = new Dialog();
         dialog.setOwner(oWner);
         dialog.setRecipients(rEcipients);
+        makeMessage(dialog,oWner);
+        return dialogRepository.saveAndFlush(dialog);
+    }
+
+    private void makeMessage(Dialog newdialog, Person dOwner){
         Person owner = accountService.getCurrentUser();
         Message message = new Message();
-        message.setDialog(dialog);
-        message.setAuthor(oWner);
+        message.setDialog(newdialog);
+        message.setAuthor(dOwner);
         //message.setMessageText(messageText.getText());
         message.setReadStatus(ReadStatus.SENT.toString());
         message.setTime(new Date());
-        message.setRecipient(dialog.getRecipients().get(0));
+        message.setRecipient(newdialog.getRecipients().get(0));
         message.setDeleted(false);
         Message savedMessage = messageRepository.saveAndFlush(message);
-        return dialogRepository.saveAndFlush(dialog);
-
     }
 
     @GetMapping("/unreaded")
