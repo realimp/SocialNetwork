@@ -26,7 +26,7 @@ public class TagController {
 
   @PostMapping
   public Response postTag(@RequestBody TagRequest tag) {
-    return tagService.createTag(tag.getTag());
+    return tagService.createTag(tag.getTag().trim());
   }
 
   @DeleteMapping

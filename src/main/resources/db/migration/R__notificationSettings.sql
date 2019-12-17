@@ -32,7 +32,7 @@ ALTER TABLE `social_network`.`post_comment` CHANGE COLUMN `id` `id` INT(11) AUTO
 ALTER TABLE block_history ADD FOREIGN KEY (comment_id) REFERENCES post_comment(id);
 ALTER TABLE comment_like ADD FOREIGN KEY (comment_id) REFERENCES post_comment(id);
 ALTER TABLE notification ADD FOREIGN KEY (entity_id) REFERENCES post_comment(id);
-ALTER TABLE post2tag ADD FOREIGN KEY (post_id) REFERENCES post_comment(id);
+ALTER TABLE post2tag ADD FOREIGN KEY (post_id) REFERENCES post(id);
 ALTER TABLE post_comment ADD FOREIGN KEY (parent_id) REFERENCES post_comment(id);
 
 ALTER TABLE `social_network`.`post_comment`

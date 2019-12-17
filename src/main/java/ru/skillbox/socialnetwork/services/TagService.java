@@ -34,11 +34,11 @@ public class TagService {
     }
 
     public Response createTag(String text) {
-        if (tagRepository.existsByTag(text)) {
+        if (tagRepository.existsByTag(text.trim())) {
             return new Response();
         }
         Tag tag = new Tag();
-        tag.setText(text);
+        tag.setText(text.trim());
         Tag savedTag = tagRepository.saveAndFlush(tag);
         return new Response(new TagResponse(savedTag.getId(), savedTag.getText()));
     }
