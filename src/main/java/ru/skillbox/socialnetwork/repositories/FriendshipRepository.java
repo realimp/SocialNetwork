@@ -1,5 +1,7 @@
 package ru.skillbox.socialnetwork.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +17,9 @@ public interface FriendshipRepository extends JpaRepository<Friendship, Integer>
 
     @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person AND f.code=:status")
     List<Friendship> findByFriends(@Param("person") Person person, @Param("status") FriendshipStatus status);
+
+    @Query("SELECT f FROM Friendship f WHERE f.dstPerson=:person AND f.code=:status")
+    Page<Friendship> findByFriends(@Param("person") Person person, @Param("status") FriendshipStatus status, Pageable pageable);
 
     @Query(nativeQuery = true,
             value = "select distinct fr2.src_person_id \n" +
