@@ -1,5 +1,7 @@
 package ru.skillbox.socialnetwork.repositories;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +22,7 @@ public interface NotificationSettingsRepository extends JpaRepository<Notificati
 
     @Query(nativeQuery = true, value = "SELECT * FROM notification_settings l WHERE l.notification_type_id=:type AND l.enable=1")
     List<NotificationSettings> findByTypeIdAndEnabled(@Param("type") int type);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM notification_settings l WHERE l.notification_type_id=:type AND l.enable=1")
+    Page<NotificationSettings> findByTypeIdAndEnabled(@Param("type") int type, Pageable pageable);
 }
