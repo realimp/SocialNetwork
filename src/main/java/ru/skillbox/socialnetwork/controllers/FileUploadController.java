@@ -25,6 +25,6 @@ public class FileUploadController {
         }
         Error error = new Error();
         error.setError(Error.ErrorType.INVALID_REQUEST);
-        return new Response(error);
+        return new Response<>(error);
     }
 }
