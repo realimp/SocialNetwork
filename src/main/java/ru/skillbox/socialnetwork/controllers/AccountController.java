@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.Email;
 import ru.skillbox.socialnetwork.api.requests.NotificationTypeRequest;
 import ru.skillbox.socialnetwork.api.requests.Register;
+import ru.skillbox.socialnetwork.api.responses.MessageResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.services.AccountService;
 
@@ -46,12 +47,11 @@ public class AccountController {
   public Response notifications() {
 
     Response response = accountService.getNotification();
-    response.setError("");
     return response;
   }
 
   @PutMapping("/notifications")
-  public Response notifications(@RequestBody NotificationTypeRequest notificationTypeRequest) {
+  public Response<MessageResponse> notifications(@RequestBody NotificationTypeRequest notificationTypeRequest) {
 
     return accountService.setNotification(notificationTypeRequest);
   }
