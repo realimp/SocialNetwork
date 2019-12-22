@@ -41,7 +41,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Person person = localUserDetailsService.findPerson(SecurityContextHolder.getContext().getAuthentication().getName());
-        //localUserDetailsService.setAccountLastOnlineTime(person);
         localUserDetailsService.setAccountOnline(person,true);
         chain.doFilter(request, response);
     }
