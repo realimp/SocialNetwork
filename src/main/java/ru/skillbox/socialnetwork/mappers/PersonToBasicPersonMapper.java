@@ -1,8 +1,6 @@
 package ru.skillbox.socialnetwork.mappers;
 
 import ru.skillbox.socialnetwork.api.responses.BasicPerson;
-import ru.skillbox.socialnetwork.api.responses.PersonResponse;
-import ru.skillbox.socialnetwork.entities.MessagePermission;
 import ru.skillbox.socialnetwork.entities.Person;
 
 public class PersonToBasicPersonMapper {

@@ -1,6 +1,3 @@
-/**
- * @Author Savva
- */
 package ru.skillbox.socialnetwork.services;
 
 import org.slf4j.Logger;

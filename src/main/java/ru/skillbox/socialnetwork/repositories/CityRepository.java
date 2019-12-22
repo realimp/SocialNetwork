@@ -7,7 +7,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.City;
-import ru.skillbox.socialnetwork.entities.Language;
 
 @Repository
 public interface CityRepository extends PagingAndSortingRepository<City,Integer> {

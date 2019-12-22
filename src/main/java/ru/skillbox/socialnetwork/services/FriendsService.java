@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.api.responses.FriendStatus;
 import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 import ru.skillbox.socialnetwork.api.responses.PersonResponse;
 import ru.skillbox.socialnetwork.api.responses.ResponseList;

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.Feeds;
@@ -15,7 +14,6 @@ import ru.skillbox.socialnetwork.entities.PostLike;
 import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
 import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.entities.*;
-import ru.skillbox.socialnetwork.mappers.PostMapper;
 import ru.skillbox.socialnetwork.repositories.FriendshipRepository;
 import ru.skillbox.socialnetwork.repositories.PostCommentRepository;
 import ru.skillbox.socialnetwork.repositories.PostLikeRepository;
@@ -24,7 +22,6 @@ import ru.skillbox.socialnetwork.repositories.PostRepository;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service

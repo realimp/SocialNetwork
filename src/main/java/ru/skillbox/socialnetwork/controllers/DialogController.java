@@ -20,12 +20,9 @@ import ru.skillbox.socialnetwork.services.AccountService;
 import java.sql.Timestamp;
 import java.util.*;
 
-import static java.sql.Types.NULL;
-
 @RestController
 @RequestMapping("/dialogs")
 public class DialogController {
-    //TODO: check method names after Dialog entity and DialogRepository are implemented
 
     @Autowired
     private AccountService accountService;

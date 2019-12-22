@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.Message;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Integer> {
