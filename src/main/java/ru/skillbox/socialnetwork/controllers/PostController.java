@@ -3,6 +3,8 @@ package ru.skillbox.socialnetwork.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
@@ -17,9 +19,12 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @GetMapping("") //Post search
+    @GetMapping //Post search
     public ResponseList<PostResponse> postSearch(@RequestParam(required = false) String text, @RequestParam(required = false) Long dateFrom, @RequestParam(required = false) Long dateTo, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
-        return new ResponseList<>(new PostResponse());
+        int pageOffset = offset != null ? offset : 0;
+        int itemsPerPage = itemPerPage != null ? itemPerPage : 20;
+        Pageable pageable = PageRequest.of(pageOffset, itemsPerPage);
+        return  postService.postSearch(text, pageable);
     }
 
     @PostMapping("/") //Post creation

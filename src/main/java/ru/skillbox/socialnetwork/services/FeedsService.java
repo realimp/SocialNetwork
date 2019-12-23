@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.Feeds;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
+import ru.skillbox.socialnetwork.api.responses.TagResponse;
 import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.entities.PostComment;
 import ru.skillbox.socialnetwork.entities.PostLike;
@@ -42,6 +43,9 @@ public class FeedsService {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private TagService tagService;
+
     public Feeds getFeeds(String query, Integer offset, Integer itemsPerPage) {
         Pageable pageable = PageRequest.of(offset, itemsPerPage);
         Person me = accountService.getCurrentUser();
@@ -69,7 +73,9 @@ public class FeedsService {
 
     private List<String> getTagsByPost(Post p) {
         List<String> tags = new ArrayList<>();
-        //TODO find tags
+        for (Tag tag : p.getTags()) {
+            tags.add(tag.getText());
+        }
         return tags;
     }
 

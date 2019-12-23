@@ -2,19 +2,16 @@ package ru.skillbox.socialnetwork.repositories;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.skillbox.socialnetwork.entities.Tag;
 
-import java.util.List;
-import java.util.Optional;
-
 @Repository
-public interface TagRepository extends PagingAndSortingRepository<Tag, Integer> {
+public interface TagRepository extends JpaRepository<Tag, Integer> {
 
-    Optional<Tag> findById(int id);
+    Page<Tag> findByTag(String text, Pageable pageable);
 
-    List<Tag> findByText(String text); //Поиск всех тегов содержащих текст
+    Tag findByTag(String text);
 
-    Page<Tag> findByText(String text, Pageable pageable); //Поиск всех тегов содержащих текст
+    Boolean existsByTag(String text);
 }

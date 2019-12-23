@@ -3,6 +3,7 @@ package ru.skillbox.socialnetwork.entities;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(name = "Post")
@@ -27,6 +28,12 @@ public class Post {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     private Person author;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "post2tag",
+        joinColumns = {@JoinColumn(name = "post_id")},
+        inverseJoinColumns = {@JoinColumn(name = "tag_id")})
+    private List<Tag> tags;
 
     public Post() {}
 
@@ -84,6 +91,14 @@ public class Post {
 
     public void setDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
     }
 
     @Override
