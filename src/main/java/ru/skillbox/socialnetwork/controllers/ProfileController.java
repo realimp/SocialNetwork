@@ -6,10 +6,8 @@ import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.requests.EditPerson;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.Tag;
-import ru.skillbox.socialnetwork.services.PostService;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,54 +18,36 @@ public class ProfileController {
     @Autowired
     private ProfileService profileService;
 
-    @Autowired
-    private PostService postService;
-
-    //mapping for a current user
     @GetMapping("/me")
     public Response<PersonResponse> getMe() {
-        PersonResponse personResponse = profileService.getPerson();
-        return new Response<>(personResponse);
+        return new Response<>(profileService.getPerson());
     }
 
     @PutMapping("/me")
-    public Response putMe(@RequestBody EditPerson editPerson) {
-        PersonResponse responseData = profileService.editPerson(editPerson);
-        Response response = new Response(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+    public Response<PersonResponse> putMe(@RequestBody EditPerson editPerson) {
+        return new Response<>(profileService.editPerson(editPerson));
     }
 
     @DeleteMapping("/me")
     public Response<MessageResponse> deleteMe() {
-        MessageResponse messageResponse = profileService.deletePerson();
-        return new Response<>(messageResponse);
+        return new Response<>(profileService.deletePerson());
     }
 
     @GetMapping("/{id}")
     public Response<PersonResponse> getUser(@PathVariable Integer id) {
-        PersonResponse personResponse = profileService.getPersonById(id);
-        return new Response<>(personResponse);
+        return new Response<>(profileService.getPersonById(id));
     }
 
-    //getting posts on the user's wall
     @GetMapping("/{id}/wall")
     public ResponseList<List<PersonsWallPost>> getUserWall(@PathVariable Integer id, @RequestParam(required = false) Integer offset,  @RequestParam(required = false) Integer itemPerPage) {
-        int pageOffset = 0, itemsPerPage = 20;
-        if (offset != null) {
-            pageOffset = offset;
-        }
-        if (itemPerPage != null) {
-            itemsPerPage = itemPerPage;
-        }
+        int pageOffset = offset != null ? offset : 0;
+        int itemsPerPage = itemPerPage != null ? itemPerPage : 20;
         List<PersonsWallPost> personsWallPostList = profileService.getWallPostsById(id, pageOffset, itemsPerPage);
         ResponseList<List<PersonsWallPost>> responseList = new ResponseList<>(personsWallPostList, personsWallPostList.size());
         responseList.setError("");
         return  responseList;
     }
 
-    //adding a post to a user's wall
     @PostMapping("/{id}/wall")
     public Response<PostResponse> postUserWall(@PathVariable Integer id, @RequestParam(name = "publish_date", required = false) Long publishDate, @RequestBody CreatePostRequest createPostRequest) {
         Date date = new Date();
@@ -86,7 +66,6 @@ public class ProfileController {
         return new Response<>(postResponse);
     }
 
-    //user Search
     @GetMapping("/search")
     public ResponseList<List<PersonResponse>> getUserSearch(@RequestParam(required = false) String first_name, @RequestParam(required = false) String lastName,
                                                             @RequestParam(required = false) Integer ageFrom, @RequestParam(required = false) Integer ageTo,
@@ -105,17 +84,13 @@ public class ProfileController {
         return new ResponseList<>(personResponseList);
     }
 
-    //block user by id
     @PutMapping("/block/{id}")
     public Response<MessageResponse> blockUser(@PathVariable Integer id) {
-        MessageResponse messageResponse = profileService.blockPersonById(id);
-        return new Response<>(messageResponse);
+        return new Response<>(profileService.blockPersonById(id));
     }
 
-    //unblock user by id
     @DeleteMapping("/block/{id}")
     public Response<MessageResponse> unblockUser(@PathVariable Integer id) {
-        MessageResponse messageResponse = profileService.unblockPersonById(id);
-        return new Response<>(messageResponse);
+        return new Response<>(profileService.unblockPersonById(id));
     }
 }

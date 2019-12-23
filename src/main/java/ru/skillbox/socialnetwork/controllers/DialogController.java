@@ -17,7 +17,6 @@ import ru.skillbox.socialnetwork.repositories.MessageRepository;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
 import ru.skillbox.socialnetwork.services.AccountService;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 @RestController
@@ -66,7 +65,7 @@ public class DialogController {
     }
 
     @PostMapping
-    public Response startDialog(@RequestBody UserIds users_ids) {
+    public Response<DialogResponse> startDialog(@RequestBody UserIds users_ids) {
         DialogResponse responseData = new DialogResponse();
         List<Person> recipients = newRecipients(users_ids);
         if (!recipients.isEmpty()) {
@@ -75,10 +74,7 @@ public class DialogController {
         } else {
             responseData.setId(users_ids.getIds()[0]);
         }
-        Response response = new Response<>(responseData);
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        response.setError("");
-        return response;
+        return new Response<>(responseData);
     }
 
     private boolean isExistDialogs() {
@@ -137,7 +133,7 @@ public class DialogController {
     }
 
     @GetMapping("/unreaded")
-    public Response unreadCount() {
+    public Response<UnreadCount> unreadCount() {
         int count = 0;
         List<Dialog> dialogs = dialogRepository.findByOwnerId(accountService.getCurrentUser().getId());
         if (dialogs.size() > 0) {
@@ -147,28 +143,22 @@ public class DialogController {
             }
         }
         UnreadCount responseData = new UnreadCount(count);
-        Response response = new Response<>(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
 
     @DeleteMapping("/{id}")
-    public Response deleteDialog(@PathVariable int id) {
+    public Response<DialogResponse> deleteDialog(@PathVariable int id) {
         Dialog dialog = dialogRepository.findById(id).get();
         dialog.setDeleted(true);
         dialogRepository.saveAndFlush(dialog);
         DialogResponse responseData = new DialogResponse();
         responseData.setId(id);
-        Response response = new Response<>(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @PutMapping("/{id}/users")
-    public Response addUser(@PathVariable int id, @RequestBody UserIds userIds) {
+    public Response<UserIds> addUser(@PathVariable int id, @RequestBody UserIds userIds) {
         Dialog dialog = dialogRepository.findById(id).get();
         List<Person> recipients = dialog.getRecipients();
         for (int userId : userIds.getIds()) {
@@ -179,14 +169,11 @@ public class DialogController {
 
         UserIds responseData = new UserIds();
         responseData.setIds(userIds.getIds());
-        Response response = new Response<>(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @DeleteMapping("/{id}/users/{user_ids}")
-    public Response removeUsersFromDialog(@PathVariable("id") int id, @PathVariable("user_ids") String[] userIds) {
+    public Response<UserIds> removeUsersFromDialog(@PathVariable("id") int id, @PathVariable("user_ids") String[] userIds) {
         Dialog dialog = dialogRepository.findById(id).get();
         List<Person> recipients = dialog.getRecipients();
         for (String userId : userIds) {
@@ -202,21 +189,15 @@ public class DialogController {
 
         UserIds responseData = new UserIds();
         responseData.setIds(ids);
-        Response response = new Response<>(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @GetMapping("/{id}/users/invite")
-    public Response inviteUsers(@PathVariable int id) {
+    public Response<InviteLink> inviteUsers(@PathVariable int id) {
         String inviteLink = contextPath + "dialogs/" + id + "/users/join?invite=" + dialogRepository.findById(id).get().getInviteCode();
         InviteLink responseData = new InviteLink();
         responseData.setLink(inviteLink);
-        Response response = new Response<>(responseData);
-        response.setError("");
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @PutMapping("/{id}/users/join")
@@ -313,17 +294,15 @@ public class DialogController {
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}")
-    public Response editMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId, @RequestBody MessageText messageText) {
+    public Response<DialogMessage> editMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId, @RequestBody MessageText messageText) {
         Message message = messageRepository.findById(messageId).get();
         message.setMessageText(messageText.getText());
         Message editedMessage = messageRepository.saveAndFlush(message);
-
-        DialogMessage responseData = DialogMapper.getDialogMessage(editedMessage);
-        return new Response<>(responseData);
+        return new Response<>(DialogMapper.getDialogMessage(editedMessage));
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}/recover")
-    public Response recoverMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
+    public Response<DialogMessage> recoverMessage(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
         Optional<Dialog> dialog = dialogRepository.findById(dialogId);
         if (!dialog.isPresent()) return new Response<>("Не найден диалог " + dialogId, null);
         Optional<Message> messageOptional = messageRepository.findById(messageId);
@@ -335,35 +314,27 @@ public class DialogController {
     }
 
     @PutMapping("/{dialog_id}/messages/{message_id}/read")
-    public Response markMessageRead(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
+    public Response<MessageResponse> markMessageRead(@PathVariable("dialog_id") int dialogId, @PathVariable("message_id") int messageId) {
         messageRepository.findById(messageId).get().setReadStatus(ReadStatus.READ.toString());
         Dialog dialog = dialogRepository.findById(dialogId).get();
         dialog.setUnreadCount(dialog.getUnreadCount() - 1);
-        MessageResponse responseData = new MessageResponse();
-        responseData.setMessage("ok");
-        Response response = new Response<>(responseData);
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        MessageResponse responseData = new MessageResponse("ok");
+        return new Response<>(responseData);
     }
 
     @GetMapping("/{id}/activity/{user_id}")
-    public Response getRecipientInfo(@PathVariable("id") int id, @PathVariable("user_id") int userId) {
+    public Response<Activity> getRecipientInfo(@PathVariable("id") int id, @PathVariable("user_id") int userId) {
         Person user = personRepository.findById(userId).get();
         Activity responseData = new Activity();
         responseData.setOnline(user.getOnline());
         responseData.setLastActivity(user.getLastOnlineTime().getTime());
-        Response response = new Response<>(responseData);
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        return new Response<>(responseData);
     }
 
     @PostMapping("/{id}/activity/{user_id}")
-    public Response setActivityStatus(@PathVariable("id") int id, @PathVariable("user_id") int userId) {
+    public Response<MessageResponse> setActivityStatus(@PathVariable("id") int id, @PathVariable("user_id") int userId) {
         //TODO: implement method
-        MessageResponse responseData = new MessageResponse();
-        responseData.setMessage("ok");
-        Response response = new Response<>(responseData);
-        response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-        return response;
+        MessageResponse responseData = new MessageResponse("ok");
+        return new Response<>(responseData);
     }
 }
