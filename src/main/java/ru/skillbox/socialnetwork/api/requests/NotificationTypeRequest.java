@@ -1,7 +1,6 @@
 package ru.skillbox.socialnetwork.api.requests;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 
 public class NotificationTypeRequest {
     private Boolean enable;

@@ -2,10 +2,8 @@ package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.repositories.TagRepository;
-//import ru.skillbox.socialnetwork.repositories.TagRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;

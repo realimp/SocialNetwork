@@ -1,9 +1,6 @@
 package ru.skillbox.socialnetwork.entities;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.Objects;
 
 @Entity(name = "Tag")
 @Table (name = "tag")

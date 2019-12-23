@@ -14,7 +14,6 @@ import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.entities.Person;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,10 +52,7 @@ public class FileUploadService {
             fileUploadResponse.setFileType(FileType.IMAGE);
             fileUploadResponse.setCreatedAt(formatter.parse(uploadResponse.get("created_at").toString()).getTime());
             logger.info("Файл {} успешно загружен в {}", file.getName(), fileUploadResponse.getRawFileURL());
-            Response response = new Response(fileUploadResponse);
-            response.setError("");
-            response.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
-            return response;
+            return new Response<>(fileUploadResponse);
         } catch (IOException | ParseException e) {
             logger.error("При загрузке файла {} произошла ошибка {}", file.getName(), e.getMessage());
             new Response<FileUploadResponse>("Не удалось загрузить файл. " + e.getMessage(), null);

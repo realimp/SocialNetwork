@@ -28,7 +28,7 @@ public class NotificationsController {
         MessageResponse message = new MessageResponse();
         message.setMessage("ok");
 
-        ResponseList responseList = new ResponseList(message);
+        ResponseList responseList = new ResponseList<>(message);
         responseList.setError("");
         long timestamp = new Date().getTime();
         responseList.setTimestamp(timestamp);
@@ -49,7 +49,7 @@ public class NotificationsController {
         MessageResponse message = new MessageResponse();
         message.setMessage("ok");
 
-        ResponseList responseList = new ResponseList(message);
+        ResponseList responseList = new ResponseList<>(message);
         long timestamp = new Date().getTime();
         responseList.setTimestamp(timestamp);
         responseList.setData(notificationBaseList);

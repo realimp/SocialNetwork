@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.skillbox.socialnetwork.api.responses.*;
-import ru.skillbox.socialnetwork.services.PostService;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;

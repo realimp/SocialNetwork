@@ -27,7 +27,7 @@ public class LikeService {
     @Autowired
     private AccountService accountService;
 
-    public Response isLiked(String type, Integer itemId, Integer userId) {
+    public Response<IsLiked> isLiked(String type, Integer itemId, Integer userId) {
         LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
         boolean isLiked = false;
         Integer currentUserId = userId != null ? userId : accountService.getCurrentUser().getId();
@@ -42,12 +42,10 @@ public class LikeService {
 
         IsLiked responseData = new IsLiked();
         responseData.setLikes(isLiked);
-        Response response = new Response(responseData);
-        response.setError("");
-        return response;
+        return new Response<>(responseData);
     }
 
-    public Response getLikeList(String type, Integer itemId) {
+    public Response<LikeUsersList> getLikeList(String type, Integer itemId) {
         LikeUsersList responseData = new LikeUsersList();
         int count = 0;
         if (type.equalsIgnoreCase(LikeType.POST.toString())) {
@@ -71,12 +69,10 @@ public class LikeService {
         }
 
         responseData.setLikes(count);
-        Response response = new Response(responseData);
-        response.setError("");
-        return response;
+        return new Response<>(responseData);
     }
 
-    public Response putLike(String type, Integer itemId) {
+    public Response<LikeUsersList> putLike(String type, Integer itemId) {
         LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
 
         if (likeType.equals(LikeType.POST)) {
@@ -99,7 +95,7 @@ public class LikeService {
         return getLikeList(type, itemId);
     }
 
-    public Response deleteLike(String type, Integer itemId){
+    public Response<LikesCount> deleteLike(String type, Integer itemId){
         LikeType likeType = LikeType.valueOf(type.trim().toUpperCase());
         LikesCount count = new LikesCount();
         Integer userId = accountService.getCurrentUser().getId();
@@ -116,9 +112,7 @@ public class LikeService {
             count.setLikes(clRepository.findByPersonIdAndCommentId(userId, itemId).size());
         }
 
-        Response response = new Response(count);
-        response.setError("");
-        return response;
+        return new Response<>(count);
     }
 
 }

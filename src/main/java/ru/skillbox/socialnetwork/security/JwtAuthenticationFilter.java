@@ -24,9 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -64,11 +62,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                             FilterChain filterChain, Authentication authentication) throws IOException {
         User user = ((User) authentication.getPrincipal());
 
-        List<String> authorities = user.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-
         String token = Jwts.builder()
                 .setSubject(user.getUsername())
                 .claim("authorities", user.getAuthorities().stream()
@@ -100,9 +93,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         authorization.setBlocked(person.getBlocked());
         authorization.setToken(token);
 
-        Response responseContent = new Response(authorization);
-        responseContent.setError("");
-        responseContent.setTimestamp(new Timestamp(System.currentTimeMillis()).getTime());
+        Response<UserAuthorization> responseContent = new Response<>(authorization);
 
         String jsonString = new Gson().toJson(responseContent);
 

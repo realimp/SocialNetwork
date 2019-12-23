@@ -39,7 +39,7 @@ public class AccountService {
 
     private String ABC = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
-    public Response register(Register register) {
+    public Response<MessageResponse> register(Register register) {
 
         MessageResponse message = new MessageResponse();
 
@@ -50,14 +50,14 @@ public class AccountService {
             String error = "Error by registry";
             long timestamp = new Date().getTime();
 
-            return new Response(error, timestamp, message);
+            return new Response<>(error, timestamp, message);
         }
 
         if (personRepository.findByEMail(register.getEmail()) != null) {
             message.setMessage("Указанный email уже существует!");
             String error = "Error by registry";
             long timestamp = new Date().getTime();
-            return new Response(error, timestamp, message);
+            return new Response<>(error, timestamp, message);
         }
 
         Person person = new Person();
@@ -80,13 +80,10 @@ public class AccountService {
             notificationSettingsRepository.save(new NotificationSettings(person, typeCode, true));
         }
 
-        long timestamp = new Date().getTime();
-        Response response = new Response(message);
-        response.setTimestamp(timestamp);
-        return response;
+        return new Response<>(message);
     }
 
-    public Response recovery(Email email) throws UnsupportedEncodingException, MessagingException {
+    public Response<MessageResponse> recovery(Email email) throws UnsupportedEncodingException, MessagingException {
 
         MessageResponse message = new MessageResponse();
         long timestamp = new Date().getTime();
@@ -103,7 +100,6 @@ public class AccountService {
                 newPas.append(ABC.charAt((int) (Math.random() * ABC.length()))).append(random.nextInt(100));
 
             String mailText = "You password has been changed to " + newPas.toString();
-            //String mailText = "You password has been changed to ";
 
             if (eMailService.sendEmail(email.getEmail(),
                     "recovery Password", "recoveryPassword", mailText)) {
@@ -111,79 +107,43 @@ public class AccountService {
                 person.setPassword(passwordEncoder.encode(newPas.toString()));
                 personRepository.save(person);
 
-                Response response = new Response(message);
+                Response<MessageResponse> response = new Response<>(message);
                 response.setTimestamp(timestamp);
                 message.setMessage("ok");
                 return response;
             } else {
                 String error = "Error by recovery";
                 message.setMessage(error);
-                return new Response(error, timestamp, message);
+                return new Response<>(error, timestamp, message);
             }
         } else {
             String error = "Wrong e-Mail";
             message.setMessage(error);
-            return new Response(error, timestamp, message);
+            return new Response<>(error, timestamp, message);
         }
     }
 
-    public Response changePassword(String token, String password) {
-        long timestamp = new Date().getTime();
-
+    public Response<MessageResponse> changePassword(String token, String password) {
         Person person = getCurrentUser();
-
-        MessageResponse message = new MessageResponse();
-        if (person.getPassword().equals(password) && !password.isEmpty()) {
-            person.setPassword(passwordEncoder.encode(password));
-            personRepository.save(person);
-
-            Response response = new Response(message);
-            response.setTimestamp(timestamp);
-            message.setMessage("ok");
-            return response;
-        } else {
-            String error = "Error by changing Password";
-            message.setMessage(error);
-            return new Response(error, timestamp, message);
-        }
+        person.setPassword(passwordEncoder.encode(password));
+        personRepository.saveAndFlush(person);
+        MessageResponse message = new MessageResponse("ok");
+        return new Response<>(message);
     }
 
-    public Response changeEmail(String email) {
-        long timestamp = new Date().getTime();
-
+    public Response<MessageResponse> changeEmail(String email) {
         Person person = getCurrentUser();
         person.setEMail(email);
-
-        if (person.getEMail().equals(email)) {
-            MessageResponse message = new MessageResponse();
-
-            personRepository.save(person);
-
-            Response response = new Response(message);
-            response.setTimestamp(timestamp);
-            message.setMessage("ok");
-            return response;
-        } else {
-            MessageResponse message = new MessageResponse();
-            String error = "Error by changing Email";
-            message.setMessage(error);
-            return new Response(error, timestamp, message);
-        }
+        personRepository.saveAndFlush(person);
+        MessageResponse response = new MessageResponse("ok");
+        return new Response<>(response);
     }
 
-    public Response getNotification() {
-        long timestamp = new Date().getTime();
-        MessageResponse message = new MessageResponse();
-        message.setMessage("ok");
-        Response response = new Response(message);
-        response.setTimestamp(timestamp);
-
+    public Response<NotificationSettingsResponse> getNotification() {
         Person person = getCurrentUser();
 
         List<NotificationSettings> notificationSettingsList = notificationSettingsRepository.findByPersonId(person);
-
         NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
-
         List<NotificationParameter> notificationParameters = new ArrayList<>();
 
         for (NotificationTypeCode notificationTypeCode : typeCodes) {
@@ -208,16 +168,11 @@ public class AccountService {
         NotificationSettingsResponse notificationSettings = new NotificationSettingsResponse();
         notificationSettings.setNotificationSettings(notificationParameters);
 
-        response.setData(notificationSettings.getNotificationSettings());
-        return response;
+        return new Response<>(notificationSettings);
     }
 
-    public Response setNotification(NotificationTypeRequest notificationCode) {
-        long timestamp = new Date().getTime();
-        MessageResponse message = new MessageResponse();
-        message.setMessage("ok");
-        Response response = new Response(message);
-        response.setTimestamp(timestamp);
+    public Response<MessageResponse> setNotification(NotificationTypeRequest notificationCode) {
+        MessageResponse message = new MessageResponse("ok");
 
         Person person = getCurrentUser();
 
@@ -227,9 +182,7 @@ public class AccountService {
 
         notificationSettingsRepository.save(notificationSettings);
 
-        //System.out.println("NEW notificationSettings " + notificationSettings.getNotificationTypeCode() + " - " + notificationSettings.getEnable());
-
-        return response;
+        return new Response<>(message);
     }
 
     public Person getCurrentUser() {

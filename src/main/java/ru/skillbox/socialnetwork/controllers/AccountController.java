@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.Email;
 import ru.skillbox.socialnetwork.api.requests.NotificationTypeRequest;
 import ru.skillbox.socialnetwork.api.requests.Register;
-import ru.skillbox.socialnetwork.api.responses.NotificationParameter;
-import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
+import ru.skillbox.socialnetwork.api.responses.MessageResponse;
+import ru.skillbox.socialnetwork.api.responses.NotificationSettingsResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.services.AccountService;
 
@@ -21,40 +21,32 @@ public class AccountController {
   private AccountService accountService;
 
   @PostMapping("/register")
-  public Response register(@RequestBody Register register) {
-
+  public Response<MessageResponse> register(@RequestBody Register register) {
     return accountService.register(register);
   }
 
   @PutMapping("/password/recovery")
-  public Response passwordRecovery(@RequestBody Email email) throws UnsupportedEncodingException, MessagingException {
-
+  public Response<MessageResponse> passwordRecovery(@RequestBody Email email) throws UnsupportedEncodingException, MessagingException {
     return accountService.recovery(email);
   }
 
   @PutMapping("/password/set")
-  public Response passwordSet(String token, String password) {
-
+  public Response<MessageResponse> passwordSet(String token, String password) {
     return accountService.changePassword(token, password);
   }
 
   @PutMapping("/email")
-  public Response email(String email) {
-
+  public Response<MessageResponse> email(String email) {
     return accountService.changeEmail(email);
   }
 
   @GetMapping("/notifications")
-  public Response notifications() {
-
-    Response response = accountService.getNotification();
-    response.setError("");
-    return response;
+  public Response<NotificationSettingsResponse> notifications() {
+    return accountService.getNotification();
   }
 
   @PutMapping("/notifications")
-  public Response notifications(@RequestBody NotificationTypeRequest notificationTypeRequest) {
-
+  public Response<MessageResponse> notifications(@RequestBody NotificationTypeRequest notificationTypeRequest) {
     return accountService.setNotification(notificationTypeRequest);
   }
 }
