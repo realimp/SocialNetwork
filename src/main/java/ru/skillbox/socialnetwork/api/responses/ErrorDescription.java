@@ -1,7 +1,5 @@
 package ru.skillbox.socialnetwork.api.responses;
 
-import javax.swing.*;
-
 public enum ErrorDescription {
 
     UNAUTHORIZED("Unauthorized"),

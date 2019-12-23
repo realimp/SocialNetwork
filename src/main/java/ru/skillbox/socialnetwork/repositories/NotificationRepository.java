@@ -8,6 +8,7 @@ import ru.skillbox.socialnetwork.api.responses.NotificationTypeCode;
 import ru.skillbox.socialnetwork.entities.Notification;
 import ru.skillbox.socialnetwork.entities.Person;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -19,4 +20,6 @@ public interface NotificationRepository extends JpaRepository<Notification,Integ
     @Query("SELECT n FROM Notification n LEFT JOIN n.author WHERE n.recipient=:recipient_id and n.typeId=:type")
     List<Notification> findByTypeId(@Param("type") NotificationTypeCode code, @Param("recipient_id") Integer personId);
 
+    @Query(nativeQuery = true, value = "SELECT * FROM notification n WHERE n.sent_time>:sent_before AND n.is_deleted=0")
+    List<Notification> findBySentTime(@Param("sent_before") Date sentBefore);
 }

@@ -48,12 +48,12 @@ public class PostService {
         return post.orElse(null);
     }
 
-    public Response deletePostById(int idPost) {
+    public Response<IdResponse> deletePostById(int idPost) {
         Post post = postRepository.findById(idPost).get();
         post.setDeleted(true);
         postRepository.saveAndFlush(post);
         IdResponse responseData = new IdResponse(post.getId());
-        return new Response(responseData);
+        return new Response<>(responseData);
     }
 
     public Integer recoveryPostById(int idPost) {

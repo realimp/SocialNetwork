@@ -1,7 +1,5 @@
 package ru.skillbox.socialnetwork.entities;
 
-import ru.skillbox.socialnetwork.controllers.DialogController;
-
 import java.util.Objects;
 import javax.persistence.*;
 import java.util.Date;

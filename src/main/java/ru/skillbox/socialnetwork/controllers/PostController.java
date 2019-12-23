@@ -43,7 +43,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}") //Delete post by ID
-    public Response<PostResponse> postDeleteById(@PathVariable int id) {
+    public Response<IdResponse> postDeleteById(@PathVariable int id) {
         return postService.deletePostById(id);
     }
 
@@ -53,22 +53,22 @@ public class PostController {
         return new Response<>(new PostResponse());
     }
 
-    @GetMapping("/{id}/comments") //Getting post comments
+    @GetMapping("/{id}/comments")
     public ResponseList<List<Comment>> postGetComments(@PathVariable int id, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
         return postService.getComments(id);
     }
 
-    @PostMapping("/{id}/comments") //Post comment
+    @PostMapping("/{id}/comments")
     public Response<Comment> postComments(@PathVariable int id, @RequestBody CommentRequest commentRequest) { //@RequestBody
         return postService.savePostComment(id, null, commentRequest);
     }
 
-    @PutMapping("/{id}/comments/{comment_id}") //Editing a post comment
+    @PutMapping("/{id}/comments/{comment_id}")
     public Response<Comment> postCommentsEdit(@PathVariable int id, @PathVariable int comment_id, @RequestBody CommentRequest commentRequest) {//@RequestBody
         return postService.savePostComment(id, comment_id, commentRequest);
     }
 
-    @DeleteMapping("/{id}/comments/{comment_id}") //Removing a post comment
+    @DeleteMapping("/{id}/comments/{comment_id}")
     public Response<IdResponse> postCommentsDelete(@PathVariable int id, @PathVariable int comment_id) {
         return postService.deletePostComment(id, comment_id);
     }
@@ -78,13 +78,15 @@ public class PostController {
         return postService.recoveryPostComment(id, comment_id);
     }
 
-    @PostMapping("/{id}/report") //Post a complaint
-    public Response postCommentComplain(@PathVariable int id) {
-        return new Response("ok");
+    @PostMapping("/{id}/report")
+    public Response<MessageResponse> postCommentComplain(@PathVariable int id) {
+        // TO-DO: implement method
+        return new Response<>(new MessageResponse("ok"));
     }
 
-    @PostMapping("/{id}/comments/{comment_id}/report") //File a complaint about post comments
-    public Response postComplainToComment(@PathVariable int id, @PathVariable int comment_id) {
-        return new Response("ok");
+    @PostMapping("/{id}/comments/{comment_id}/report")
+    public Response<MessageResponse> postComplainToComment(@PathVariable int id, @PathVariable int comment_id) {
+        // TO-DO: implement method
+        return new Response<>(new MessageResponse("ok"));
     }
 }

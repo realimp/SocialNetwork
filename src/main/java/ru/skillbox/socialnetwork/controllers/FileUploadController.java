@@ -5,9 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skillbox.socialnetwork.api.responses.Error;
-import ru.skillbox.socialnetwork.api.responses.FileUploadResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.services.AccountService;
 import ru.skillbox.socialnetwork.services.FileUploadService;
 
@@ -27,6 +25,6 @@ public class FileUploadController {
         }
         Error error = new Error();
         error.setError(Error.ErrorType.INVALID_REQUEST);
-        return new Response(error);
+        return new Response<>(error);
     }
 }

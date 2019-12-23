@@ -4,10 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.skillbox.socialnetwork.api.responses.MessageResponse;
-import ru.skillbox.socialnetwork.api.responses.Response;
-import ru.skillbox.socialnetwork.api.responses.ResponseList;
-import ru.skillbox.socialnetwork.api.responses.TagResponse;
 import ru.skillbox.socialnetwork.entities.Tag;
 import ru.skillbox.socialnetwork.repositories.TagRepository;
 

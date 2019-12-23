@@ -31,3 +31,7 @@ build/
 .vscode/
 
 logs
+
+mvnw
+mvnw.cmd
+.attach_pid12396

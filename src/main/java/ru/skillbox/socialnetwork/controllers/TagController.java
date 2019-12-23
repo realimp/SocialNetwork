@@ -1,13 +1,13 @@
 package ru.skillbox.socialnetwork.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.skillbox.socialnetwork.api.requests.TagRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
-import ru.skillbox.socialnetwork.services.TagService;
+import ru.skillbox.socialnetwork.entities.*;
+import ru.skillbox.socialnetwork.repositories.*;
 
+import java.sql.Timestamp;
 
 @RestController
 @RequestMapping("/tags")
