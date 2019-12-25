@@ -18,18 +18,18 @@ public class ResponsesTest {
         person.setCountry(new CountryResponse().getTitle());
         Response<PersonResponse> response = new Response<>(person);
         response.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}",
+        JSONAssert.assertEquals("{\"error\":\"\",\"timestamp\":0,\"data\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}}",
                 new ObjectMapper().writeValueAsString(response), true);
 
     }
 
     @Test
     public void responseMessageTest() throws JsonProcessingException, JSONException {
-        Response<MessageResponse> message = new Response<>(new MessageResponse());
-        message.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"message\":null}}",
+        long timestamp = System.currentTimeMillis();
+        Response<MessageResponse> message = new Response<>(new MessageResponse("ok"));
+        message.setTimestamp(timestamp);
+        JSONAssert.assertEquals("{\"error\":\"\",\"timestamp\":" + timestamp + ",\"data\":{\"message\":\"ok\"}}",
                 new ObjectMapper().writeValueAsString(message), true);
-
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ResponsesTest {
         personsWallPostList.add(personWallPost);
         ResponseList<List<PersonsWallPost>> personsWallPost = new ResponseList<>(personsWallPostList);
         personsWallPost.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}],\"type\":null}]}",
+        JSONAssert.assertEquals("{\"error\":\"\",\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}],\"type\":null}]}",
                 new ObjectMapper().writeValueAsString(personsWallPost), false);
 
     }
@@ -77,7 +77,7 @@ public class ResponsesTest {
         postResponse.setComments(comments);
         Response<PostResponse> post = new Response<>(postResponse);
         post.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}]}}",
+        JSONAssert.assertEquals("{\"error\":\"\",\"timestamp\":0,\"data\":{\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"title\":null,\"post_text\":null,\"is_blocked\":null,\"likes\":null,\"tags\":[\"tag1\"],\"my_like\":null,\"comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null,\"post_id\":null,\"sub_comments\":[{\"parent_id\":null,\"comment_text\":null,\"id\":null,\"time\":null,\"author\":{\"id\":null,\"first_name\":null,\"last_name\":null,\"photo\":null,\"last_online_time\":null},\"is_blocked\":null}]}]}}",
                 new ObjectMapper().writeValueAsString(post), false);
 
     }
@@ -91,7 +91,7 @@ public class ResponsesTest {
         personList.add(person);
         ResponseList<List<PersonResponse>> persons = new ResponseList<>(personList);
         persons.setTimestamp(0);
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}",
+        JSONAssert.assertEquals("{\"error\":\"\",\"timestamp\":0,\"total\":0,\"offset\":0,\"perPage\":0,\"data\":[{\"id\":null,\"first_name\":null,\"last_name\":null,\"reg_date\":null,\"birth_date\":null,\"email\":null,\"phone\":null,\"photo\":null,\"about\":null,\"city\":null,\"country\":null,\"messages_permission\":null,\"last_online_time\":null,\"is_blocked\":null}]}",
                 new ObjectMapper().writeValueAsString(persons), true);
 
     }

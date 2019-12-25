@@ -47,10 +47,10 @@ public class PersonMapperTest {
         String expectedLastName = "Petr";
         Assert.assertEquals(expectedLastName, personMapper.getLastName());
 
-        Long expectedRegDate = 1559685600000l;
+        Long expectedRegDate = 1559682000000l;
         Assert.assertEquals(expectedRegDate, personMapper.getRegDate());
 
-        Long expectedBirthDate = 633826800000l;
+        Long expectedBirthDate = 633819600000l;
         Assert.assertEquals(expectedBirthDate, personMapper.getBirthDate());
 
         String expectedEmail = "ivanov@mail.com";
@@ -74,7 +74,7 @@ public class PersonMapperTest {
         String expectedMessagePermission = "FRIENDS";
         Assert.assertEquals(expectedMessagePermission, personMapper.getMessagesPermission().toString());
 
-        Long expectedLastOnLine = 1571781600000l;
+        Long expectedLastOnLine = 1571778000000l;
         Assert.assertEquals(expectedLastOnLine, personMapper.getLastOnlineTime());
 
         boolean expectedIsBlocked = false;

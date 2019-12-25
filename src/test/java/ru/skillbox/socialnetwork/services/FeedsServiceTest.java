@@ -1,11 +1,9 @@
 package ru.skillbox.socialnetwork.services;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,11 +12,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.skillbox.socialnetwork.api.responses.Feeds;
 import ru.skillbox.socialnetwork.entities.Person;
 import ru.skillbox.socialnetwork.repositories.PersonRepository;
-
-import javax.transaction.Transactional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +40,6 @@ public class FeedsServiceTest {
     private MockMvc mockMvc;
 
     @Before
-//    @Transactional
     public void before() {
         person.setConfirmationCode("Code123");
         person.setFirstName("firstName");

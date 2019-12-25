@@ -78,7 +78,7 @@ public class AccountServiceTest {
         
         // тесты register при верных данных
         Register register = new Register();
-        register.setEmail("test@email.com");
+        register.setEmail("test2@email.com");
         register.setPasswd1("pass1");
         register.setPasswd2("pass1");
         register.setFirstName("firstName");

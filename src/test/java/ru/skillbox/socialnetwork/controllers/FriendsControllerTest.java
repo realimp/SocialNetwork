@@ -232,7 +232,7 @@ public class FriendsControllerTest {
             data.append(new ObjectMapper().writeValueAsString(personResponseList.get(i)));
             if (i < personResponseList.size() - 1) data.append(",");
         }
-        JSONAssert.assertEquals("{\"error\":null,\"timestamp\":0,\"data\":[" + data.toString()
+        JSONAssert.assertEquals("{\"error\":\"\",\"timestamp\":0,\"data\":[" + data.toString()
                         + "],\"total\":5,\"offset\":0,\"perPage\":0}",
                 new ObjectMapper().writeValueAsString(responseList), true);
     }

@@ -1,13 +1,12 @@
-package api.requests;
+package ru.skillbox.socialnetwork.api.requests;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONException;
 import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
-import ru.skillbox.socialnetwork.api.requests.Register;
 
-public class RequestesTest {
+public class RequestsTest {
 
     @Test
     public void RegisterTest() throws JsonProcessingException, JSONException {
