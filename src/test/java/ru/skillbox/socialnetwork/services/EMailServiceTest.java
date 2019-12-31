@@ -14,11 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest
 
 public class EMailServiceTest {
-//============================================================
-// Тестовая почта
-// Адрес: JavaPro2.SkillBox@mail.ru
-// Пароль: JP2_SkillBox
-//============================================================
     @Autowired
     EMailService eMailService = new EMailService();
 
