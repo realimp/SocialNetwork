@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -13,7 +12,6 @@ import ru.skillbox.socialnetwork.api.responses.FileType;
 import ru.skillbox.socialnetwork.api.responses.FileUploadResponse;
 import ru.skillbox.socialnetwork.api.responses.Response;
 import ru.skillbox.socialnetwork.entities.Person;
-import ru.skillbox.socialnetwork.repositories.PersonRepository;
 
 import javax.activation.MimetypesFileTypeMap;
 import java.io.*;
@@ -29,7 +27,7 @@ public class FileUploadServiceTest {
     public void fileUploadTest() throws IOException {
         Person person = new Person();
         person.setId(0);
-        File file = new File("photo_2019-09-23_19-03-37.jpg");
+        File file = new File("photo_2019-09-23_19-03-37.jpg"); // path to test file
         FileInputStream input = new FileInputStream(file);
         String fileName = file.getName();
         MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, new MimetypesFileTypeMap().getContentType(fileName), input);

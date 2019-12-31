@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.responses.Comment;
 import ru.skillbox.socialnetwork.api.responses.Feeds;
 import ru.skillbox.socialnetwork.api.responses.PostResponse;
-import ru.skillbox.socialnetwork.api.responses.TagResponse;
 import ru.skillbox.socialnetwork.entities.Post;
 import ru.skillbox.socialnetwork.entities.PostComment;
 import ru.skillbox.socialnetwork.entities.PostLike;

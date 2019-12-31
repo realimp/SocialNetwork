@@ -43,19 +43,16 @@ public class AccountService {
 
         MessageResponse message = new MessageResponse();
 
-        if (!register.getPasswd1().equals(register.getPasswd2())
-                || register.getPasswd1().isEmpty()) {
+        if (!register.getPasswd1().equals(register.getPasswd2()) || register.getPasswd1().isEmpty()) {
             message.setMessage("Пароли не идентичны!");
-
-            String error = "Error by registry";
+            String error = "Registration error";
             long timestamp = new Date().getTime();
-
             return new Response<>(error, timestamp, message);
         }
 
         if (personRepository.findByEMail(register.getEmail()) != null) {
             message.setMessage("Указанный email уже существует!");
-            String error = "Error by registry";
+            String error = "Registration error";
             long timestamp = new Date().getTime();
             return new Response<>(error, timestamp, message);
         }
@@ -72,12 +69,12 @@ public class AccountService {
         person.setDeleted(false);
         person.setOnline(false);
         person.setPhone("");
-        personRepository.save(person);
+        Person savedPerson = personRepository.saveAndFlush(person);
         message.setMessage("ok");
 
         NotificationTypeCode[] typeCodes = NotificationTypeCode.values();
         for (NotificationTypeCode typeCode : typeCodes) {
-            notificationSettingsRepository.save(new NotificationSettings(person, typeCode, true));
+            notificationSettingsRepository.save(new NotificationSettings(savedPerson, typeCode, true));
         }
 
         return new Response<>(message);
