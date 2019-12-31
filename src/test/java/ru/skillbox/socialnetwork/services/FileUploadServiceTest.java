@@ -27,7 +27,7 @@ public class FileUploadServiceTest {
     public void fileUploadTest() throws IOException {
         Person person = new Person();
         person.setId(0);
-        File file = new File("photo_2019-09-23_19-03-37.jpg");
+        File file = new File("photo_2019-09-23_19-03-37.jpg"); // path to test file
         FileInputStream input = new FileInputStream(file);
         String fileName = file.getName();
         MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, new MimetypesFileTypeMap().getContentType(fileName), input);

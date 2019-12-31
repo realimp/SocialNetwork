@@ -14,7 +14,7 @@ public class NotificationSettings {
     private Integer id;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
