@@ -21,10 +21,10 @@ public class PostServiceTest {
     public void deleteAndRecoveryPostByIdTest()
     {
         postService.deletePostById(1);
-        post = postService.getOnePostById(1);
+        //post = postService.getOnePostById(1);
         Assert.assertTrue(post.isDeleted());
         postService.recoveryPostById(1);
-        post = postService.getOnePostById(1);
+        //post = postService.getOnePostById(1);
         Assert.assertFalse(post.isDeleted());
     }
 }
