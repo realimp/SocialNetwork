@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.requests.CommentRequest;
 import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
-import ru.skillbox.socialnetwork.api.requests.PostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.entities.*;
 import ru.skillbox.socialnetwork.mappers.PostCommentMapper;
@@ -42,10 +41,9 @@ public class PostService {
     @Autowired
     private NotificationSettingsRepository notificationSettingsRepository;
 
-    public Post getOnePostById(Integer id) {
+    public Response<PostResponse> getOnePostById(Integer id) {
         Optional<Post> post = postRepository.findById(id);
-        //ToDo  вместо null нужно что-то вернуть осмысленное если нет нужного поста.
-        return post.orElse(null);
+        return new Response<>(PostMapper.getPostResponse(post.get()));
     }
 
     public Response<IdResponse> deletePostById(int idPost) {
@@ -56,17 +54,13 @@ public class PostService {
         return new Response<>(responseData);
     }
 
-    public Integer recoveryPostById(int idPost) {
-        Optional<Post> post = postRepository.findById(idPost);
-        if (post.isPresent()) {
-            post.get().setDeleted(false);
-            postRepository.save(post.get());
-            return idPost;
-        }
-        return 1; //ToDo тут нужно что то вернуть если поста для восстановления нет.
+    public Response<PostResponse> recoveryPostById(int idPost) {
+        Post post = postRepository.findById(idPost).get();
+        post.setDeleted(false);
+        return new Response<>(PostMapper.getPostResponse(postRepository.saveAndFlush(post)));
     }
 
-    public String addPost(int idAuthor, Date publishDate, PostRequest postRequest) {
+    public Response<PostResponse> addPost(Date publishDate, CreatePostRequest postRequest) {
         Post newPost = new Post();
         newPost.setDate(publishDate);
         newPost.setTitle(postRequest.getTitle());
@@ -75,20 +69,28 @@ public class PostService {
         newPost.setDeleted(false);
         newPost.setAuthor(accountService.getCurrentUser());
 
-        postRepository.save(newPost);
+        return new Response<>(PostMapper.getPostResponse(postRepository.saveAndFlush(newPost)));
+    }
 
+    public Response<PostResponse> postEditing(Integer postId, CreatePostRequest createPostRequest) {
+        Post post = postRepository.findById(postId).get();
+        if (accountService.getCurrentUser().getId() == post.getAuthor().getId()) {
+            post.setTitle(createPostRequest.getTitle());
+            post.setText(createPostRequest.getPostText());
+            return new Response<>(PostMapper.getPostResponse(postRepository.save(post)));
+        }
         return null;
     }
 
-    public Post postEditing(Integer postId, CreatePostRequest createPostRequest) {
-
-        Optional<Post> post = postRepository.findById(postId);
-        if (accountService.getCurrentUser().getId() == post.get().getAuthor().getId()) {
-            post.get().setTitle(createPostRequest.getTitle());
-            post.get().setText(createPostRequest.getPostText());
-            postRepository.save(post.get());
-        }
-        return post.get();
+    public Response<Comment> createPostComment(int id, CommentRequest commentRequest) {
+        PostComment comment = new PostComment();
+        comment.setAuthor(accountService.getCurrentUser());
+        comment.setDeleted(false);
+        comment.setDate(new Date());
+        comment.setBlocked(false);
+        comment.setCommentText(commentRequest.getCommentText());
+        comment.setPost(postRepository.findById(id).get());
+        return new Response<>(PostCommentMapper.getComment(postCommentRepository.saveAndFlush(comment)));
     }
 
     public Response<Comment> savePostComment(int id, Integer comment_id, CommentRequest commentRequest) {
@@ -116,6 +118,8 @@ public class PostService {
         Optional<Post> postOptional = postRepository.findById(id);
         if (!postOptional.isPresent())
             return new Response<>("Не найден пост с идентификатором " + id, null);
+
+        Post post = postOptional.get();
         postComment.setPost(postOptional.get());
         postComment.setDeleted(false);
         postCommentRepository.saveAndFlush(postComment);
@@ -134,19 +138,18 @@ public class PostService {
             }
         }
 
-        if (isEnablePOST_COMMENT && person.getId()
-                != getOnePostById(id).getAuthor().getId()
+        if (isEnablePOST_COMMENT && person.getId() != post.getAuthor().getId()
                 && commentRequest.getParentId() == null) {
             Notification notification = new Notification(NotificationTypeCode.POST_COMMENT, new Date(),
-                    person, getOnePostById(id).getAuthor(), 1, person.getEMail());
+                    person, post.getAuthor(), 1, person.getEMail());
             notificationRepository.save(notification);
         }
 
         if (isEnableCOMMENT_COMMENT && person.getId()
-                != getOnePostById(id).getAuthor().getId()
+                != post.getAuthor().getId()
                 && commentRequest.getParentId() != null) {
             Notification notification = new Notification(NotificationTypeCode.COMMENT_COMMENT, new Date(),
-                    person, getOnePostById(id).getAuthor(), 1, person.getEMail());
+                    person, post.getAuthor(), 1, person.getEMail());
             notificationRepository.save(notification);
         }
 
@@ -208,5 +211,19 @@ public class PostService {
             return responseList;
         }
         return new ResponseList();
+    }
+
+    public Response<MessageResponse> reportPost(int id) {
+        Post post = postRepository.findById(id).get();
+        post.setBlocked(true);
+        postRepository.saveAndFlush(post);
+        return new Response<>(new MessageResponse("ok"));
+    }
+
+    public Response<MessageResponse> reportComment(int postId, int commentId) {
+        PostComment comment = postCommentRepository.findById(commentId).get();
+        comment.setBlocked(true);
+        postCommentRepository.saveAndFlush(comment);
+        return new Response<>(new MessageResponse("ok"));
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.skillbox.socialnetwork.api.requests.CreatePostRequest;
 import ru.skillbox.socialnetwork.api.responses.*;
 import ru.skillbox.socialnetwork.services.ProfileService;
 
@@ -55,8 +56,12 @@ public class ProfileControllerTest {
 
     @Test
     public void postUserWallTest() throws Exception {
+        CreatePostRequest postRequest = new CreatePostRequest();
+        postRequest.setPostText("Test");
+        postRequest.setTitle("Title");
+        postRequest.setTags(new String[]{"tag"});
         this.mockMvc.perform(post("/users/{id}/wall", 23).contentType(APPLICATION_JSON_UTF8)
-                .content(new ObjectMapper().writeValueAsString(new PersonsWallPost())))
+                .content(new ObjectMapper().writeValueAsString(postRequest)))
                 .andDo(print()).andExpect(status().isOk());
     }
 
