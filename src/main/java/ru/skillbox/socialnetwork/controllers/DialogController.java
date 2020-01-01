@@ -222,24 +222,22 @@ public class DialogController {
 
     @GetMapping("/{id}/messages")
     public ResponseList findMessages(@PathVariable int id, @RequestParam(required = false) String query, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemsPerPage) {
-        Pageable pageable;
-        if (offset != null && itemsPerPage != null) {
-            pageable = PageRequest.of(offset, itemsPerPage);
-        } else {
-            pageable = PageRequest.of(0, 20);
-        }
-        Page<Message> results;
-        if (query != null && !"".equals(query))
-            results = messageRepository.findByDialogIdAndMessageText(id, query, pageable);
-        else
-            results = messageRepository.findByDialogId(id, pageable);
-        List<DialogMessage> responseData = new ArrayList<>();
+        int pageOffset = offset != null ? offset : 0;
+        int itemPerPage = itemsPerPage != null ? itemsPerPage : 20;
+        Pageable pageable = PageRequest.of(pageOffset, itemPerPage);
 
+        Page<Message> results;
+        if (query != null && query.length() > 0) {
+            results = messageRepository.findByDialogIdAndMessageText(id, query, pageable);
+        } else {
+            results = messageRepository.findByDialogId(id, pageable);
+        }
+        List<DialogMessage> responseData = new ArrayList<>();
         for (Message message : results) {
             responseData.add(DialogMapper.getDialogMessage(message));
         }
 
-        return new ResponseList<>(responseData, messageRepository.findByDialogId(id).size());
+        return new ResponseList<>(responseData, messageRepository.findByDialogId(id, pageable).getTotalElements());
     }
 
     @PostMapping("/{id}/messages")
