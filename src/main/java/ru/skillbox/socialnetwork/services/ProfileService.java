@@ -81,18 +81,10 @@ public class ProfileService {
 
     public MessageResponse deletePerson() {
         Person person = accountService.getCurrentUser();
-        if (person != null) {
-            logger.info("current user is obtained: {}", person.getId());
-        } else {
-            logger.warn("could not obtain current user");
-        }
         person.setDeleted(true);
         personRepository.saveAndFlush(person);
 
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("Current user has been successfully deleted!");
-
-        return messageResponse;
+        return new MessageResponse("ok");
     }
 
     public PersonResponse getPersonById(Integer id) {
@@ -143,8 +135,10 @@ public class ProfileService {
         post.setText(post_text);
         post.setBlocked(false);
         post.setDeleted(false);
-        for (Tag tag : tags) {
-            postTags.add(tagService.saveTag(tag));
+        if (tags != null) {
+            for (Tag tag : tags) {
+                postTags.add(tagService.saveTag(tag));
+            }
         }
         post.setTags(postTags);
 
@@ -214,10 +208,7 @@ public class ProfileService {
         Person person = personRepository.getOne(id);
         person.setBlocked(true);
         personRepository.saveAndFlush(person);
-
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("User with id: " + id + " has been successfully blocked!");
-        return messageResponse;
+        return new MessageResponse("ok");
     }
 
     public MessageResponse unblockPersonById(Integer id) {
