@@ -2,6 +2,7 @@ package ru.skillbox.socialnetwork.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.skillbox.socialnetwork.api.requests.CommentRequest;
@@ -83,92 +84,62 @@ public class PostService {
     }
 
     public Response<Comment> createPostComment(int id, CommentRequest commentRequest) {
+        Person commentAuthor = accountService.getCurrentUser();
+        Post post = postRepository.getOne(id);
+        Person postAuthor = post.getAuthor();
         PostComment comment = new PostComment();
-        comment.setAuthor(accountService.getCurrentUser());
+        comment.setAuthor(commentAuthor);
         comment.setDeleted(false);
         comment.setDate(new Date());
         comment.setBlocked(false);
         comment.setCommentText(commentRequest.getCommentText());
-        comment.setPost(postRepository.findById(id).get());
+        comment.setPost(post);
+
+        for (NotificationSettings setting : notificationSettingsRepository.findByPersonId(postAuthor)) {
+            if (setting.getNotificationTypeCode().name().equalsIgnoreCase("POST_COMMENT")) {
+                Notification notification = new Notification(
+                        NotificationTypeCode.POST_COMMENT, new Date(), commentAuthor, postAuthor, id, postAuthor.getEMail());
+                notificationRepository.saveAndFlush(notification);
+            }
+        }
         return new Response<>(PostCommentMapper.getComment(postCommentRepository.saveAndFlush(comment)));
     }
 
     public Response<Comment> savePostComment(int id, Integer comment_id, CommentRequest commentRequest) {
-        PostComment postComment = new PostComment();
-        if (commentRequest.getAuthor() != null) {
-            Optional<Person> personOptional = personRepository.findById(commentRequest.getAuthor().getId());
-            if (!personOptional.isPresent())
-                return new Response<>("Не найден пользователь с идентификатором " + commentRequest.getAuthor().getId(), null);
-            postComment.setAuthor(personOptional.get());
-        } else postComment.setAuthor(accountService.getCurrentUser());
-        postComment.setBlocked(commentRequest.isBlocked());
-        postComment.setCommentText(commentRequest.getCommentText());
-        if (commentRequest.getTime() == null)
-            postComment.setDate(new Date());
-        else
-            postComment.setDate(commentRequest.getTime());
-        if (comment_id != null)
-            postComment.setId(comment_id);
-        if (commentRequest.getParentId() != null) {
-            Optional<PostComment> parentPostComment = postCommentRepository.findById(commentRequest.getParentId());
-            if (!parentPostComment.isPresent())
-                return new Response<>("Не найден комментарий с идентификатором " + id, null);
-            postComment.setParentComment(parentPostComment.get());
-        }
-        Optional<Post> postOptional = postRepository.findById(id);
-        if (!postOptional.isPresent())
-            return new Response<>("Не найден пост с идентификатором " + id, null);
+        PostComment postComment = postCommentRepository.getOne(comment_id);
+        if (postComment.getAuthor() == accountService.getCurrentUser()) {
+            postComment.setCommentText(commentRequest.getCommentText());
+            postCommentRepository.saveAndFlush(postComment);
 
-        Post post = postOptional.get();
-        postComment.setPost(postOptional.get());
-        postComment.setDeleted(false);
-        postCommentRepository.saveAndFlush(postComment);
+            Post post = postRepository.getOne(id);
+            Person postAuthor = post.getAuthor();
+            Person commentAuthor = accountService.getCurrentUser();
 
-        Person person = accountService.getCurrentUser();
-        boolean isEnablePOST_COMMENT = false;
-        boolean isEnableCOMMENT_COMMENT = false;
-        List<NotificationSettings> notificationSettings = notificationSettingsRepository.findByPersonId(person);
-
-        for (NotificationSettings settings : notificationSettings) {
-            if (settings.getNotificationTypeCode().name().equals("POST_COMMENT")) {
-                isEnablePOST_COMMENT = settings.getEnable();
-            }
-            if (settings.getNotificationTypeCode().name().equals("COMMENT_COMMENT")) {
-                isEnableCOMMENT_COMMENT = settings.getEnable();
+            for (NotificationSettings setting : notificationSettingsRepository.findByPersonId(postAuthor)) {
+                if (setting.getNotificationTypeCode().name().equalsIgnoreCase("POST_COMMENT")) {
+                    Notification notification = new Notification(
+                            NotificationTypeCode.POST_COMMENT, new Date(), commentAuthor, postAuthor, id, postAuthor.getEMail());
+                    notificationRepository.saveAndFlush(notification);
+                }
             }
         }
-
-        if (isEnablePOST_COMMENT && person.getId() != post.getAuthor().getId()
-                && commentRequest.getParentId() == null) {
-            Notification notification = new Notification(NotificationTypeCode.POST_COMMENT, new Date(),
-                    person, post.getAuthor(), 1, person.getEMail());
-            notificationRepository.save(notification);
-        }
-
-        if (isEnableCOMMENT_COMMENT && person.getId()
-                != post.getAuthor().getId()
-                && commentRequest.getParentId() != null) {
-            Notification notification = new Notification(NotificationTypeCode.COMMENT_COMMENT, new Date(),
-                    person, post.getAuthor(), 1, person.getEMail());
-            notificationRepository.save(notification);
-        }
-
         return new Response<>(PostCommentMapper.getComment(postComment));
     }
 
-    public ResponseList<List<Comment>> getComments(int id) {
-        List<PostComment> postComments = postCommentRepository.findByPostId(id);
+    public ResponseList<List<Comment>> getComments(int id, Pageable pageable) {
+        Page<PostComment> postComments = postCommentRepository.findByPostId(id, pageable);
         List<Comment> comments = new ArrayList<>();
-        postComments.forEach(c-> comments.add(PostCommentMapper.getComment(c)));
-        return new ResponseList<>(comments, comments.size());
+        long total = 0;
+        if (postComments.hasContent()) {
+            postComments.forEach(c -> comments.add(PostCommentMapper.getComment(c)));
+            total = postComments.getTotalElements();
+        }
+        return new ResponseList<>(comments, total);
     }
 
     public Response<IdResponse> deletePostComment(int id, int comment_id) {
-        Optional<PostComment> optionalPostComment = postCommentRepository.findById(comment_id);
-        if (!optionalPostComment.isPresent())
-            return new Response<>("Не найден комментарий с идентификатором " + comment_id, null);
-        PostComment postComment = optionalPostComment.get();
-        if (postComment.getPost() == null || postComment.getPost().getId() != id)
+        PostComment postComment = postCommentRepository.getOne(comment_id);
+        if (postComment.getPost().getId() != id)
             return new Response<>("Идентификатор поста не соответствует идентификатору поста комментария", null);
         postComment.setDeleted(true);
         postCommentRepository.saveAndFlush(postComment);
@@ -180,11 +151,9 @@ public class PostService {
         if (!optionalPostComment.isPresent())
             return new Response<>("Не найден комментарий с идентификатором " + comment_id, null);
         PostComment postComment = optionalPostComment.get();
-        if (postComment.getPost() == null || postComment.getPost().getId() != id)
-            return new Response<>("Идентификатор поста не соответствует идентификатору поста комментария", null);
         postComment.setDeleted(false);
         postCommentRepository.saveAndFlush(postComment);
-        return getComments(id);
+        return getComments(id, PageRequest.of(0, 20));
     }
 
     public Map<Integer, List<PostComment>> getChildComments(Integer postId, List<PostComment> postcomments) {
@@ -198,7 +167,7 @@ public class PostService {
         ArrayList<PostResponse> responseData = new ArrayList<>();
         if (tagRepository.existsByTag(query)) {
             Page<Post> posts = postRepository.findByTags(tagRepository.findByTag(query), pageable);
-            if (!posts.isEmpty()) {
+            if (posts.hasContent()) {
                 for (Post post : posts) {
                     responseData.add(PostMapper.getPostResponse(post));
                 }

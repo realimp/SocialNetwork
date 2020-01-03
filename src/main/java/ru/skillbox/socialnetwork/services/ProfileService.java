@@ -81,18 +81,10 @@ public class ProfileService {
 
     public MessageResponse deletePerson() {
         Person person = accountService.getCurrentUser();
-        if (person != null) {
-            logger.info("current user is obtained: {}", person.getId());
-        } else {
-            logger.warn("could not obtain current user");
-        }
         person.setDeleted(true);
         personRepository.saveAndFlush(person);
 
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("Current user has been successfully deleted!");
-
-        return messageResponse;
+        return new MessageResponse("ok");
     }
 
     public PersonResponse getPersonById(Integer id) {
@@ -119,9 +111,13 @@ public class ProfileService {
                 wallPost.setBlocked(post.isBlocked());
                 wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
                 wallPost.setTags(getTagsByPost(post));
-                List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
-                wallPost.setComments(PostCommentMapper.getRootComments(postcomments,
-                        postService.getChildComments(post.getId(), postcomments)));
+                List<PostComment> comments= new ArrayList<>();
+                Page<PostComment> postComments = postCommentRepository.findByPostId(post.getId(), PageRequest.of(0, 20));
+                if (postComments.hasContent()) {
+                    comments.addAll(postComments.getContent());
+                }
+                wallPost.setComments(PostCommentMapper.getRootComments(comments,
+                        postService.getChildComments(post.getId(), comments)));
                 if (post.getDate().before(new Date())) {
                     wallPost.setType(PostType.POSTED);
                 } else {
@@ -143,8 +139,10 @@ public class ProfileService {
         post.setText(post_text);
         post.setBlocked(false);
         post.setDeleted(false);
-        for (Tag tag : tags) {
-            postTags.add(tagService.saveTag(tag));
+        if (tags != null) {
+            for (Tag tag : tags) {
+                postTags.add(tagService.saveTag(tag));
+            }
         }
         post.setTags(postTags);
 
@@ -214,10 +212,7 @@ public class ProfileService {
         Person person = personRepository.getOne(id);
         person.setBlocked(true);
         personRepository.saveAndFlush(person);
-
-        MessageResponse messageResponse = new MessageResponse();
-        messageResponse.setMessage("User with id: " + id + " has been successfully blocked!");
-        return messageResponse;
+        return new MessageResponse("ok");
     }
 
     public MessageResponse unblockPersonById(Integer id) {

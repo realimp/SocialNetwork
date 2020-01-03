@@ -79,7 +79,7 @@ public class FeedsService {
     }
 
     private List<Comment> getCommentByPost(Post post) {
-        List<PostComment> comments = postCommentRepository.findByPostId(post.getId());
+        List<PostComment> comments = postCommentRepository.findByPostId(post.getId(), PageRequest.of(0, 20)).getContent();
         return PostCommentMapper.getRootComments(comments, postService.getChildComments(post.getId(), comments));
     }
 }
