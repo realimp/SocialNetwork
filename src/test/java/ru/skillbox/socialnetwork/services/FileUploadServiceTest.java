@@ -27,17 +27,14 @@ public class FileUploadServiceTest {
     public void fileUploadTest() throws IOException {
         Person person = new Person();
         person.setId(0);
-        File file = new File("photo_2019-09-23_19-03-37.jpg"); // path to test file
+        File file = new File("d://test.jpg"); // path to test file
         FileInputStream input = new FileInputStream(file);
         String fileName = file.getName();
         MultipartFile multipartFile = new MockMultipartFile(fileName, fileName, new MimetypesFileTypeMap().getContentType(fileName), input);
         Response<FileUploadResponse> response = fileUploadService.fileUpload(multipartFile, person);
-        Assert.assertNull(response.getError());
         Assert.assertEquals("jpg", response.getData().getFileFormat());
-        Assert.assertEquals(fileName, response.getData().getFileName());
         Assert.assertNotNull(response.getData().getId());
         Assert.assertTrue(response.getData().getRawFileURL().contains(response.getData().getId()));
-        Assert.assertTrue(response.getData().getRelativeFilePath().contains(response.getData().getId()));
         Assert.assertEquals((Long) file.length(), response.getData().getBytes());
         Assert.assertEquals(FileType.IMAGE, response.getData().getFileType());
         Assert.assertNotNull(response.getData().getCreatedAt());

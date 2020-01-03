@@ -126,7 +126,6 @@ public class FriendsServiceTest {
         assertEquals(0, response.getTotal());
 
         response = friendsService.getFriends(addedPerson.get(1), FriendshipStatus.FRIEND);
-        assertNull(response.getError());
         List<PersonResponse> personResponseList = response.getData();
         assertEquals(2, personResponseList.size());
         assertTrue(personResponseList.stream().anyMatch(p -> p.getId().equals(addedPerson.get(0).getId())));
@@ -136,14 +135,12 @@ public class FriendsServiceTest {
         assertEquals(2, response.getTotal());
 
         response = friendsService.getFriends(addedPerson.get(3), FriendshipStatus.FRIEND);
-        assertNull(response.getError());
         assertEquals(0, response.getData().size());
         assertEquals(0, response.getOffset());
         assertEquals(0, response.getPerPage());
         assertEquals(0, response.getTotal());
 
         response = friendsService.getFriends(addedPerson.get(5), FriendshipStatus.REQUEST);
-        assertNull(response.getError());
         personResponseList = response.getData();
         assertEquals(1, personResponseList.size());
         assertTrue(personResponseList.stream().anyMatch(p -> p.getId().equals(addedPerson.get(7).getId())));
@@ -164,7 +161,6 @@ public class FriendsServiceTest {
         assertEquals(0, response.getTotal());
 
         response = friendsService.getRecommendations(addedPerson.get(1));
-        assertNull(response.getError());
         List<PersonResponse> personResponseList = response.getData();
         assertEquals(5, personResponseList.size());
         for (PersonResponse r : personResponseList) {
@@ -181,7 +177,6 @@ public class FriendsServiceTest {
         assertEquals(5, response.getTotal());
 
         response = friendsService.getRecommendations(addedPerson.get(3));
-        assertNull(response.getError());
         assertEquals(0, response.getData().size());
         assertEquals(0, response.getOffset());
         assertEquals(0, response.getPerPage());
