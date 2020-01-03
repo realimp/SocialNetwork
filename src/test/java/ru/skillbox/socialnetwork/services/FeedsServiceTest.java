@@ -19,7 +19,7 @@ public class FeedsServiceTest {
     @WithMockUser(username = "paveldobro92@mail.ru")
     @Test
     public void getFeedsTest() {
-        Feeds feed = feedsService.getFeeds("", 0, 20);
+        Feeds feed = feedsService.getFeeds(null, 0, 20);
         Assert.assertEquals("First post ever!", feed.getFeeds().get(0).getTitle());
     }
 }

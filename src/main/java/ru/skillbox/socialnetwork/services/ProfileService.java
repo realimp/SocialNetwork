@@ -111,9 +111,13 @@ public class ProfileService {
                 wallPost.setBlocked(post.isBlocked());
                 wallPost.setLikes(postLikeRepository.findByPostId(post.getId()).size());
                 wallPost.setTags(getTagsByPost(post));
-                List<PostComment> postcomments = postCommentRepository.findByPostId(post.getId());
-                wallPost.setComments(PostCommentMapper.getRootComments(postcomments,
-                        postService.getChildComments(post.getId(), postcomments)));
+                List<PostComment> comments= new ArrayList<>();
+                Page<PostComment> postComments = postCommentRepository.findByPostId(post.getId(), PageRequest.of(0, 20));
+                if (postComments.hasContent()) {
+                    comments.addAll(postComments.getContent());
+                }
+                wallPost.setComments(PostCommentMapper.getRootComments(comments,
+                        postService.getChildComments(post.getId(), comments)));
                 if (post.getDate().before(new Date())) {
                     wallPost.setType(PostType.POSTED);
                 } else {

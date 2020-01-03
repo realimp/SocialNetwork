@@ -55,7 +55,9 @@ public class PostController {
 
     @GetMapping("/{id}/comments")
     public ResponseList<List<Comment>> postGetComments(@PathVariable int id, @RequestParam(required = false) Integer offset, @RequestParam(required = false) Integer itemPerPage) {
-        return postService.getComments(id);
+        int pageOffset = offset != null ? offset : 0;
+        int itemsPerPage = itemPerPage != null ? itemPerPage : 20;
+        return postService.getComments(id, PageRequest.of(pageOffset, itemsPerPage));
     }
 
     @PostMapping("/{id}/comments")
