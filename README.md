@@ -13,7 +13,7 @@
 :white_check_mark: Написание юнит тестов для части репозиториев и контроллеров
 
 ### Проект развернут на AWS и доступен по ссылке   
-[http://ec2-13-48-68-194.eu-north-1.compute.amazonaws.com/](http://ec2-13-48-68-194.eu-north-1.compute.amazonaws.com/)
+[http://social-network.nikolaev.pro/](http://social-network.nikolaev.pro/)
 
 **Правки после завершения группового проекта:**   
 :white_check_mark: Реализация функционала тэгов к публикациям   
