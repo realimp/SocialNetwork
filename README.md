@@ -12,7 +12,7 @@
 :white_check_mark: Поиск и устранение багов   
 :white_check_mark: Написание юнит тестов для части репозиториев и контроллеров
 
-### Проект развернут на AWS и доступен по ссылке   
+### Проект развернут на <a href="https://aws.amazon.com/" target="_blank" rel="nofollow noopener"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/320px-Amazon_Web_Services_Logo.svg.png" width="32"></a> и доступен по ссылке:   
 [http://social-network.nikolaev.pro/](http://social-network.nikolaev.pro/)
 
 **Правки после завершения группового проекта:**   
